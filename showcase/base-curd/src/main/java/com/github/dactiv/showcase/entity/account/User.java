@@ -19,7 +19,7 @@ import com.github.dactiv.showcase.entity.IdEntity;
 import org.hibernate.annotations.NamedQuery;
 
 /**
- * 用户类
+ * 用户实体
  * @author maurice
  *
  */

@@ -13,7 +13,7 @@ import com.github.dactiv.showcase.common.enumeration.entity.OperatingState;
 import com.github.dactiv.showcase.entity.IdEntity;
 
 /**
- * 操作记录类，记录用户的操作信息
+ * 操作记录实体，记录用户的操作信息
  * 
  * @author maurice
  *
