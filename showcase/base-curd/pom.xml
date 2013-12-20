@@ -277,7 +277,7 @@
 		
 		<!-- ehcache start -->
 		<dependency>
-			<groupId>net.sf.ehcache.internal</groupId>
+			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 		</dependency>
 		<dependency>
@@ -381,4 +381,11 @@
 			
 		</plugins>
 	</build>
+	<distributionManagement>
+		<snapshotRepository>
+		    <id>sonatype-nexus-snapshots</id>
+		    <name>Proj Snapshot Repository</name>
+		    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement> 
 </project>
