@@ -44,6 +44,33 @@
 		</pluginRepository>
 	</pluginRepositories>
 	-->
+	
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	
+	<issueManagement>
+        <system>github</system>
+        <url>https://github.com/dactiv/base-framework/issues</url>
+    </issueManagement>
+	
+	<developers>
+		<developer>
+			<id>dactiv</id>
+			<name>Maurice Chen</name>
+			<email>es.chenxiaobo@gmail.com</email>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+	
+    <scm>
+        <url>git@github.com:dactiv/base-framework.git</url>
+        <connection>scm:git:git@github.com:dactiv/base-framework.git</connection>
+        <developerConnection>scm:git:git@github.com:dactiv/base-framework.git</developerConnection>
+    </scm>
 
 	<dependencies>
 
