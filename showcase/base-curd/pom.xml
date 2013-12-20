@@ -320,6 +320,17 @@
 			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<includes>
+						<include>**/Test*Manager.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<configuration>
 					<target>
@@ -329,11 +340,6 @@
 						</sql>
 					</target>
 				</configuration>
-			</plugin>
-			
-			<plugin>
-			    <groupId>org.codehaus.sonar</groupId>
-			    <artifactId>sonar-maven3-plugin</artifactId>
 			</plugin>
 
 			<!-- eclipse插件 -->
