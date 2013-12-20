@@ -36,7 +36,7 @@
 	</developers>
 	
     <scm>
-        <url>git@github.com:dactiv/base-framework.git</url>
+        <url>scm:git:git@github.com:dactiv/base-framework.git</url>
         <connection>scm:git:git@github.com:dactiv/base-framework.git</connection>
         <developerConnection>scm:git:git@github.com:dactiv/base-framework.git</developerConnection>
     </scm>
