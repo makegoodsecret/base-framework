@@ -9,7 +9,6 @@
 	    <groupId>org.sonatype.oss</groupId>
 	    <artifactId>oss-parent</artifactId>
 	    <version>7</version>
-	    <relativePath></relativePath>
 	</parent>
 	<groupId>com.github.dactiv</groupId>
 	<artifactId>dactiv-base-framework</artifactId>

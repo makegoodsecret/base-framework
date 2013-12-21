@@ -6,7 +6,6 @@
 		<groupId>com.github.dactiv</groupId>
 		<artifactId>dactiv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath></relativePath>
 	</parent>
 	<artifactId>dactiv-orm</artifactId>
 	<name>dactiv orm jar</name>
