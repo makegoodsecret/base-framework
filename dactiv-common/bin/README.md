@@ -8,3 +8,5 @@ myeclipse:将项目生成为myeclipse项目
 
 install:将该项目所有的依赖初始化到本地m2库
 
+deploy:部署jar包到全球服使用
+
