@@ -4,7 +4,7 @@ Navicat MySQL Data Transfer
 Source Server         : localhost_3306
 Source Server Version : 50519
 Source Host           : localhost:3306
-Source Database       : base-curd
+Source Database       : dactiv-base-curd
 
 Target Server Type    : MYSQL
 Target Server Version : 50519

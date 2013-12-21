@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.github.dactiv</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>dactiv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../dactiv-parent/</relativePath>
 	</parent>
-	<artifactId>orm</artifactId>
+	<artifactId>dactiv-orm</artifactId>
 	<name>dactiv orm jar</name>
 	<packaging>jar</packaging>
 	

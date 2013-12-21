@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.github.dactiv</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>dactiv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../../dactiv-parent/</relativePath>
 	</parent>
 	<groupId>com.github.dactiv.showcase</groupId>
-	<artifactId>base-curd</artifactId>
+	<artifactId>dactiv-base-curd</artifactId>
 	<packaging>war</packaging>
 	<name>base curd project war</name>
 
