@@ -6,7 +6,7 @@
 		<groupId>com.github.dactiv</groupId>
 		<artifactId>dactiv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../dactiv-parent/</relativePath>
+		<relativePath></relativePath>
 	</parent>
 	<artifactId>dactiv-common</artifactId>
 	<name>dactiv common jar</name>
