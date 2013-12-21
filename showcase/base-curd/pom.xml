@@ -18,12 +18,12 @@
 
 		<dependency>
 			<groupId>com.github.dactiv</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>dactiv-common</artifactId>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.github.dactiv</groupId>
-			<artifactId>orm</artifactId>
+			<artifactId>dactiv-orm</artifactId>
 		</dependency>
 		
 		<!-- spring strat -->

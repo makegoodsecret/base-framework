@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.github.dactiv</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>dactiv-common</artifactId>
 		</dependency>
 		
 		<dependency>
