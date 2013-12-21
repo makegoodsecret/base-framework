@@ -1,15 +1,15 @@
 
 @echo off
-echo [INFO] create project to eclipse
+echo [INFO] release project to github
 
 cd %~dp0
 cd ..
 
 echo [INFO] clean.
-call release:clean
+call mvn release:clean
 
 echo [INFO] prepare.
-call release:prepare
+call mvn release:prepare
 
 cd bin
 pause

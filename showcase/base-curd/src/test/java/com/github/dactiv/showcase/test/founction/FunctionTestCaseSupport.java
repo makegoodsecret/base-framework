@@ -28,7 +28,7 @@ public class FunctionTestCaseSupport {
 	
 	//selenium settings, options include firefox,ie,chrome,remote:localhost:4444:firefox
 	public static final String SELENIUM_DRIVER="firefox";
-	public static final String URL="http://localhost:8080/base-curd";
+	public static final String URL="http://localhost:8080/dactiv-base-curd";
 	
 	protected static DataSource dataSource;
 	protected static Server jettyServer;
@@ -73,7 +73,7 @@ public class FunctionTestCaseSupport {
 	
 	@AfterClass
 	public static void uninstall() {
-		s.click(By.xpath("//a[@href='/base-curd/logout']"));
+		s.click(By.xpath("//a[@href='/dactiv-base-curd/logout']"));
 	}
 	
 	/**
