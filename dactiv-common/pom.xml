@@ -3,12 +3,42 @@
 	<parent>
 		<groupId>com.github.dactiv</groupId>
 		<artifactId>dactiv-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../dactiv-parent/</relativePath>
 	</parent>
 	<artifactId>dactiv-common</artifactId>
-	<name>dactiv common jar</name>
 	<packaging>jar</packaging>
+	
+	<name>dactiv common jar</name>
+	<description>the base-framework common jar</description>
+	<url>http://dactiv.github.com/base-framework</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/dactiv/base-framework/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<id>dactiv</id>
+			<name>Maurice Chen</name>
+			<email>es.chenxiaobo@gmail.com</email>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/dactiv/base-framework.git</url>
+		<connection>scm:git:ssh://git@github.com:dactiv/base-framework.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:dactiv/base-framework.git</developerConnection>
+  	</scm>
 	
 	<dependencies>
 		<dependency>

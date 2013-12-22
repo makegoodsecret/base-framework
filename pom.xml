@@ -4,17 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.dactiv</groupId>
 	<artifactId>dactiv-base-framework</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>base web framework project</name>
 	<packaging>pom</packaging>
 
 	<description>base-framework is a base framework based on spring,hibernate,spring mvc,shiro.</description>
 	<url>http://dactiv.github.com/base-framework</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/</sonatypeOssDistMgmtSnapshotsUrl>
-	</properties>
 
 	<licenses>
 		<license>
@@ -41,8 +36,12 @@
 		<url>https://github.com/dactiv/base-framework.git</url>
 		<connection>scm:git:ssh://git@github.com:dactiv/base-framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:dactiv/base-framework.git</developerConnection>
-  	  <tag>HEAD</tag>
-  </scm>
+  	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/</sonatypeOssDistMgmtSnapshotsUrl>
+	</properties>
 
 	<modules>
 		<module>dactiv-parent</module>
