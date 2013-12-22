@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.dactiv</groupId>
 	<artifactId>dactiv-parent</artifactId>
-	<version>1.0.0.RELEASE</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>dactiv parent pom</name>
@@ -35,13 +35,13 @@
 			<dependency>
 				<groupId>com.github.dactiv</groupId>
 				<artifactId>dactiv-common</artifactId>
-				<version>1.0.0.RELEASE</version>
+				<version>1.0.1-SNAPSHOT</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.github.dactiv</groupId>
 				<artifactId>dactiv-orm</artifactId>
-				<version>1.0.0.RELEASE</version>
+				<version>1.0.1-SNAPSHOT</version>
 			</dependency>
 		
 			<!-- spring strat -->
