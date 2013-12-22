@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.dactiv</groupId>
 	<artifactId>dactiv-parent</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>dactiv parent pom</name>
@@ -35,13 +35,13 @@
 			<dependency>
 				<groupId>com.github.dactiv</groupId>
 				<artifactId>dactiv-common</artifactId>
-				<version>1.0.1-SNAPSHOT</version>
+				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.github.dactiv</groupId>
 				<artifactId>dactiv-orm</artifactId>
-				<version>1.0.1-SNAPSHOT</version>
+				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 		
 			<!-- spring strat -->
@@ -763,5 +763,18 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus snapshot repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus release repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	
 </project>
