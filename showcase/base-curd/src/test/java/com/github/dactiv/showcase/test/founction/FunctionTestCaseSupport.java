@@ -57,7 +57,7 @@ public class FunctionTestCaseSupport {
 		
 		//如果selenium没初始化，初始化selenium
 		if (s == null) {
-			System.setProperty ( "webdriver.firefox.bin" , "E:/Firefox/firefox.exe" );
+			//System.setProperty ( "webdriver.firefox.bin" , "E:/Firefox/firefox.exe" );
 			WebDriver driver = WebDriverFactory.createDriver(SELENIUM_DRIVER);
 			s = new Selenium2(driver, URL);
 			s.setStopAtShutdown();
