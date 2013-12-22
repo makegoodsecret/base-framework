@@ -65,7 +65,7 @@
 						<autoversionsubmodules>true</autoversionsubmodules>
 						<arguments>-Psonatype-oss-release</arguments>
 						<tagNameFormat>v@{project.version}.RELEASE</tagNameFormat>
-						<releaseVersion>@{project.version}.RELEASE</releaseVersion>
+						<releaseVersion>${project.version}.RELEASE</releaseVersion>
 						<pushChanges>false</pushChanges>
 					</configuration>
 				</plugin>
