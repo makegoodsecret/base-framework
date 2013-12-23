@@ -50,7 +50,7 @@ public class ConvertUtils extends org.apache.commons.beanutils.ConvertUtils{
 	/**
 	 * 转换字符串数组到相应类型.
 	 * 
-	 * @param value 待转换的字符串.
+	 * @param values 待转换的字符串.
 	 * @param toType 转换目标类型.
 	 */
 	public static Object convertToObject(String[] values,Class<?> toType) {

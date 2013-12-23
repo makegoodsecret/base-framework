@@ -248,8 +248,7 @@ public abstract class ReflectionUtils {
 	/**
 	 * 循环向上转型, 获取对象的所有DeclaredField, 并强制设置为可访问.
 	 * 
-	 * @param targetClass
-	 *            目标对象Class
+	 * @param target 目标对象
 	 * 
 	 * @return List
 	 */
@@ -802,7 +801,7 @@ public abstract class ReflectionUtils {
 	/**
 	 * 获取Class如果被cglib AOP过的对象或对象为CGLIB的Class，将获取真正的Class类型
 	 * 
-	 * @param target  对象
+	 * @param targetClass  目标对象class
 	 * 
 	 * @return Class
 	 */

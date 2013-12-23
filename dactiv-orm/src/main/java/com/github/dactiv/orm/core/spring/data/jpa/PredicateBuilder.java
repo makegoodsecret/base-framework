@@ -34,7 +34,7 @@ public interface PredicateBuilder {
 	 * 获取Jpa的约束标准
 	 * 
 	 * @param filter 属性过滤器
-	 * @param model jpa绑定模型
+	 * @param entity jpa查询绑定载体
 	 * 
 	 * @return {@link Predicate}
 	 * 
@@ -53,7 +53,7 @@ public interface PredicateBuilder {
 	 * 
 	 * @param propertyName 属性名
 	 * @param value 值
-	 * @param builder CriteriaBuilder
+	 * @param entity jpa查询绑定载体
 	 * 
 	 * @return {@link Predicate}
 	 * 

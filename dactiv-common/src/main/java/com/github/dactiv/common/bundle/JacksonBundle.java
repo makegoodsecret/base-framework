@@ -107,7 +107,8 @@ public class JacksonBundle {
 
 	/**
 	 * 创建只输出初始值被改变的属性到Json字符串的ObjectMapper, 最节约的存储方式。
-	 * @return
+	 * 
+	 * @return {@link JacksonBundle}
 	 */
 	public static JacksonBundle nonDefaultMapper() {
 		return new JacksonBundle(Include.NON_DEFAULT);

@@ -72,7 +72,26 @@ public class WebDriverFactory {
 		return driver;
 	}
 
+	/**
+	 * 浏览器类型
+	 * 
+	 */
 	public enum BrowserType {
-		firefox, ie, chrome, remote
+		/**
+		 * 火狐浏览器
+		 */
+		firefox, 
+		/**
+		 * ie浏览器
+		 */
+		ie, 
+		/**
+		 * 谷歌浏览器
+		 */
+		chrome, 
+		/**
+		 * 远程服务器浏览器
+		 */
+		remote
 	}
 }

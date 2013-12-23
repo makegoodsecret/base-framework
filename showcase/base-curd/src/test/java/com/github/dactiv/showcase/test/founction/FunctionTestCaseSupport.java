@@ -45,7 +45,7 @@ public class FunctionTestCaseSupport {
 			System.setProperty(LaunchJetty.ACTIVE_PROFILE, "test");
 			
 			jettyServer = JettyFactory.createServerInSource(LaunchJetty.PORT, LaunchJetty.CONTEXT);
-			JettyFactory.setTldJarNames(jettyServer, LaunchJetty.TLD_JAR_NAMES);
+			//JettyFactory.setTldJarNames(jettyServer, LaunchJetty.TLD_JAR_NAMES);
 			System.out.println("[HINT] Don't forget to set -XX:MaxPermSize=128m");
 			jettyServer.start();
 		}

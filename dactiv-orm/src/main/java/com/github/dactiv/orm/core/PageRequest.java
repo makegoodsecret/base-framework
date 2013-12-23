@@ -252,7 +252,8 @@ public class PageRequest implements java.io.Serializable {
 
 		/**
 		 * 获取排序方式
-		 * @return
+		 * 
+		 * @return String
 		 */
 		public String getDir() {
 			return dir;

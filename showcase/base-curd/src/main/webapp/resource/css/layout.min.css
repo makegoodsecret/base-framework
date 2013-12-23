@@ -97,14 +97,14 @@ body {
 	line-height: 38px;
 	color: #fff;
 	font-size: 24px;
-	margin-top: 18px;
+	margin-top: 20px;
 	border: 1px solid transparent;
 	border-radius: 500px;
 	text-align: center;
 }
 
 .ribbon > a > span {
-	margin-top: 5px;
+	margin-top: 6px;
 }
 
 .ribbon > a:hover {

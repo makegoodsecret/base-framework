@@ -35,7 +35,7 @@ import com.github.dactiv.orm.core.spring.data.jpa.restriction.support.RLikeRestr
 import com.github.dactiv.orm.core.spring.data.jpa.specification.SpecificationEntity;
 
 /**
- * jpa约束捆绑者，将所有的{@link PredicateBuilder}实现类添加到{@link PropertyFilters#getRestrictionsMap()}中，
+ * jpa约束捆绑者，将所有的{@link PredicateBuilder}实现类添加到{@link #getPredicateBuilders()}中，
  * 辅佐PropertyFilterSpecification和RestrictionNameSpecification做创建Predicate操作。
  * 
  * @author maurice
@@ -75,7 +75,7 @@ public class JpaRestrictionBuilder{
 	 * 通过属性过滤器创建Predicate
 	 * 
 	 * @param filter 属性过滤器
-	 * @param restrictionModel jpa查询绑定载体
+	 * @param entity jpa查询绑定载体
 	 * 
 	 * @return {@link Predicate}
 	 */
@@ -93,7 +93,7 @@ public class JpaRestrictionBuilder{
 	 * @param propertyName 属性名称
 	 * @param value 值
 	 * @param restrictionName 约束条件
-	 * @param model jpa查询绑定载体
+	 * @param entity jpa查询绑定载体
 	 * 
 	 * @return {@link Predicate}
 	 */
@@ -117,7 +117,7 @@ public class JpaRestrictionBuilder{
 	/**
 	 * 设置所有的条件约束
 	 * 
-	 * @param 条件约束
+	 * @param predicateBuilders 条件约束Map
 	 */
 	public static void setPredicateBuilders(Map<String, PredicateBuilder> predicateBuilders) {
 		JpaRestrictionBuilder.predicateBuilders = predicateBuilders;
