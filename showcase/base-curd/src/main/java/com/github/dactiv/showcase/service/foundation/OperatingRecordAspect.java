@@ -74,6 +74,7 @@ public class OperatingRecordAspect {
 					sb.append("<p>").
 					   append(entry.getKey()).
 					   append(":").
+					   append("<p>").
 					   append("<strong class='text-info'>").
 					   append(getParameterValue(entry.getValue())).
 					   append("</strong>").
@@ -164,7 +165,7 @@ public class OperatingRecordAspect {
 	private String getParameterValue(Object value) {
 		//如果该值为数组，将值用逗号分割
 		if (value.getClass().isArray()) {
-			return StringUtils.join((Object[])value,",");
+			return StringUtils.join((Object[])value,", ");
 		} else {
 			return ConvertUtils.convert(value);
 		}

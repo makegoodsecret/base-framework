@@ -16,24 +16,21 @@ div, a:focus, .btn:focus {
 .panel-default {
 	border-color: #bbb;
 }
+
 .panel-default > .panel-heading {
     margin: -1px;
-}
-
-.panel-default > .panel-body {
-	overflow: auto;
-}
-
-.panel-default > .panel-body > .table thead > tr > th, .table tbody > tr > th, .table thead > tr > td, .table tbody > tr > td {
-	word-break: keep-all;
-	white-space:nowrap;
 }
 
 .panel .table {
     margin-bottom: 0px;
 }
 
-.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+.table thead > tr > th, 
+.table tbody > tr > th, 
+.table tfoot > tr > th, 
+.table thead > tr > td, 
+.table tbody > tr > td, 
+.table tfoot > tr > td {
 	vertical-align:middle;
 }
 
@@ -125,6 +122,19 @@ div, a:focus, .btn:focus {
 .nav-tabs > li > a:hover {
 	border-top: 2px solid #dcdcdc;
 	background-color: #F8F8F8;
+}
+
+.table-container {
+	overflow: auto;
+}
+
+.table-container > .table > thead > tr > td,
+.table-container > .table > tbody > tr > td,
+.table-container > .table > tfoot > tr > td,
+.table-container > .table > thead > tr > th,
+.table-container > .table > tbody > tr > th,
+.table-container > .table > tfoot > tr > th{
+	white-space:nowrap
 }
 
 .tab-content {

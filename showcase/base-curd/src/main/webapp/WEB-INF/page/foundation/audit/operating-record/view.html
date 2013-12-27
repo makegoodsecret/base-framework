@@ -95,50 +95,52 @@
 			<h3 class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> 操作记录管理</h3>
 		</div>
 		<form id="operating-record-view-form" action="${base}/foundation/audit/operating-record/delete" valid="false" method="post">
-			<table class="table table-hover table-striped">
-				<thead>
-					<tr>
-						<th>操作用户</th>
-						<th>ip地址</th>
-						<th>操作目标</th>
-						<th>执行方法</th>
-						<th>模块名称</th>
-						<th>功能名称</th>
-						<th>开始时间</th>
-						<th>结束时间</th>
-						<th>执行状态</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<#if page.result?size == 0>
-						<tr><td colspan="10"> 找不到要查询的记录 </td></tr>
-						<#else>
-						<#list page.result as r>
+			<div class="table-container">
+				<table class="table table-hover table-striped">
+					<thead>
 						<tr>
-							<td>${r.username!""}</td>
-							<td>${r.ip!""}</td>
-							<td>${r.operatingTarget!""}</td>
-							<td>${r.method!""}</td>
-							<td>${r.module!""}</td>
-							<td>${r.function!""}</td>
-							<td>${r.startDate!""}</td>
-							<td>${r.endDate!""}</td>
-							<td>${r.stateName}</td>
-							<td>
-								<@shiro.hasPermission name="data-dictionary:read">
-								<a class="btn btn-default btn-sm" href="${base}/foundation/audit/operating-record/read?id=${r.id}">
-									<span class="glyphicon glyphicon-edit"></span>
-								</a>
-								</@shiro.hasPermission>
-							</td>
+							<th>操作用户</th>
+							<th>ip地址</th>
+							<th>操作目标</th>
+							<th>执行方法</th>
+							<th>模块名称</th>
+							<th>功能名称</th>
+							<th>开始时间</th>
+							<th>结束时间</th>
+							<th>执行状态</th>
+							<th>操作</th>
 						</tr>
-						</#list>
-					</#if>
-					
-				</tbody>
-			</table>
-	
+					</thead>
+					<tbody>
+						<#if page.result?size == 0>
+							<tr><td colspan="10"> 找不到要查询的记录 </td></tr>
+							<#else>
+							<#list page.result as r>
+							<tr>
+								<td>${r.username!""}</td>
+								<td>${r.ip!""}</td>
+								<td>${r.operatingTarget!""}</td>
+								<td>${r.method!""}</td>
+								<td>${r.module!""}</td>
+								<td>${r.function!""}</td>
+								<td>${r.startDate!""}</td>
+								<td>${r.endDate!""}</td>
+								<td>${r.stateName}</td>
+								<td>
+									<@shiro.hasPermission name="data-dictionary:read">
+									<a class="btn btn-default btn-sm" href="${base}/foundation/audit/operating-record/read?id=${r.id}">
+										<span class="glyphicon glyphicon-edit"></span>
+									</a>
+									</@shiro.hasPermission>
+								</td>
+							</tr>
+							</#list>
+						</#if>
+						
+					</tbody>
+				</table>
+			</div>
+			
 			<div class="panel-footer">
 				<a class="btn btn-info" data-toggle="modal" data-target="#search-modal">
 					<span class="glyphicon glyphicon-search"></span> 查询

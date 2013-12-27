@@ -3,8 +3,8 @@ body {
 }
 
 .main-container {
-	margin: 50px 25px 25px;
-	min-width: 800px;
+	margin-top: 50px;
+	min-width: 500px;
 }
 
 .login-container {

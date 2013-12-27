@@ -109,46 +109,47 @@
 			<h3 class="panel-title"><span class="glyphicon glyphicon-briefcase"></span> 组管理</h3>
 		</div>
 		<form id="group-view-form" action="${base}/account/group/delete" valid="false" method="post">
-			<table class="table table-hover table-striped">
-				<thead>
-					<tr>
-						<th><input type="checkbox" id="selectAll"/></th>
-						<th>组名称</th>
-						<th>状态</th>
-						<th>访问允许role</th>
-						<th>拦截uri</th>
-						<th>所属父类</th>
-						<th>备注</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<#if page.result?size == 0>
-						<tr><td colspan="8"> 找不到要查询的记录 </td></tr>
-						<#else>
-						<#list page.result as r>
+			<div class="table-container">
+				<table class="table table-hover table-striped">
+					<thead>
 						<tr>
-							<td><input type="checkbox" name="ids" value="${r.id}" /></td>
-							<td>${r.name!""}</td>
-							<td>${r.stateName!""}</td>
-							<td>${r.role!""}</td>
-							<td>${r.value!""}</td>
-							<td>${r.parentName!""}</td>
-							<td>${r.remark!""}</td>
-							<td>
-								<@shiro.hasPermission name="group:read">
-								<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${r.id}">
-									<span class="glyphicon glyphicon-edit"></span>
-								</a>
-								</@shiro.hasPermission>
-							</td>
+							<th><input type="checkbox" id="selectAll"/></th>
+							<th>组名称</th>
+							<th>状态</th>
+							<th>访问允许role</th>
+							<th>拦截uri</th>
+							<th>所属父类</th>
+							<th>备注</th>
+							<th>操作</th>
 						</tr>
-						</#list>
-					</#if>
-					
-				</tbody>
-			</table>
-	
+					</thead>
+					<tbody>
+						<#if page.result?size == 0>
+							<tr><td colspan="8"> 找不到要查询的记录 </td></tr>
+							<#else>
+							<#list page.result as r>
+							<tr>
+								<td><input type="checkbox" name="ids" value="${r.id}" /></td>
+								<td>${r.name!""}</td>
+								<td>${r.stateName!""}</td>
+								<td>${r.role!""}</td>
+								<td>${r.value!""}</td>
+								<td>${r.parentName!""}</td>
+								<td>${r.remark!""}</td>
+								<td>
+									<@shiro.hasPermission name="group:read">
+									<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${r.id}">
+										<span class="glyphicon glyphicon-edit"></span>
+									</a>
+									</@shiro.hasPermission>
+								</td>
+							</tr>
+							</#list>
+						</#if>
+						
+					</tbody>
+				</table>
+			</div>
 			<div class="panel-footer">
 				<a class="btn btn-info" data-toggle="modal" data-target="#search-modal">
 					<span class="glyphicon glyphicon-search"></span> 查询

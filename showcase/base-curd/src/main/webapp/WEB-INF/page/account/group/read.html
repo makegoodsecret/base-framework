@@ -95,57 +95,57 @@
 								<div class="panel-heading">
 									<h3 class="panel-title"><span class="glyphicon glyphicon-link"></span> 拥有资源</h3>
 								</div>
-								
-								<table class="table table-hover table-striped">
-						            <thead>
-							            <tr>
-							                <th>
-												<input type="checkbox" id="selectAll"/>
-							                </th>
-							                <th>
-												资源名称
-							                </th>
-							                <th>
-							                	访问允许permission
-							            	</th>
-							                <th>
-							                	资源类型
-							            	</th>
-							                <th>
-												描述
-							                </th>
-							            </tr>
-							            </thead>
-							            <tbody>
-							            	<#list resourcesList as rl>
+								<div class="table-container">
+									<table class="table table-hover table-striped">
+							            <thead>
 								            <tr>
-								            	<td>
-								            		<#assign isSelected = false />
-								                	<#list entity.resourcesList as erl>
-								                		<#if erl.id == rl.id>
-								                			<#assign isSelected = true />
-								                			<#break />
-								                		</#if>
-								                	</#list>
-								                    <input type="checkbox" value="${rl.id}" name="resourceId" <#if isSelected>checked="true"</#if>/>
-								                </td>
-								                <td>
-								                    ${rl.name!""}
-								                </td>
-								                <td>
-							                    	${rl.permission!""}
-							                    </td>
-							                    <td>
-							                    	${rl.typeName!""}
-							                    </td>
-								                <td>
-								                	${rl.remark!""}
-								                </td>
+								                <th>
+													<input type="checkbox" id="selectAll"/>
+								                </th>
+								                <th>
+													资源名称
+								                </th>
+								                <th>
+								                	访问允许permission
+								            	</th>
+								                <th>
+								                	资源类型
+								            	</th>
+								                <th>
+													描述
+								                </th>
 								            </tr>
-								            </#list>
-							           </tbody>
-							        </table>
-								
+								            </thead>
+								            <tbody>
+								            	<#list resourcesList as rl>
+									            <tr>
+									            	<td>
+									            		<#assign isSelected = false />
+									                	<#list entity.resourcesList as erl>
+									                		<#if erl.id == rl.id>
+									                			<#assign isSelected = true />
+									                			<#break />
+									                		</#if>
+									                	</#list>
+									                    <input type="checkbox" value="${rl.id}" name="resourceId" <#if isSelected>checked="true"</#if>/>
+									                </td>
+									                <td>
+									                    ${rl.name!""}
+									                </td>
+									                <td>
+								                    	${rl.permission!""}
+								                    </td>
+								                    <td>
+								                    	${rl.typeName!""}
+								                    </td>
+									                <td>
+									                	${rl.remark!""}
+									                </td>
+									            </tr>
+									            </#list>
+								           </tbody>
+								        </table>
+									</div>
 								</div>
 							
 						</div>
