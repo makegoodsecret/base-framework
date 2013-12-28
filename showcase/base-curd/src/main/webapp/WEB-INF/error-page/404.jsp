@@ -18,7 +18,7 @@
     <![endif]-->
 </head>
 <body>
-	<div class="main-container">
+	<div class="main-container container">
 	
 		<div class="panel panel-default">
 							
