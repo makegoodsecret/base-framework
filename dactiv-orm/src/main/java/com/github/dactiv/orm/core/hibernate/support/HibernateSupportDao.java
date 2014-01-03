@@ -130,13 +130,15 @@ public class HibernateSupportDao<T,PK extends Serializable> extends BasicHiberna
 
 		Criteria criteria = createCriteria();
 
+		setOrderToCriteria(criteria, orders);
+		
 		if (CollectionUtils.isEmpty(filters)) {
 			return criteria;
 		}
 		for (PropertyFilter filter : filters) {
 			criteria.add(createCriterion(filter));
 		}
-		setOrderToCriteria(criteria, orders);
+		
 		return criteria;
 	}
 
