@@ -19,14 +19,11 @@ public class LaunchJetty {
 	 * 项目名称
 	 */
 	public static final String CONTEXT = "/dactiv-base-curd";
-	
-	//public static final String[] TLD_JAR_NAMES = new String[] { "shiro-web" };
 	public static final String ACTIVE_PROFILE = "spring.profiles.active";
 
 	public static void main(String[] args) throws Exception {
 		System.setProperty(ACTIVE_PROFILE, "dev");
 		Server server = JettyFactory.createServerInSource(PORT, CONTEXT);
-		//JettyFactory.setTldJarNames(server, TLD_JAR_NAMES);
 
 		try {
 			System.out.println("[HINT] Don't forget to set -XX:MaxPermSize=128m");

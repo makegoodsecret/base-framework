@@ -67,3 +67,43 @@
 	</div>
 </body>
 </html>
+<#-- 分页宏pagination 将formId和page传入后自动生成分页条 -->
+<#macro pagination formId page>
+	<script type="text/javascript">
+		//跳转到指定的页面
+		function jumpToSpecificPage(pageNo) {
+			$("#pageNo").val(pageNo);
+			$("#${formId!''}").submit();
+		}
+	</script>
+	
+	<ul class="pagination pull-right">
+					
+		<#if !page.hasPrePage()>
+			<li class="disabled">
+				<a>&laquo;</a>
+			</li>
+		<#else>
+			<li>
+				<a href="javascript:;" onclick="jumpToSpecificPage(${page.prePage});">&laquo;</a>
+			</li>
+		</#if>
+		
+		<#list page.getSlider(page.pageSize) as index>
+			<li <#if page.pageNo == index>class="active"</#if>>
+				<a href="javascript:;" onclick="jumpToSpecificPage(${index});">${index}</a>
+			</li>
+		</#list>
+		
+		<#if !page.hasNextPage()>
+			<li class="disabled">
+				<a>&raquo;</a>
+			</li>
+		<#else>
+			<li>
+				<a href="javascript:;" onclick="jumpToSpecificPage(${page.nextPage});">&raquo;</a>
+			</li>
+		</#if>
+	        
+	</ul>
+</#macro>
