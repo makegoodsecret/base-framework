@@ -5,11 +5,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import com.github.dactiv.showcase.test.founction.FunctionTestCaseSupport;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import com.github.dactiv.showcase.test.founction.FunctionTestCaseSupport;
 
 /**
  * 测试字典类别管理功能
@@ -68,9 +68,8 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		//选中删除的记录
 		s.check(By.xpath("//table//tbody//tr//*[text()='test_dictionary_category_modify']//..//input"));
 		//提交删除表单
-		s.click(By.xpath("//div[@class='panel-footer']//*[@type='submit']"));
-		Alert alert = s.getDriver().switchTo().alert();
-		alert.accept();
+		s.click(By.xpath("//div[@class='panel-footer']//*[@type='button']"));
+		s.click(By.xpath("//div[@class='bootbox modal fade bootbox-confirm in']//*[@data-bb-handler='confirm']"));
 		
 		//返回成功信息
 		message = s.findElement(By.className("alert")).getText();

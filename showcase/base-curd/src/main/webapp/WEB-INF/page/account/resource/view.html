@@ -8,18 +8,21 @@
 	<script type="text/javascript">
 
 		$(document).ready(function(){
-			
 			$("#selectAll").click(function(){
 				var checkbox = $(this),
 				children = checkbox.parents("table").find("tbody input[type='checkbox']");
 				
 				children.prop("checked",checkbox.is(":checked"));
 			});
-			$("#resource-view-form").submit(function(e){
-				
-			    return $(this).find("input:checked").length > 0 && confirm("确定要删除吗？");
-			});
 		});
+		
+		function submitDeleteForm() {
+			bootbox.confirm("确定要删除吗？",function(result){
+				if (result) {
+					$("#resource-view-form").submit();
+				}
+			});
+		}
 		
 	</script>
 </#macro>
@@ -190,7 +193,7 @@
 				</@shiro.hasPermission>
 				
 				<@shiro.hasPermission name="resource:delete">
-				<button type="submit" class="btn btn-danger">
+				<button type="button" class="btn btn-danger" onclick="submitDeleteForm();">
 					<span class="glyphicon glyphicon-remove"></span> 删除
 				</button>
 				</@shiro.hasPermission>
