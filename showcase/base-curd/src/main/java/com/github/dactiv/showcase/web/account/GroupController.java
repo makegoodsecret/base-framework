@@ -5,6 +5,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.github.dactiv.common.utils.ServletUtils;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
@@ -17,13 +24,6 @@ import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.service.account.AccountManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 组管理Controller
@@ -40,7 +40,7 @@ public class GroupController {
 	private AccountManager accountManager;
 	
 	/**
-	 * 获取组列表
+	 * 获取组列表,返回account/group/view.html页面
 	 * 
 	 * @param pageRequest 分页实体信息
 	 * @param request HttpServlet请求
@@ -77,7 +77,9 @@ public class GroupController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新组")
-	public String save(@ModelAttribute("entity") Group entity,HttpServletRequest request,RedirectAttributes redirectAttributes) {
+	public String save(Group entity,
+					   HttpServletRequest request,
+					   RedirectAttributes redirectAttributes) {
 		
 		String parentId = request.getParameter("parentId");
 		
@@ -93,6 +95,7 @@ public class GroupController {
 		
 		accountManager.saveGroup(entity);
 		redirectAttributes.addFlashAttribute("success", "保存成功");
+		
 		return "redirect:/account/group/view";
 	}
 	
@@ -100,23 +103,27 @@ public class GroupController {
 	 * 
 	 * 读取组信息,返回account/group/read.html页面
 	 * 
+	 * @param id 主键id
 	 * @param model Spring mvc的Model接口，主要是将model的属性返回到页面中
 	 * 
-	 * @return String
+	 * @return {@link Group}
 	 */
 	@RequestMapping("read")
-	public String read(@RequestParam(value = "id", required = false)String id,Model model) {
+	public Group read(String id,Model model) {
 		
 		model.addAttribute("resourcesList", accountManager.getResources());
 		model.addAttribute("states", SystemVariableUtils.getVariables(State.class,3));
 		
+		Group entity = new Group();
+		
 		if (StringUtils.isEmpty(id)) {
 			model.addAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup));
 		} else {
+			entity = accountManager.getGroup(id);
 			model.addAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup,id));
 		}
 		
-		return "account/group/read";
+		return entity;
 	}
 	
 	/**
@@ -135,21 +142,4 @@ public class GroupController {
 		return "redirect:/account/group/view";
 	}
 	
-	/**
-	 * 绑定实体数据，如果存在id时获取后从数据库获取记录，进入到相对的C后在将数据库获取的记录填充到相应的参数中
-	 * 
-	 * @param id 主键ID
-	 * 
-	 */
-	@ModelAttribute("entity")
-	public Group bindingModel(@RequestParam(value = "id", required = false)String id) {
-		
-		Group group = new Group();
-		
-		if (StringUtils.isNotEmpty(id)) {
-			group = accountManager.getGroup(id);
-		}
-		
-		return group;
-	}
 }

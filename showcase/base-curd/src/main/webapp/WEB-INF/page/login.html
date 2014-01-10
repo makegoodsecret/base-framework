@@ -39,10 +39,6 @@
 							<label for="password">登录密码:</label> 
 							<input type="password" class="form-control required" value="admin" name="password" id="password" >
 						</div>
-						<div class="checkbox">
-							<input type="checkbox" name="rememberMe" id="rememberMe">
-							<label for="rememberMe">记住我</label>
-						</div>
 						<#if Session.showCaptcha?has_content && Session.showCaptcha == true>
 						<div class="form-group">
 							<label for="captcha">验证码:</label>
@@ -59,6 +55,11 @@
 							</div>
 						</div>
 						</#if>
+						<div class="checkbox">
+							<input type="checkbox" name="rememberMe" id="rememberMe">
+							<label for="rememberMe">记住我</label>
+						</div>
+						
 						
 					</div>
 		

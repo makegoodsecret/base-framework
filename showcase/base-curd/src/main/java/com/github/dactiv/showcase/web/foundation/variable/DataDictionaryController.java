@@ -5,23 +5,23 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import com.github.dactiv.orm.core.PropertyFilters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PageRequest.Sort;
 import com.github.dactiv.orm.core.PropertyFilter;
+import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.annotation.OperatingAudit;
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.service.foundation.SystemVariableManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 数据字典管理Controller
@@ -38,7 +38,7 @@ public class DataDictionaryController {
 	private SystemVariableManager systemDictionaryManager;
 	
 	/**
-	 * 获取数据字典列表
+	 * 获取数据字典列表,返回foundation/variable/data-dictionary/view.html页面
 	 * 
 	 * @param pageRequest 分页实体信息
 	 * @param request HttpServlet请求
@@ -74,7 +74,9 @@ public class DataDictionaryController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新数据字典")
-	public String save(@ModelAttribute("entity") DataDictionary entity,String categoryId,RedirectAttributes redirectAttributes) {
+	public String save(DataDictionary entity,
+					   String categoryId,
+					   RedirectAttributes redirectAttributes) {
 		
 		if (StringUtils.isEmpty(categoryId)) {
 			entity.setCategory(null);
@@ -92,18 +94,25 @@ public class DataDictionaryController {
 	 * 
 	 * 读取数据字典,返回foundation/variable/data-dictionary/read.html页面
 	 * 
+	 * @param id 主键id
 	 * @param model Spring mvc的Model接口，主要是将model的属性返回到页面中
 	 * 
-	 * @return String
+	 * @return {@link DataDictionary}
 	 * 
 	 */
 	@RequestMapping("read")
-	public String read(Model model) {
+	public DataDictionary read(String id,Model model) {
 		
 		model.addAttribute("valueTypes", SystemVariableUtils.getVariables(SystemDictionaryCode.ValueType));
 		model.addAttribute("categoriesList", systemDictionaryManager.getDictionaryCategories());
 		
-		return "/foundation/variable/data-dictionary/read";
+		DataDictionary entity = new DataDictionary();
+		
+		if (StringUtils.isNotEmpty(id)) {
+			entity = systemDictionaryManager.getDataDictionary(id);
+		}
+		
+		return entity;
 		
 	}
 	
@@ -121,24 +130,6 @@ public class DataDictionaryController {
 		systemDictionaryManager.deleteDataDictionary(ids);
 		redirectAttributes.addFlashAttribute("success", "删除" + ids.size() + "条信息成功");
 		return "redirect:/foundation/variable/data-dictionary/view";
-	}
-	
-	/**
-	 * 绑定实体数据，如果存在id时获取后从数据库获取记录，进入到相对的C后在将数据库获取的记录填充到相应的参数中
-	 * 
-	 * @param id 主键ID
-	 * 
-	 */
-	@ModelAttribute("entity")
-	public DataDictionary bindingModel(@RequestParam(value = "id", required = false)String id) {
-		
-		DataDictionary dataDictionary = new DataDictionary();
-		
-		if (StringUtils.isNotEmpty(id)) {
-			dataDictionary = systemDictionaryManager.getDataDictionary(id);
-		}
-		
-		return dataDictionary;
 	}
 	
 }

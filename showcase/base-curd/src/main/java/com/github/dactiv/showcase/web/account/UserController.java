@@ -5,6 +5,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PageRequest.Sort;
@@ -15,16 +23,7 @@ import com.github.dactiv.showcase.common.annotation.OperatingAudit;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.User;
-import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.service.account.AccountManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 用户管理Controller
@@ -41,7 +40,7 @@ public class UserController {
 	private AccountManager accountManager;
 	
 	/**
-	 * 获取用户列表
+	 * 获取用户列表,返回account/user/view.html页面
 	 * 
 	 * @param pageRequest 分页实体信息
 	 * @param request HttpServlet请求
@@ -76,8 +75,8 @@ public class UserController {
 	@RequestMapping("insert")
 	@OperatingAudit(function="创建用户")
 	public String insert(User entity,
-							   @RequestParam(required=false)List<String> groupId,
-							   RedirectAttributes redirectAttributes) {
+						 @RequestParam(required=false)List<String> groupId,
+						 RedirectAttributes redirectAttributes) {
 		
 		entity.setGroupsList(accountManager.getGroups(groupId));
 		
@@ -114,9 +113,9 @@ public class UserController {
 	 */
 	@RequestMapping(value="update")
 	@OperatingAudit(function="更新用户")
-	public String update(@ModelAttribute("entity")User entity, 
-								 @RequestParam(required=false)List<String> groupId,
-								 RedirectAttributes redirectAttributes) {
+	public String update(User entity, 
+						 @RequestParam(required=false)List<String> groupId,
+						 RedirectAttributes redirectAttributes) {
 
 		entity.setGroupsList(accountManager.getGroups(groupId));
 		
@@ -130,14 +129,12 @@ public class UserController {
 	 * 
 	 * @param username 用户帐号
 	 * 
-	 * @return boolean 
+	 * @return String
 	 */
 	@ResponseBody
 	@RequestMapping("is-username-unique")
 	public String isUsernameUnique(String username) {
-		
 		return String.valueOf(accountManager.isUsernameUnique(username));
-		
 	}
 	
 	/**
@@ -150,38 +147,19 @@ public class UserController {
 	 * 
 	 */
 	@RequestMapping("read")
-	public String read(@RequestParam(value = "id", required = false)String id,Model model) {
+	public String read(String id,Model model) {
 		
-		List<DataDictionary> data =null;
-		data = SystemVariableUtils.getVariables(State.class,3);
-		
-		model.addAttribute("states", data);
+		model.addAttribute("states", SystemVariableUtils.getVariables(State.class,3));
 		model.addAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup));
 		
 		if (StringUtils.isEmpty(id)) {
+			model.addAttribute("entity", new User());
 			return "account/user/create";
 		} else {
+			model.addAttribute("entity", accountManager.getUser(id));
 			return "account/user/read";
 		}
 		
-	}
-	
-	/**
-	 * 绑定实体数据，如果存在id时获取后从数据库获取记录，进入到相对的C后在将数据库获取的记录填充到相应的参数中
-	 * 
-	 * @param id 主键ID
-	 * 
-	 */
-	@ModelAttribute("entity")
-	public User bindingModel(@RequestParam(value = "id", required = false)String id) {
-		
-		User user = new User();
-		
-		if (StringUtils.isNotEmpty(id)) {
-			user = accountManager.getUser(id);
-		}
-		
-		return user;
 	}
 	
 }

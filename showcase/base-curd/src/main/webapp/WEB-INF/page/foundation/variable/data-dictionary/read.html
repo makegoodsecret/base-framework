@@ -1,7 +1,7 @@
 <#include "*/basic/default.html"/>
 
 <#macro title>
-	编辑数据字典${entity.name!''}
+	编辑数据字典${dataDictionary.name!''}
 </#macro>
 
 <#macro body>
@@ -18,7 +18,7 @@
 		</div>
 		<form action="${base}/foundation/variable/data-dictionary/save" id="save-data-dictionary-form" method="post">
 		
-			<input type="hidden" name="id" value="${entity.id!''}">
+			<input type="hidden" name="id" value="${dataDictionary.id!''}">
 			
 			<div class="panel-body">
 			
@@ -26,11 +26,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">字典名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
+							<input type="text" class="form-control required" id="name" name="name" value="${dataDictionary.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="value">字典值:</label>
-							<input type="text" class="form-control required" id="value" name="value" value="${entity.value!''}">
+							<input type="text" class="form-control required" id="value" name="value" value="${dataDictionary.value!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -42,7 +42,7 @@
 							<select class="form-control required" name="type" id="type">
 								<option value="">请选择...</option>
 				                <#list valueTypes as vt>
-				                	<option value="${vt.value}" <#if entity.type?has_content && entity.type==vt.value> selected="selected" </#if> >${vt.name}</option>
+				                	<option value="${vt.value}" <#if dataDictionary.type?has_content && dataDictionary.type==vt.value> selected="selected" </#if> >${vt.name}</option>
 				                </#list>
 				           </select>
 						</div>
@@ -51,7 +51,7 @@
 							<select class="form-control required" height="150" search="true" name="categoryId" id="categoryId">
 								<option value="">请选择...</option>
 				                <#list categoriesList as cl>
-				                	<option value="${cl.id}" <#if entity.category?has_content && entity.category.id==cl.id> selected="selected" </#if> >${cl.name}</option>
+				                	<option value="${cl.id}" <#if dataDictionary.category?has_content && dataDictionary.category.id==cl.id> selected="selected" </#if> >${cl.name}</option>
 				                </#list>
 				           </select>
 						</div>
@@ -62,7 +62,7 @@
 		   			<div class="row">
 		    			<div class="col-xs-12">
 							<label for="sort">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
+							<textarea rows="3" class="form-control" name="remark" id=""remark"">${dataDictionary.remark!''}</textarea>
 						</div>
 		   			</div>
 	   			</div>

@@ -4,13 +4,13 @@ body {
 
 .main-container {
 	margin-top: 50px;
-	min-width: 500px;
+	min-width: 650px;
 }
 
 .login-container {
 	margin: 0 auto;
     padding: 7% 0;
-    width: 400px;
+    width: 550px;
 }
 
 .content-widget {
