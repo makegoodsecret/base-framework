@@ -36,12 +36,26 @@
         <property name="cacheManager" ref="ehCacheManagerFactory" />
     </bean>
     
+    <!-- 使用EnterpriseCacheSessionDAO，解决session同步问题，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上 -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+    	<!-- 活动session缓存名称 -->
+    	<property name="activeSessionsCacheName" value="shiroActiveSessionCache" />
+    </bean>
+    
+   <!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上 -->
+    	<property name="sessionDAO" ref="sessionDAO" />
+    </bean>
+    
     <!-- 使用默认的WebSecurityManager -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<!-- realm认证和授权,从数据库读取资源 -->
 		<property name="realm" ref="jdbcAuthenticationRealm" />
 		<!-- cacheManager,集合spring缓存工厂 -->
 		<property name="cacheManager" ref="cacheManager" />
+		<!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+		<property name="sessionManager" ref="sessionManager" />
 	</bean>
 	
 	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->

@@ -80,8 +80,11 @@
     </cache>
     
      <!-- shiro认证的缓存名称 -->
-    <cache name="shiroAuthenticationCache" maxElementsInMemory="10000" eternal="true" memoryStoreEvictionPolicy="LRU">
+    <cache name="shiroAuthenticationCache" maxElementsInMemory="10000" eternal="false" memoryStoreEvictionPolicy="LRU">
     	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=true,replicatePuts=false,replicateUpdatesViaCopy=false"/> -->
     </cache>
-     
+    
+    <cache name="shiroActiveSessionCache" maxElementsInMemory="10000" eternal="false" timeToLiveSeconds="1200" memoryStoreEvictionPolicy="LRU">
+    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=true,replicatePuts=false,replicateUpdatesViaCopy=false"/> -->
+    </cache>
 </ehcache>
