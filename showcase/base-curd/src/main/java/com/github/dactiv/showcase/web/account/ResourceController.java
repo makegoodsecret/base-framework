@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -73,7 +74,7 @@ public class ResourceController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新资源")
-	public String save(Resource entity,
+	public String save(@ModelAttribute("entity") Resource entity,
 					   String parentId,
 					   RedirectAttributes redirectAttributes) {
 		
@@ -99,20 +100,9 @@ public class ResourceController {
 	 * @return {@link Resource}
 	 */
 	@RequestMapping("read")
-	public Resource read(String id,Model model) {
-		
+	public void read(String id, Model model) {
 		model.addAttribute("resourceType", SystemVariableUtils.getVariables(ResourceType.class));
-		Resource entity = new Resource();
-		
-		if (StringUtils.isEmpty(id)) {
-			model.addAttribute("resourcesList", accountManager.getResources());
-			entity.setSort(accountManager.getResourceCount() + 1);
-		} else {
-			entity = accountManager.getResource(id);
-			model.addAttribute("resourcesList", accountManager.getResources(id));
-		}
-		
-		return entity;
+		model.addAttribute("resourcesList", accountManager.getResources(id));
 	}
 	
 	/**
@@ -129,6 +119,25 @@ public class ResourceController {
 		accountManager.deleteResources(ids);
 		redirectAttributes.addFlashAttribute("success", "删除" + ids.size() + "条信息成功");
 		return "redirect:/account/resource/view";
+	}
+	
+	/**
+	 * 绑定实体数据，如果存在id时获取后从数据库获取记录，进入到相对的C后在将数据库获取的记录填充到相应的参数中
+	 * 
+	 * @param id 主键ID
+	 * 
+	 */
+	@ModelAttribute("entity")
+	public Resource bindingModel(String id) {
+
+		Resource resource = new Resource();
+		if (StringUtils.isNotEmpty(id)) {
+			resource = accountManager.getResource(id);
+		} else {
+			resource.setSort(accountManager.getResourceCount() + 1);
+		}
+
+		return resource;
 	}
 	
 }

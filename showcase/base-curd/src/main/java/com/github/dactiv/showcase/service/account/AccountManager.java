@@ -6,11 +6,16 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
-import com.github.dactiv.orm.core.RestrictionNames;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
@@ -21,10 +26,6 @@ import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.entity.account.Resource;
 import com.github.dactiv.showcase.entity.account.User;
 import com.github.dactiv.showcase.service.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 账户管理业务逻辑
@@ -231,12 +232,13 @@ public class AccountManager {
 	 * @return List
 	 */
 	public List<Resource> getResources(String... ignoreIdValue) {
+		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
 		
-		if(ArrayUtils.isNotEmpty(ignoreIdValue)) {
-			return resourceDao.findByProperty("id", ignoreIdValue, RestrictionNames.NIN);
+		if (ArrayUtils.isNotEmpty(ignoreIdValue)) {
+			filters.add(PropertyFilters.build("NES_id", StringUtils.join(ignoreIdValue,",")));
 		}
 		
-		return resourceDao.getAll();
+		return resourceDao.findByPropertyFilter(filters, Order.asc("sort"));
 	}
 	
 	/**

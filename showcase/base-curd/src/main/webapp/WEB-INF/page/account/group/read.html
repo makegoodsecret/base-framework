@@ -1,7 +1,7 @@
 <#include "*/basic/default.html"/>
 
 <#macro title>
-	编辑组${group.name!''}
+	编辑组${entity.name!''}
 </#macro>
 
 <#macro head>
@@ -33,7 +33,7 @@
 		</div>
 		<form action="${base}/account/group/save" id="save-group-form" method="post">
 		
-			<input type="hidden" name="id" value="${group.id!''}">
+			<input type="hidden" name="id" value="${entity.id!''}">
 			<input type="hidden" name="type" value="03">
 			
 			<div class="panel-body">
@@ -42,14 +42,14 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">组名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${group.name!''}">
+							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="state">状态:</label>
 							<select class="form-control required" name="state" id="state">
 								<option value="">请选择...</option>
 				           		<#list states as d>
-					           		<option value="${d.value}" <#if group.state == d.readValue >selected="selected"</#if> >
+					           		<option value="${d.value}" <#if entity.state == d.readValue >selected="selected"</#if> >
 										${d.name}
 					                </option>
 				           		</#list>
@@ -62,11 +62,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="value">拦截值:</label>
-							<input type="text" placeholder="用于shiro授权时要拦截的uri" class="form-control" id="value" name="value" value="${group.value!''}">
+							<input type="text" placeholder="用于shiro授权时要拦截的uri" class="form-control" id="value" name="value" value="${entity.value!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="role">访问允许role:</label>
-							<input type="text" placeholder="用于shiro对拦截的值role" class="form-control" id="role" name="role" value="${group.role!''}">
+							<input type="text" placeholder="用于shiro对拦截的值role" class="form-control" id="role" name="role" value="${entity.role!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -78,7 +78,7 @@
 							<select class="form-control" name="parentId" id="parentId">
 								<option value="">请选择...</option>
 				                <#list groupsList as gl>
-				                	<option value="${gl.id}" <#if group.parentId==gl.id> selected="selected" </#if> >${gl.name}</option>
+				                	<option value="${gl.id}" <#if entity.parentId==gl.id> selected="selected" </#if> >${gl.name}</option>
 				                </#list>
 				           </select>
 						</div>
@@ -121,7 +121,7 @@
 									            <tr>
 									            	<td>
 									            		<#assign isSelected = false />
-									                	<#list group.resourcesList as erl>
+									                	<#list entity.resourcesList as erl>
 									                		<#if erl.id == rl.id>
 									                			<#assign isSelected = true />
 									                			<#break />
@@ -156,7 +156,7 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<label for=""remark"">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${group.remark!''}</textarea>
+							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 					</div>
 				</div>

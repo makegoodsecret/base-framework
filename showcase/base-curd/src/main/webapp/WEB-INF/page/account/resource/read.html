@@ -1,7 +1,7 @@
 <#include "*/basic/default.html"/>
 
 <#macro title>
-	编辑资源${resource.name!''}
+	编辑资源${entity.name!''}
 </#macro>
 
 <#macro body>
@@ -18,7 +18,7 @@
 		</div>
 		<form action="${base}/account/resource/save" id="save-resource-form" method="post">
 		
-			<input type="hidden" name="id" value="${resource.id!''}">
+			<input type="hidden" name="id" value="${entity.id!''}">
 			
 			<div class="panel-body">
 			
@@ -26,14 +26,14 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">资源名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${resource.name!''}">
+							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="type">资源类型:</label>
 							<select class="form-control required" name="type" id="type">
 								<option value="">请选择...</option>
 				           		<#list resourceType as rt>
-					           		<option value="${rt.value}" <#if resource.type?has_content && resource.type == rt.value >selected="selected"</#if> >
+					           		<option value="${rt.value}" <#if entity.type?has_content && entity.type == rt.value >selected="selected"</#if> >
 										${rt.name}
 					                </option>
 				           		</#list>
@@ -46,11 +46,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">拦截uri:</label>
-							<input type="text" class="form-control" placeholder="用于shiro授权时要拦截的uri" id="value" name="value" value="${resource.value!''}">
+							<input type="text" class="form-control" placeholder="用于shiro授权时要拦截的uri" id="value" name="value" value="${entity.value!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="permission">访问允许:</label>
-							<input type="text" class="form-control" placeholder="用于shiro对拦截的值promission" id="permission" name="permission" value="${resource.permission!''}">
+							<input type="text" class="form-control" placeholder="用于shiro对拦截的值promission" id="permission" name="permission" value="${entity.permission!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -59,11 +59,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="sort">顺序值:</label>
-							<input type="text" class="form-control required" id="sort" name="sort" value="${resource.sort!''}">
+							<input type="text" class="form-control required" id="sort" name="sort" value="${entity.sort!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="icon">图标cls:</label>
-							<input type="text" class="form-control" id="icon" name="icon" value="${resource.icon!''}">
+							<input type="text" class="form-control" id="icon" name="icon" value="${entity.icon!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -75,7 +75,7 @@
 							<select class="form-control" name="parentId" id="parentId">
 								<option value="">请选择...</option>
 				                <#list resourcesList as rl>
-				                	<option value="${rl.id}" <#if resource.parentId==rl.id> selected="selected" </#if> >${rl.name}</option>
+				                	<option value="${rl.id}" <#if entity.parentId==rl.id> selected="selected" </#if> >${rl.name}</option>
 				                </#list>
 				           </select>
 						</div>
@@ -86,7 +86,7 @@
 		   			<div class="row">
 		    			<div class="col-xs-12">
 							<label for=""remark"">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${resource.remark!''}</textarea>
+							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 		   			</div>
 	   			</div>

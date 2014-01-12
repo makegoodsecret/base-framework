@@ -50,7 +50,8 @@ public class SystemCommonController {
 	/**
 	 * 空头像图片文件
 	 */
-	public final String EMPTY_PORTRAIT_PATH = "\\resource\\image\\empty.png";
+	@Value("${empty.portrait.path}")
+	private String emptyPortraitPath;
 	
 	//上传文件存放的真实路径
 	@Value("${file.upload.path}")
@@ -202,7 +203,7 @@ public class SystemCommonController {
 		
 		//如果头像为空，设置默认空头像
 		if (StringUtils.isEmpty(portrait)) {
-			portrait = SpringMvcHolder.getRealPath("") + EMPTY_PORTRAIT_PATH;
+			portrait = SpringMvcHolder.getRealPath("/") + emptyPortraitPath;
 		}
 		
 		File f = new File(portrait);
