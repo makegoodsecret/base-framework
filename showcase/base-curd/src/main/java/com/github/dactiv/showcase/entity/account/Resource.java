@@ -15,12 +15,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.entity.IdEntity;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -86,6 +90,8 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=16)
 	@Column(length=32,nullable=false,unique=true)
 	public String getName() {
 		return name;
@@ -105,6 +111,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=128)
 	@Column(length=256)
 	public String getValue() {
 		return value;
@@ -144,6 +151,8 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return Integer
 	 */
+	@Min(0)
+	@NotNull
 	@Column(nullable=false)
 	public Long getSort() {
 		return sort;
@@ -162,8 +171,10 @@ public class Resource extends IdEntity{
 	/**
 	 * 获取当前资源是否包含叶子节点,如果是返回ture，否则返回false
 	 * 
-	 * @return boolean
+	 * @return Boolean
 	 */
+	@NotNull
+	@Column(nullable=false)
 	public Boolean getLeaf() {
 		return this.leaf;
 	}
@@ -202,6 +213,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=256)
 	@Column(length=512)
 	public String getRemark() {
 		return remark;
@@ -220,6 +232,8 @@ public class Resource extends IdEntity{
 	 * 获取资源类型
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=2)
 	@Column(nullable=false,length=2)
 	public String getType() {
 		return type;
@@ -280,6 +294,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String 
 	 */
+	@Length(max=32)
 	@Column(length=64)
 	public String getPermission() {
 		return permission;
@@ -298,6 +313,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=16)
 	@Column(length=32)
 	public String getIcon() {
 		return icon;

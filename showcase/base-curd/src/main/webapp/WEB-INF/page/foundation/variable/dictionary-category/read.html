@@ -1,7 +1,7 @@
 <#include "*/basic/default.html"/>
 
 <#macro title>
-	编辑字典类型${dictionaryCategory.name!''}
+	编辑字典类型${entity.name!''}
 </#macro>
 
 <#macro body>
@@ -18,7 +18,7 @@
 		</div>
 		<form action="${base}/foundation/variable/dictionary-category/save" id="save-dictionary-category-form" method="post">
 		
-			<input type="hidden" name="id" value="${dictionaryCategory.id!''}">
+			<input type="hidden" name="id" value="${entity.id!''}">
 			
 			<div class="panel-body">
 			
@@ -26,11 +26,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">类别名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${dictionaryCategory.name!''}">
+							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="code">类别代码:</label>
-							<input type="text" class="form-control required" id="code" name="code" value="${dictionaryCategory.code!''}">
+							<input type="text" class="form-control required" id="code" name="code" value="${entity.code!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -42,7 +42,7 @@
 							<select class="form-control" height="150" search="true" name="parentId" id="parentId">
 								<option value="">请选择...</option>
 				                <#list categoriesList as cl>
-				                	<option value="${cl.id}" <#if dictionaryCategory.parentId==cl.id> selected="selected" </#if> >${cl.name}</option>
+				                	<option value="${cl.id}" <#if entity.parentId==cl.id> selected="selected" </#if> >${cl.name}</option>
 				                </#list>
 				           </select>
 						</div>
@@ -53,7 +53,7 @@
 		   			<div class="row">
 		    			<div class="col-xs-12">
 							<label for="sort">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${dictionaryCategory.remark!''}</textarea>
+							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 		   			</div>
 	   			</div>

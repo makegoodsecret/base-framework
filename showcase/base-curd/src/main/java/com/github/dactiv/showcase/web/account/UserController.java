@@ -3,11 +3,13 @@ package com.github.dactiv.showcase.web.account;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -74,7 +76,7 @@ public class UserController {
 	 */
 	@RequestMapping("insert")
 	@OperatingAudit(function="创建用户")
-	public String insert(User entity,
+	public String insert(@Valid User entity,
 						 @RequestParam(required=false)List<String> groupId,
 						 RedirectAttributes redirectAttributes) {
 		
@@ -113,7 +115,7 @@ public class UserController {
 	 */
 	@RequestMapping(value="update")
 	@OperatingAudit(function="更新用户")
-	public String update(User entity, 
+	public String update(@ModelAttribute("entity") @Valid User entity, 
 						 @RequestParam(required=false)List<String> groupId,
 						 RedirectAttributes redirectAttributes) {
 
@@ -153,13 +155,28 @@ public class UserController {
 		model.addAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup));
 		
 		if (StringUtils.isEmpty(id)) {
-			model.addAttribute("entity", new User());
 			return "account/user/create";
 		} else {
-			model.addAttribute("entity", accountManager.getUser(id));
 			return "account/user/read";
 		}
 		
 	}
 	
+	/**
+	 * 绑定实体数据，如果存在id时获取后从数据库获取记录，进入到相对的C后在将数据库获取的记录填充到相应的参数中
+	 * 
+	 * @param id 主键ID
+	 * 
+	 */
+	@ModelAttribute("entity")
+	public User bindingModel(String id) {
+
+		User user = new User();
+		
+		if (StringUtils.isNotEmpty(id)) {
+			user = accountManager.getUser(id);
+		}
+
+		return user;
+	}
 }

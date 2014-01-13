@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
@@ -21,6 +24,8 @@ import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.IdEntity;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * 组实体
@@ -54,7 +59,7 @@ public class Group extends IdEntity{
 	//备注
 	private String remark;
 	//状态
-	private int state;
+	private Integer state;
 	//拥有资源
 	private List<Resource> resourcesList = new ArrayList<Resource>();
 	//shiro role 字符串
@@ -74,6 +79,8 @@ public class Group extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=16)
 	@Column(length=32,nullable=false,unique=true)
 	public String getName() {
 		return name;
@@ -173,6 +180,8 @@ public class Group extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=2)
 	@Column(nullable=false,length=2)
 	public String getType() {
 		return type;
@@ -194,6 +203,7 @@ public class Group extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=256)
 	@Column(length=512)
 	public String getRemark() {
 		return remark;
@@ -212,8 +222,11 @@ public class Group extends IdEntity{
 	 * 获取组状态
 	 * @return
 	 */
+	@Min(0)
+	@NotNull
+	@Max(Integer.MAX_VALUE)
 	@Column(nullable=false,length = 1)
-	public int getState() {
+	public Integer getState() {
 		return state;
 	}
 
@@ -221,7 +234,7 @@ public class Group extends IdEntity{
 	 * 设置组状态
 	 * @param state
 	 */
-	public void setState(int state) {
+	public void setState(Integer state) {
 		this.state = state;
 	}
 

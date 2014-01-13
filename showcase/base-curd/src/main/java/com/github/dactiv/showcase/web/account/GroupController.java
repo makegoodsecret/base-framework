@@ -109,7 +109,7 @@ public class GroupController {
 	 * 
 	 * @return {@link Group}
 	 */
-	@RequestMapping("read")
+	@RequestMapping(value="read")
 	public void read(String id, Model model) {
 		
 		model.addAttribute("resourcesList", accountManager.getResources());

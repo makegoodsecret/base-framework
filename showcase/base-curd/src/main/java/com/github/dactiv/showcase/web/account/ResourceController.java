@@ -32,7 +32,7 @@ import com.github.dactiv.showcase.service.account.AccountManager;
  */
 @Controller
 @OperatingAudit("资源管理")
-@RequestMapping("/account/resource")
+@RequestMapping(value="/account/resource")
 public class ResourceController {
 
 	@Autowired

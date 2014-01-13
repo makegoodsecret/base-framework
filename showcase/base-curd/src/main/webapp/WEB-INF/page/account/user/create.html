@@ -38,11 +38,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="username">登录帐号:</label>
-							<input type="text" class="form-control required" id="username" remote="${base}/account/user/is-username-unique" name="username">
+							<input type="text" class="form-control required" maxlength="16" minlength="5" id="username" remote="${base}/account/user/is-username-unique" name="username">
 						</div>
 						<div class="col-xs-6">
 							<label for="realname">真实姓名:</label>
-							<input type="text" class="form-control required" id="realname" name="realname">
+							<input type="text" class="form-control required" maxlength="20" minlength="2" id="realname" name="realname">
 						</div>
 		   			</div>
 	   			</div>
@@ -51,11 +51,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="password">登录密码:</label>
-							<input type="password" class="form-control required" id="password" name="password">
+							<input type="password" class="form-control required" maxlength="32" minlength="6" id="password" name="password">
 						</div>
 						<div class="col-xs-6">
 							<label for="confirmPassword">确认密码:</label>
-							<input type="password" class="form-control required" equalTo="#password" id="confirmPassword" name="confirmPassword">
+							<input type="password" class="form-control required" maxlength="32" minlength="6" equalTo="#password" id="confirmPassword" name="confirmPassword">
 						</div>
 		   			</div>
 	   			</div>
@@ -73,7 +73,7 @@
 						</div>
 						<div class="col-xs-6">
 							<label for="email">电子邮件:</label>
-							<input type="text" class="form-control email" id="email" name="email">
+							<input type="text" class="form-control email" id="email" maxlength="64" name="email">
 						</div>
 		   			</div>
 	   			</div>

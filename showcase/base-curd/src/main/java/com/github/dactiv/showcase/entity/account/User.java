@@ -11,12 +11,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.IdEntity;
-import org.hibernate.annotations.NamedQuery;
 
 /**
  * 用户实体
@@ -61,6 +68,8 @@ public class User extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Size(min=5,max=16)
 	@Column(length=32,unique=true,nullable=false,updatable=false)
 	public String getUsername() {
 		return username;
@@ -80,6 +89,8 @@ public class User extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Size(min=6,max=32)
 	@Column(nullable=false,length=32,updatable=false)
 	public String getPassword() {
 		return password;
@@ -99,6 +110,8 @@ public class User extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Size(min=2,max=16)
 	@Column(length=64,nullable=false)
 	public String getRealname() {
 		return realname;
@@ -119,6 +132,8 @@ public class User extends IdEntity{
 	 * 
 	 * @return {@link State}
 	 */
+	@NotNull
+	@Max(Integer.MAX_VALUE)
 	@Column(nullable=false, length = 1)
 	public Integer getState() {
 		return state;
@@ -137,6 +152,8 @@ public class User extends IdEntity{
 	 * 获取邮件
 	 * @return String
 	 */
+	@Email
+	@Length(max=64)
 	@Column(length=128)
 	public String getEmail() {
 		return email;

@@ -36,8 +36,8 @@ public class TestUserManagerFunction extends FunctionTestCaseSupport{
 		//填写表单
 		s.type(By.xpath("//form[@id='create-user-form']//input[@name='username']"), "admin");
 		s.type(By.xpath("//form[@id='create-user-form']//input[@name='realname']"), "maurice.chen");
-		s.type(By.xpath("//form[@id='create-user-form']//input[@name='password']"), "admin");
-		s.type(By.xpath("//form[@id='create-user-form']//input[@name='confirmPassword']"), "admin");
+		s.type(By.xpath("//form[@id='create-user-form']//input[@name='password']"), "123456");
+		s.type(By.xpath("//form[@id='create-user-form']//input[@name='confirmPassword']"), "123456");
 		s.getSelect(By.xpath("//form[@id='create-user-form']//select[@name='state']")).selectByValue("1");
 		s.type(By.xpath("//form[@id='create-user-form']//input[@name='email']"), "es.chenxiaobo@gmail.com");
 		

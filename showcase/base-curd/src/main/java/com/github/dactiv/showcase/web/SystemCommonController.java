@@ -12,14 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.github.dactiv.common.bundle.BeanResourceBundle;
-import com.github.dactiv.common.spring.mvc.SpringMvcHolder;
-import com.github.dactiv.common.utils.CaptchaUtils;
-import com.github.dactiv.showcase.common.SystemVariableUtils;
-import com.github.dactiv.showcase.common.annotation.OperatingAudit;
-import com.github.dactiv.showcase.entity.account.User;
-import com.github.dactiv.showcase.service.account.AccountManager;
-import com.github.dactiv.showcase.service.account.CaptchaAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.dactiv.common.bundle.BeanResourceBundle;
+import com.github.dactiv.common.spring.mvc.SpringMvcHolder;
+import com.github.dactiv.common.utils.CaptchaUtils;
+import com.github.dactiv.showcase.common.SystemVariableUtils;
+import com.github.dactiv.showcase.common.annotation.OperatingAudit;
+import com.github.dactiv.showcase.entity.account.User;
+import com.github.dactiv.showcase.service.account.AccountManager;
+import com.github.dactiv.showcase.service.account.CaptchaAuthenticationFilter;
 import com.google.common.collect.Maps;
 
 
@@ -174,7 +174,7 @@ public class SystemCommonController {
 	 * 
 	 * @throws IOException 
 	 */
-	@RequestMapping("/get-captcha")
+	@RequestMapping(value="/get-captcha")
 	public ResponseEntity<byte[]> getCaptcha(HttpSession session) throws IOException {
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -211,13 +211,5 @@ public class SystemCommonController {
 		byte[] b = FileUtils.readFileToByteArray(f);
 		
 		return new ResponseEntity<byte[]>(b, HttpStatus.OK);
-	}
-	
-	/**
-	 * 没有权限C
-	 */
-	@RequestMapping("/unauthorized")
-	public String unauthorized() {
-		return "exception/unauthorized";
 	}
 }
