@@ -1,5 +1,5 @@
 @echo off
-echo [INFO] Install jar to local repository.
+echo [INFO] deploy jar to remote repository.
 
 cd %~dp0
 cd ..

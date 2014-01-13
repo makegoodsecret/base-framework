@@ -1,5 +1,5 @@
 @echo off
-echo [INFO] create project to idea
+echo [INFO] create idea project
 
 cd %~dp0
 cd ..

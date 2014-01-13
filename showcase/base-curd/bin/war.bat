@@ -1,5 +1,5 @@
 @echo off
-echo [INFO] Use maven jetty-plugin run the project.
+echo [INFO] Use maven war-plugin exprot war.
 
 cd %~dp0
 cd ..

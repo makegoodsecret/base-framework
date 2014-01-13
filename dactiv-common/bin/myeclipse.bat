@@ -1,6 +1,6 @@
 
 @echo off
-echo [INFO] create project to myeclipse
+echo [INFO] create myeclipse project
 
 cd %~dp0
 cd ..
