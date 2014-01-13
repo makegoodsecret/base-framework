@@ -80,7 +80,7 @@ public class Group extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Length(max=16)
+	@Length(max=32)
 	@Column(length=32,nullable=false,unique=true)
 	public String getName() {
 		return name;
@@ -181,7 +181,7 @@ public class Group extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Length(max=2)
+	@Length(min=2, max=2)
 	@Column(nullable=false,length=2)
 	public String getType() {
 		return type;
@@ -203,7 +203,7 @@ public class Group extends IdEntity{
 	 * 
 	 * @return String
 	 */
-	@Length(max=256)
+	@Length(max=512)
 	@Column(length=512)
 	public String getRemark() {
 		return remark;
@@ -222,9 +222,9 @@ public class Group extends IdEntity{
 	 * 获取组状态
 	 * @return
 	 */
-	@Min(0)
+	@Min(1)
+	@Max(3)
 	@NotNull
-	@Max(Integer.MAX_VALUE)
 	@Column(nullable=false,length = 1)
 	public Integer getState() {
 		return state;
@@ -263,6 +263,7 @@ public class Group extends IdEntity{
 	 * 获取shiro role字符串
 	 * @return String
 	 */
+	@Length(max=64)
 	@Column(length=64)
 	public String getRole() {
 		return role;
@@ -280,6 +281,7 @@ public class Group extends IdEntity{
 	 * 获取shiro role连定义的值
 	 * @return String
 	 */
+	@Length(max=256)
 	@Column(length=256)
 	public String getValue() {
 		return value;

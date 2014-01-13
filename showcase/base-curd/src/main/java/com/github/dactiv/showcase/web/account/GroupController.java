@@ -3,6 +3,7 @@ package com.github.dactiv.showcase.web.account;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class GroupController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新组")
-	public String save(@ModelAttribute("entity") Group entity,
+	public String save(@ModelAttribute("entity") @Valid Group entity,
 					   HttpServletRequest request,
 					   RedirectAttributes redirectAttributes) {
 		

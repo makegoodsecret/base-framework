@@ -12,8 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Email;
@@ -69,7 +69,7 @@ public class User extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Size(min=5,max=16)
+	@Length(min=6,max=32)
 	@Column(length=32,unique=true,nullable=false,updatable=false)
 	public String getUsername() {
 		return username;
@@ -90,7 +90,7 @@ public class User extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Size(min=6,max=32)
+	@Length(min=6,max=32)
 	@Column(nullable=false,length=32,updatable=false)
 	public String getPassword() {
 		return password;
@@ -111,7 +111,7 @@ public class User extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Size(min=2,max=16)
+	@Length(min=6,max=64)
 	@Column(length=64,nullable=false)
 	public String getRealname() {
 		return realname;
@@ -132,9 +132,10 @@ public class User extends IdEntity{
 	 * 
 	 * @return {@link State}
 	 */
+	@Min(1)
+	@Max(3)
 	@NotNull
-	@Max(Integer.MAX_VALUE)
-	@Column(nullable=false, length = 1)
+	@Column(nullable = false, length = 1)
 	public Integer getState() {
 		return state;
 	}
@@ -153,7 +154,7 @@ public class User extends IdEntity{
 	 * @return String
 	 */
 	@Email
-	@Length(max=64)
+	@Length(max=128)
 	@Column(length=128)
 	public String getEmail() {
 		return email;
@@ -212,6 +213,7 @@ public class User extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=256)
 	@Column(length=256)
 	public String getPortrait() {
 		return portrait;

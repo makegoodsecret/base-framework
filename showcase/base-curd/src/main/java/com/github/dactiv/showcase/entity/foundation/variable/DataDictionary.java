@@ -8,6 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.github.dactiv.common.type.FieldType;
 import com.github.dactiv.common.utils.ConvertUtils;
 import com.github.dactiv.showcase.entity.IdEntity;
@@ -51,6 +54,8 @@ public class DataDictionary extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=256)
 	@Column(length=256,nullable=false)
 	public String getName() {
 		return name;
@@ -69,6 +74,8 @@ public class DataDictionary extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=32)
 	@Column(length=32,nullable=false)
 	public String getValue() {
 		return value;
@@ -88,6 +95,8 @@ public class DataDictionary extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=1)
 	@Column(length=1,nullable=false)
 	public String getType() {
 		return type;
@@ -107,6 +116,7 @@ public class DataDictionary extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=512)
 	@Column(length=512)
 	public String getRemark() {
 		return remark;

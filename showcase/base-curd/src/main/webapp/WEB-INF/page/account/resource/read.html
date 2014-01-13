@@ -26,14 +26,14 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">资源名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
+							<input type="text" class="form-control required" id="name" maxlength="32" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="type">资源类型:</label>
 							<select class="form-control required" name="type" id="type">
 								<option value="">请选择...</option>
 				           		<#list resourceType as rt>
-					           		<option value="${rt.value}" <#if entity.type?has_content && entity.type == rt.value >selected="selected"</#if> >
+					           		<option value="${rt.value}" <#if entity.type?? && entity.type == rt.value >selected="selected"</#if> >
 										${rt.name}
 					                </option>
 				           		</#list>
@@ -46,11 +46,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">拦截uri:</label>
-							<input type="text" class="form-control" placeholder="用于shiro授权时要拦截的uri" id="value" name="value" value="${entity.value!''}">
+							<input type="text" class="form-control" maxlength="256" placeholder="用于shiro授权时要拦截的uri" id="value" name="value" value="${entity.value!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="permission">访问允许:</label>
-							<input type="text" class="form-control" placeholder="用于shiro对拦截的值promission" id="permission" name="permission" value="${entity.permission!''}">
+							<input type="text" class="form-control" maxlength="64" placeholder="用于shiro对拦截的值promission" id="permission" name="permission" value="${entity.permission!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -59,11 +59,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="sort">顺序值:</label>
-							<input type="text" class="form-control required" id="sort" name="sort" value="${entity.sort!''}">
+							<input type="text" class="form-control required number" max="9999" min="0" id="sort" name="sort" value="${entity.sort!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="icon">图标cls:</label>
-							<input type="text" class="form-control" id="icon" name="icon" value="${entity.icon!''}">
+							<input type="text" class="form-control" id="icon" maxlength="32" name="icon" value="${entity.icon!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -86,7 +86,7 @@
 		   			<div class="row">
 		    			<div class="col-xs-12">
 							<label for=""remark"">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
+							<textarea rows="3" class="form-control" maxlength="512" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 		   			</div>
 	   			</div>

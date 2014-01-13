@@ -3,6 +3,7 @@ package com.github.dactiv.showcase.web.foundation.variable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class DataDictionaryController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新数据字典")
-	public String save(DataDictionary entity,
+	public String save(@Valid DataDictionary entity,
 					   String categoryId,
 					   RedirectAttributes redirectAttributes) {
 		

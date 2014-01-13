@@ -43,7 +43,7 @@
 						</div>
 						<div class="col-xs-6">
 							<label for="realname">真实姓名:</label>
-							<input type="text" class="form-control required" id="realname" name="realname" value="${entity.realname!''}">
+							<input type="text" class="form-control required" id="realname" maxlength="64" minlength="6" name="realname" value="${entity.realname!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -61,7 +61,7 @@
 						</div>
 						<div class="col-xs-6">
 							<label for="email">电子邮件:</label>
-							<input type="text" class="form-control email" id="email" name="email" value="${entity.email!''}">
+							<input type="text" class="form-control email" id="email" name="email" maxlength="128" value="${entity.email!''}">
 						</div>
 		   			</div>
 	   			</div>

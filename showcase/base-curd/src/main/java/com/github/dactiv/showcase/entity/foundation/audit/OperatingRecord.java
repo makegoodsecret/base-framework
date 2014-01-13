@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.OperatingState;
@@ -60,6 +66,7 @@ public class OperatingRecord extends IdEntity{
 	 * @return String
 	 */
 	@Column(length=32)
+	@Length(min=5,max=32)
 	public String getUsername() {
 		return username;
 	}
@@ -79,6 +86,7 @@ public class OperatingRecord extends IdEntity{
 	 * @return String
 	 */
 	@Column(length=32)
+	@Length(min=32,max=32)
 	public String getFkUserId() {
 		return fkUserId;
 	}
@@ -97,6 +105,7 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return Date
 	 */
+	@NotNull
 	@Column(nullable=false)
 	public Date getStartDate() {
 		return startDate;
@@ -116,6 +125,7 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return Date
 	 */
+	@NotNull
 	@Column(nullable=false)
 	public Date getEndDate() {
 		return endDate;
@@ -135,6 +145,8 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotNull
+	@Length(max=412)
 	@Column(length=512,nullable=false)
 	public String getOperatingTarget() {
 		return operatingTarget;
@@ -154,6 +166,8 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=64)
 	@Column(length=64,nullable=false)
 	public String getIp() {
 		return ip;
@@ -173,6 +187,8 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@NotEmpty
+	@Length(max=256)
 	@Column(length=256,nullable=false)
 	public String getMethod() {
 		return method;
@@ -192,6 +208,9 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return Integer
 	 */
+	@Min(1)
+	@Max(2)
+	@NotNull
 	@Column(nullable=false)
 	public Integer getState() {
 		return state;
@@ -210,6 +229,7 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=128)
 	@Column(length=128)
 	public String getModule() {
 		return module;
@@ -229,6 +249,7 @@ public class OperatingRecord extends IdEntity{
 	 * 
 	 * @return String
 	 */
+	@Length(max=128)
 	@Column(length=128)
 	public String getFunction() {
 		return function;

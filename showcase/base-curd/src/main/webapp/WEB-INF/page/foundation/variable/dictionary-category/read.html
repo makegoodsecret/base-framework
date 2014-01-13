@@ -26,11 +26,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">类别名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
+							<input type="text" class="form-control required" maxlength="256" id="name" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="code">类别代码:</label>
-							<input type="text" class="form-control required" id="code" name="code" value="${entity.code!''}">
+							<input type="text" class="form-control required" maxlength="128" id="code" name="code" value="${entity.code!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -53,7 +53,7 @@
 		   			<div class="row">
 		    			<div class="col-xs-12">
 							<label for="sort">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
+							<textarea rows="3" maxlength="512" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 		   			</div>
 	   			</div>

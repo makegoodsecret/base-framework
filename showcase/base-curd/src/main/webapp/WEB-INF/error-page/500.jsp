@@ -28,7 +28,7 @@
 			
 			<div class="panel-body">
 		        <div class="server-exception"> 
-		    		<p><center><h1><span class="glyphicon glyphicon-remove-circle"></span></h1></p></center>
+		    		<p><center><h1><span class="glyphicon glyphicon-warning-sign"></span></h1></p></center>
 		    		<h3>操作失败</h3>
 		    		<hr>
 			   		<p>服务器忙碌，请稍后再试。</p> 

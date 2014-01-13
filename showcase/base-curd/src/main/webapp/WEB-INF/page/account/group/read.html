@@ -42,15 +42,15 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="name">组名称:</label>
-							<input type="text" class="form-control required" id="name" name="name" value="${entity.name!''}">
+							<input type="text" class="form-control required" maxlength="32" id="name" name="name" value="${entity.name!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="state">状态:</label>
 							<select class="form-control required" name="state" id="state">
 								<option value="">请选择...</option>
-				           		<#list states as d>
-					           		<option value="${d.value}" <#if entity.state == d.readValue >selected="selected"</#if> >
-										${d.name}
+				           		<#list states as s>
+					           		<option value="${s.value}" <#if entity.state?? && entity.state == s.readValue >selected="selected"</#if> >
+										${s.name}
 					                </option>
 				           		</#list>
 				           </select>
@@ -62,11 +62,11 @@
 		   			<div class="row">
 		    			<div class="col-xs-6">
 							<label for="value">拦截值:</label>
-							<input type="text" placeholder="用于shiro授权时要拦截的uri" class="form-control" id="value" name="value" value="${entity.value!''}">
+							<input type="text" placeholder="用于shiro授权时要拦截的uri" maxlength="256" class="form-control" id="value" name="value" value="${entity.value!''}">
 						</div>
 						<div class="col-xs-6">
 							<label for="role">访问允许role:</label>
-							<input type="text" placeholder="用于shiro对拦截的值role" class="form-control" id="role" name="role" value="${entity.role!''}">
+							<input type="text" placeholder="用于shiro对拦截的值role" maxlength="64" class="form-control" id="role" name="role" value="${entity.role!''}">
 						</div>
 		   			</div>
 	   			</div>
@@ -156,7 +156,7 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<label for=""remark"">备注:</label>
-							<textarea rows="3" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
+							<textarea rows="3" maxlength="512" class="form-control" name="remark" id=""remark"">${entity.remark!''}</textarea>
 						</div>
 					</div>
 				</div>

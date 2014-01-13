@@ -91,7 +91,7 @@ public class Resource extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Length(max=16)
+	@Length(max=32)
 	@Column(length=32,nullable=false,unique=true)
 	public String getName() {
 		return name;
@@ -111,7 +111,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
-	@Length(max=128)
+	@Length(max=256)
 	@Column(length=256)
 	public String getValue() {
 		return value;
@@ -173,7 +173,6 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return Boolean
 	 */
-	@NotNull
 	@Column(nullable=false)
 	public Boolean getLeaf() {
 		return this.leaf;
@@ -213,7 +212,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
-	@Length(max=256)
+	@Length(max=512)
 	@Column(length=512)
 	public String getRemark() {
 		return remark;
@@ -233,7 +232,7 @@ public class Resource extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Length(max=2)
+	@Length(min=2,max=2)
 	@Column(nullable=false,length=2)
 	public String getType() {
 		return type;
@@ -294,7 +293,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String 
 	 */
-	@Length(max=32)
+	@Length(max=64)
 	@Column(length=64)
 	public String getPermission() {
 		return permission;
@@ -313,7 +312,7 @@ public class Resource extends IdEntity{
 	 * 
 	 * @return String
 	 */
-	@Length(max=16)
+	@Length(max=32)
 	@Column(length=32)
 	public String getIcon() {
 		return icon;

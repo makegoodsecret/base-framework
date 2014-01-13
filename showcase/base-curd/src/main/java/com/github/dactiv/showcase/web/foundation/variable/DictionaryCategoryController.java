@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class DictionaryCategoryController {
 	 */
 	@RequestMapping("save")
 	@OperatingAudit(function="保存或更新字典类别")
-	public String save(@ModelAttribute("entity")DictionaryCategory 
+	public String save(@ModelAttribute("entity") @Valid DictionaryCategory 
 					   entity,String parentId,
 					   RedirectAttributes redirectAttributes) {
 		
