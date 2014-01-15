@@ -13,7 +13,7 @@ create table TB_DATA_DICTIONARY (id varchar(32) not null, name varchar(256) not 
 create table TB_DICTIONARY_CATEGORY (id varchar(32) not null, code varchar(128) not null, name varchar(256) not null, remark varchar(512), fk_parent_id varchar(32), primary key (id));
 
 --创建权限表
-create table TB_GROUP (id varchar(32) not null, name varchar(32) not null, remark varchar(512), state integer not null, type varchar(2) not null, fk_parent_id varchar(32), role varchar(64), value varchar(256), primary key (id));
+create table TB_GROUP (id varchar(32) not null, name varchar(32) not null, remark varchar(512), state integer not null, type varchar(2) not null, fk_parent_id varchar(32), role varchar(64), value varchar(256), leaf boolean, primary key (id));
 create table TB_GROUP_RESOURCE (fk_resource_id varchar(32) not null, fk_group_id varchar(32) not null);
 create table TB_GROUP_USER (fk_group_id varchar(32) not null, fk_user_id varchar(32) not null);
 create table TB_RESOURCE (id varchar(32) not null, permission varchar(64), remark varchar(512), sort integer not null, name varchar(32) not null, type varchar(2) not null, value varchar(256), fk_parent_id varchar(32), icon varchar(32), leaf boolean, primary key (id));

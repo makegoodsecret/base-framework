@@ -84,15 +84,16 @@ CREATE TABLE `tb_group` (
   `fk_parent_id` varchar(32) DEFAULT NULL,
   `role` varchar(64) DEFAULT NULL,
   `value` varchar(256) DEFAULT NULL,
+  `leaf` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tb_group
 -- ----------------------------
-INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, null, null);
-INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, null, null);
-INSERT INTO `tb_group` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', '', '1', '03', null, '', '');
+INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, null, null, '0');
+INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, null, null, '0');
+INSERT INTO `tb_group` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', '', '1', '03', null, '', '', '0');
 
 -- ----------------------------
 -- Table structure for tb_group_resource

@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.common.enumeration.ValueEnum;
@@ -158,11 +159,32 @@ public class SystemVariableUtils {
 		
 		Subject subject = SecurityUtils.getSubject();
 		
-		if (subject != null && subject.getPrincipal() != null && subject.getPrincipal() instanceof SessionVariable) {
-			return (SessionVariable) subject.getPrincipal();
+		if (subject != null && subject.getPrincipals() != null) {
+			return subject.getPrincipals().oneByType(SessionVariable.class);
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * 获取shiro的session
+	 * 
+	 * @return {@link Session}
+	 */
+	public static Session getSession() {
+		return getSession(false);
+	}
+	
+	/**
+	 * 
+	 * 获取shiro的session
+	 * 
+	 * @param create true表示如果不存在，就创建，否则用现有的
+	 * 
+	 * @return {@link Session}
+	 */
+	public static Session getSession(boolean create) {
+		return SecurityUtils.getSubject().getSession(create);
 	}
 	
 	/**

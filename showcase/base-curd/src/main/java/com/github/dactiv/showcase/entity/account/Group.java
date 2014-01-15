@@ -18,14 +18,16 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.IdEntity;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * 组实体
@@ -35,8 +37,12 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Entity
 @Table(name="TB_GROUP")
-@NamedQuery(name=Group.UserGroups,
-            query="select gl from User u left join u.groupsList gl  where u.id=?1 and gl.type= '03'")
+@NamedQueries({
+		@NamedQuery(name=Group.UserGroups,
+            query="select gl from User u left join u.groupsList gl  where u.id=?1 and gl.type= '03'"),
+        @NamedQuery(name=Group.LeafTureNotAssociated,
+			query="from Group g where g.leaf = 1 and (select count(sr) from Group sr where sr.parent.id = g.id) = 0")
+})
 public class Group extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,6 +51,11 @@ public class Group extends IdEntity{
 	 * 获取用户所有组集合NamedQuery
 	 */
 	public static final String UserGroups = "userGroups";
+	
+	/**
+	 * 获取所有资源的leaf = true 并且没有子类的资源
+	 */
+	public static final String LeafTureNotAssociated = "groupLeafTureNotAssociated";
 	
 	//名称
 	private String name;
@@ -60,6 +71,8 @@ public class Group extends IdEntity{
 	private String remark;
 	//状态
 	private Integer state;
+	//是否包含叶子节点
+	private Boolean leaf;
 	//拥有资源
 	private List<Resource> resourcesList = new ArrayList<Resource>();
 	//shiro role 字符串
@@ -247,15 +260,23 @@ public class Group extends IdEntity{
 	public List<String> getMemberIds() {
 		return CollectionUtils.extractToList(this.membersList, "id");
 	}
+
+	/**
+	 * 设置当前实体是否包含子节点
+	 * 
+	 * @param leaf ture表示是,false表示不是
+	 */
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
+	}
 	
 	/**
-	 * 获取当前实体是否是为根节点,如果是返回ture，否则返回false
+	 * 获取当前实体是否包含子节点,如果是返回ture，否则返回false
 	 * 
-	 * @return boolean
+	 * @return Boolean
 	 */
-	@Transient
-	public boolean getLeaf() {
-		return this.children != null && children.size() > 0;
+	public Boolean getLeaf() {
+		return leaf;
 		
 	}
 	

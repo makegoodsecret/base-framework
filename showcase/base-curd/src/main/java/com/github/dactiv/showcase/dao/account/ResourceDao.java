@@ -37,6 +37,5 @@ public class ResourceDao extends HibernateSupportDao<Resource, String>{
 		}
 		
 	}
-
 	
 }

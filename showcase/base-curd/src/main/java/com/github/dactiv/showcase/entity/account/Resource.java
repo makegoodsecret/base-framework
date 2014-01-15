@@ -53,7 +53,7 @@ public class Resource extends IdEntity{
 	/**
 	 * 获取所有资源的leaf = true 并且没有子类的资源
 	 */
-	public static final String LeafTureNotAssociated = "leafTureNotAssociated";
+	public static final String LeafTureNotAssociated = "resourceLeafTureNotAssociated";
 	
 	//名称
 	private String name;
@@ -64,7 +64,7 @@ public class Resource extends IdEntity{
 	//顺序值
 	private Long sort;
 	//是否包含叶子节点
-	private boolean leaf;
+	private Boolean leaf;
 	//子类
 	private List<Resource> children = new ArrayList<Resource>();
 	//备注
@@ -181,9 +181,9 @@ public class Resource extends IdEntity{
 	/**
 	 * 设置当前资源是否包含叶子节点,
 	 * 
-	 * @return boolean ture表示是，否则返回false
+	 * @return Boolean ture表示是，否则返回false
 	 */
-	public void setLeaf(boolean leaf) {
+	public void setLeaf(Boolean leaf) {
 		this.leaf = leaf;
 	}
 

@@ -16,6 +16,8 @@ import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Component;
 
+import com.github.dactiv.showcase.common.SystemVariableUtils;
+
 /**
  * 验证码登录认证Filter
  * 
@@ -34,6 +36,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	 * 默认在session中存储的登录次数名称
 	 */
 	private static final String DEFAULT_LOGIN_NUM_KEY_ATTRIBUTE = "loginNum";
+	
 	//验证码参数名称
     private String captchaParam = DEFAULT_CAPTCHA_PARAM;
     //在session中的存储验证码的key名称
@@ -49,7 +52,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	@Override
 	protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
 		
-		Session session = getSubject(request, response).getSession();
+		Session session = SystemVariableUtils.getSession();
 		//获取登录次数
 		Integer number = (Integer) session.getAttribute(getLoginNumKeyAttribute());
 		
@@ -175,7 +178,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	 */
 	@Override
 	protected boolean onLoginFailure(AuthenticationToken token,AuthenticationException e, ServletRequest request,ServletResponse response) {
-		Session session = getSubject(request, response).getSession(false);
+		Session session = SystemVariableUtils.getSession();
 		
 		Integer number = (Integer) session.getAttribute(getLoginNumKeyAttribute());
 		
@@ -194,7 +197,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	 */
 	@Override
 	protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
-		Session session = subject.getSession(false);
+		Session session = SystemVariableUtils.getSession();
 		
 		session.removeAttribute(getLoginNumKeyAttribute());
 

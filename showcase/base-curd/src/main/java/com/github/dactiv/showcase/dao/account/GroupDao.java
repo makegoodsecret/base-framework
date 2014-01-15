@@ -2,9 +2,10 @@ package com.github.dactiv.showcase.dao.account;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.github.dactiv.orm.core.hibernate.support.HibernateSupportDao;
 import com.github.dactiv.showcase.entity.account.Group;
-import org.springframework.stereotype.Repository;
 
 /**
  * 部门数据访问
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public class GroupDao extends HibernateSupportDao<Group, String>{
 
 	/**
-	 * 通过用户id获取所有资源
+	 * 通过用户id获取所有组
 	 * 
 	 * @param userId 用户id
 	 * 
@@ -25,5 +26,16 @@ public class GroupDao extends HibernateSupportDao<Group, String>{
 	public List<Group> getUserGorups(String userId) {
 		return findByQuery(Group.UserGroups, userId);
 	}
-
+	
+	/**
+	 * 刷新一次Group的leaf字段，如果该leaf = 1 并且该组没有子类，把该组的leaf改成0
+	 */
+	public void refreshAllLeaf() {
+		List<Group> list = findByQuery(Group.LeafTureNotAssociated);
+		for (Group entity : list) {
+			entity.setLeaf(false);
+			save(entity);
+		}
+		
+	}
 }
