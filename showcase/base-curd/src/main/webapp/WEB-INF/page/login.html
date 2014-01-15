@@ -39,7 +39,7 @@
 							<label for="password">登录密码:</label> 
 							<input type="password" class="form-control required" value="admin" name="password" id="password" >
 						</div>
-						<#if Session.showCaptcha?has_content && Session.showCaptcha == true>
+						<#if Session.loginNum?? && Session.loginNum gte 1>
 						<div class="form-group">
 							<label for="captcha">验证码:</label>
 							<div class="row">

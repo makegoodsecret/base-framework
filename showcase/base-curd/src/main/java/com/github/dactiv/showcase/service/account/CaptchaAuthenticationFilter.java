@@ -31,11 +31,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
 	
 	/**
-	 * 登录次数超出allowLoginNum时，存储在session记录是否展示验证码的key默认名称
-	 */
-	public static final String DEFAULT_SHOW_CAPTCHA_KEY_ATTRIBUTE = "showCaptcha";
-	
-	/**
 	 * 默认在session中存储的登录次数名称
 	 */
 	private static final String DEFAULT_LOGIN_NUM_KEY_ATTRIBUTE = "loginNum";
@@ -45,8 +40,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
     private String sessionCaptchaKeyAttribute = DEFAULT_CAPTCHA_PARAM;
     //在session中存储的登录次数名称
     private String loginNumKeyAttribute = DEFAULT_LOGIN_NUM_KEY_ATTRIBUTE;
-    //登录次数超出allowLoginNum时，存储在session记录是否展示验证码的key名称
-    private String sessionShowCaptchaKeyAttribute = DEFAULT_SHOW_CAPTCHA_KEY_ATTRIBUTE;
     //允许登录次数，当登录次数大于该数值时，会在页面中显示验证码
     private Integer allowLoginNum = 1;
     
@@ -146,24 +139,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	public String getCaptcha(ServletRequest request) {
 		return WebUtils.getCleanParam(request, getCaptchaParam());
 	}
-	
-	/**
-	 * 获取登录次数超出allowLoginNum时，存储在session记录是否展示验证码的key名称
-	 * 
-	 * @return String
-	 */
-	public String getSessionShowCaptchaKeyAttribute() {
-		return sessionShowCaptchaKeyAttribute;
-	}
-	
-	/**
-	 * 设置登录次数超出allowLoginNum时，存储在session记录是否展示验证码的key名称
-	 * 
-	 * @param sessionShowCaptchaKeyAttribute 是否展示验证码的key名称
-	 */
-	public void setSessionShowCaptchaKeyAttribute(String sessionShowCaptchaKeyAttribute) {
-		this.sessionShowCaptchaKeyAttribute = sessionShowCaptchaKeyAttribute;
-	}
 
 	/**
 	 * 获取允许登录次数
@@ -206,7 +181,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 		
 		//如果失败登录次数大于allowLoginNum时，展示验证码
 		if (number > getAllowLoginNum() - 1) {
-			session.setAttribute(getSessionShowCaptchaKeyAttribute(), true);
 			session.setAttribute(getLoginNumKeyAttribute(), ++number);
 		}
 		
@@ -223,7 +197,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 		Session session = subject.getSession(false);
 		
 		session.removeAttribute(getLoginNumKeyAttribute());
-		session.removeAttribute(getSessionShowCaptchaKeyAttribute());
 
 		session.setAttribute("sv", subject.getPrincipal());
 		return super.onLoginSuccess(token, subject, request, response);

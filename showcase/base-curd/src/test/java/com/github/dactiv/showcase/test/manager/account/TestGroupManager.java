@@ -9,6 +9,7 @@ import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
+import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.service.account.AccountManager;
 import com.github.dactiv.showcase.test.manager.ManagerTestCaseSupport;
@@ -55,6 +56,7 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 		entity.setRole("role[test]");
 		entity.setType(GroupType.RoleGorup.getValue());
 		entity.setValue("/**");
+		entity.setState(State.Enable.getValue());
 		
 		int before = countRowsInTable("tb_group");
 		accountManager.saveGroup(entity);

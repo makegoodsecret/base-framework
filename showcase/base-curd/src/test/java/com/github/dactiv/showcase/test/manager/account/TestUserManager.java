@@ -33,7 +33,7 @@ public class TestUserManager extends ManagerTestCaseSupport{
 	@Transactional(readOnly=true)
 	public void testGetUser() {
 		User user = accountManager.getUser("SJDK3849CKMS3849DJCK2039ZMSK0001");
-		assertEquals(user.getUsername(),"admin");
+		assertEquals(user.getUsername(),"maurice");
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class TestUserManager extends ManagerTestCaseSupport{
 		User entity = new User();
 		
 		entity.setEmail("test@test.com");
-		entity.setPassword("123");
-		entity.setRealname("测试");
-		entity.setUsername("test");
+		entity.setPassword("123456");
+		entity.setRealname("一个测试用户");
+		entity.setUsername("test_maurice");
 		entity.setState(State.Enable.getValue());
 		
 		int before = countRowsInTable("tb_user");
@@ -73,7 +73,7 @@ public class TestUserManager extends ManagerTestCaseSupport{
 	public void testUpdateUser() {
 		User entity = accountManager.getUser("SJDK3849CKMS3849DJCK2039ZMSK0001");
 		entity.setUsername("modify");
-		entity.setPassword("321");
+		entity.setPassword("123456");
 		entity.setRealname("maurice");
 		
 		accountManager.updateUser(entity);
@@ -83,14 +83,14 @@ public class TestUserManager extends ManagerTestCaseSupport{
 		
 		entity = accountManager.getUser("SJDK3849CKMS3849DJCK2039ZMSK0001");
 		
-		assertEquals(entity.getUsername(), "admin");
+		assertEquals(entity.getUsername(), "maurice");
 		assertEquals(entity.getPassword(), "21232f297a57a5a743894a0e4a801fc3");
 		assertEquals(entity.getRealname(), "maurice");
 	}
 
 	@Test
 	public void testIsUsernameUnique() {
-		assertEquals(accountManager.isUsernameUnique("admin"), false);
+		assertEquals(accountManager.isUsernameUnique("maurice"), false);
 	}
 
 	@Test
@@ -104,8 +104,8 @@ public class TestUserManager extends ManagerTestCaseSupport{
 
 	@Test
 	public void testGetUserByUsername() {
-		User entity = accountManager.getUserByUsername("admin");
-		assertEquals(entity.getUsername(), "admin");
+		User entity = accountManager.getUserByUsername("maurice");
+		assertEquals(entity.getUsername(), "maurice");
 		assertEquals(entity.getRealname(), "maurice.chen");
 	}
 	
