@@ -202,15 +202,17 @@ public class AccountManager {
 	 */
 	public void saveResource(Resource entity) {
 		
+		//如果sort等于null值，设置一个最新的值给entity
 		if(entity.getSort() == null) {
 			entity.setSort(resourceDao.entityCount() + 1);
 		}
-		
+		//如果他父类不为null，将父类的leaf设置成true，表示父类下存在子节点
 		if (entity.getParent() != null) {
 			entity.getParent().setLeaf(true);
 		}
 		
 		resourceDao.save(entity);
+		//刷新一次leaf字段
 		resourceDao.refreshAllLeaf();
 	}
 	
@@ -220,7 +222,10 @@ public class AccountManager {
 	 * @param ids 资源id集合 
 	 */
 	public void deleteResources(List<String> ids) {
-		resourceDao.deleteAll(ids);
+		List<Resource> list = resourceDao.get(ids);
+		for (Resource entity : list) {
+			resourceDao.delete(entity);
+		}
 		resourceDao.refreshAllLeaf();
 	}
 	
