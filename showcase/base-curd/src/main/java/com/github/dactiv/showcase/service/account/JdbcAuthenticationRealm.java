@@ -1,17 +1,17 @@
 package com.github.dactiv.showcase.service.account;
 
-import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.dactiv.showcase.common.SessionVariable;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.User;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 
@@ -34,14 +34,10 @@ public class JdbcAuthenticationRealm extends AuthorizationRealm{
 
         String username = usernamePasswordToken.getUsername();
         
-        if (username == null) {
-            throw new AccountException("用户名不能为空");
-        }
-        
         User user = accountManager.getUserByUsername(username);
         
         if (user == null) {
-            throw new UnknownAccountException("用户不存在");
+            throw new IncorrectCredentialsException();
         }
         
         if (user.getState().equals(State.Disable.getValue())) {

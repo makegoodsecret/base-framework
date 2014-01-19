@@ -82,7 +82,7 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
         
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         
-        SessionVariable model = (SessionVariable) principals.getPrimaryPrincipal();
+        SessionVariable model = principals.oneByType(SessionVariable.class);
         
         Assert.notNull(model, "找不到principals中的SessionVariable");
         

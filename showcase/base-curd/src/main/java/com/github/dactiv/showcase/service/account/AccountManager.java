@@ -298,6 +298,7 @@ public class AccountManager {
 		}
 		
 		parent.setChildren(new ArrayList<Resource>());
+		parent.setLeaf(false);
 		
 		for (Resource r: list) {
 			//这是一个递归过程，如果当前遍历的r资源的parentId等于parent父类对象的id，将会在次递归r对象。通过遍历list是否也存在r对象的子级。
@@ -305,6 +306,7 @@ public class AccountManager {
 				r.setChildren(null);
 				mergeResourcesToParent(list,r,ignoreType);
 				parent.getChildren().add(r);
+				parent.setLeaf(true);
 			}
 			
 		}
