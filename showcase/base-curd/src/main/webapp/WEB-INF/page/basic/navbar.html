@@ -1,11 +1,11 @@
 
-<#macro recursionMenu menu>
+<#macro recursionMenu menu id=false>
 	<#if menu.leaf>
 		<ul class="dropdown-menu">
 			
 			<#list menu.children as c>
 			<li <#if c.leaf>class="dropdown-submenu"</#if> >
-				<a id="${c.id}" href="${base}/${c.value?substring(1,c.value?length - 3)}">
+				<a <#if id>id="${c.id}"</#if> href="${base}/${c.value?substring(1,c.value?length - 3)}">
 					<span class="glyphicon ${c.icon!'glyphicon-file'}"> </span> ${c.name}
 				</a>
 				<@recursionMenu c />
@@ -53,7 +53,7 @@
 						<span class="glyphicon ${m.icon!'glyphicon-file'} center-block"></span>
 						<span class="nav-title">${m.name}</span>
 					</a>
-					<@recursionMenu m />
+					<@recursionMenu m true/>
 				</li>
 			</#list>
 		</ul>
