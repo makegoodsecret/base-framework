@@ -167,10 +167,20 @@ public class SystemVariableUtils {
 	}
 	
 	/**
-	 * 获取shiro的session
+	 * 创建一个shiro的session,如果存在session就用现有的session，否则创建一个新的session
 	 * 
 	 * @return {@link Session}
 	 */
+	public static Session createSessionIfNull() {
+		Session session = getSession();
+		
+		if (session == null) {
+			session = getSession(true);
+		}
+		
+		return session;
+	}
+	
 	public static Session getSession() {
 		return getSession(false);
 	}

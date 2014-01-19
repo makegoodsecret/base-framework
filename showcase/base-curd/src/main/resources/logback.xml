@@ -9,8 +9,9 @@
 	</appender>
 	
 	<!-- 调试hibernate使用，将本次sql的参数打印的控制台中 -->
-	<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
-	
+	<!-- <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/> -->
+	<!-- 调试ehcache集群使用，将所有监控缓存的心跳打印到控制台中 -->
+	<!-- <logger name="net.sf.ehcache" level="ALL"/> -->
 	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>logs/dactiv-base-curd.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

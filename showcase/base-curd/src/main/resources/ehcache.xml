@@ -41,7 +41,7 @@
 		或者有特殊机制保证重\启后应用能接收到重启这段时间里缓存变化信息的情况。
 		
 		cacheEventListenerFactory配置: 
-		eplicateAsynchronously:
+		replicateAsynchronously:
 		对象同步是否异步完成，默认为true。如果比较紧急就设为false。 在一致性时间性要求不强的时候，设为异步可大大提供性能，
 		因为它是异步立即返回的，而且可以批量提交。
 		 
@@ -76,16 +76,16 @@
      
     <!-- shiro授权的缓存名称 -->
     <cache name="shiroAuthorizationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200">
-    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=true,replicatePuts=false,replicateUpdatesViaCopy=false"/>
+    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
     </cache>
     
     <!-- shiro认证的缓存名称 -->
     <cache name="shiroAuthenticationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200" memoryStoreEvictionPolicy="LRU">
-    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=true,replicatePuts=false,replicateUpdatesViaCopy=false"/>
+    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
     </cache>
     
     <!-- shiro的活动session缓存名称 -->
     <cache name="shiroActiveSessionCache" maxElementsInMemory="10000" timeToLiveSeconds="1200" memoryStoreEvictionPolicy="LRU">
-    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=true,replicatePuts=false,replicateUpdatesViaCopy=false"/>
+    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=false"/>
     </cache>
 </ehcache>

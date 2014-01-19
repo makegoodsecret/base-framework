@@ -52,7 +52,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	@Override
 	protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
 		
-		Session session = SystemVariableUtils.getSession();
+		Session session = SystemVariableUtils.createSessionIfNull();
 		//获取登录次数
 		Integer number = (Integer) session.getAttribute(getLoginNumKeyAttribute());
 		
