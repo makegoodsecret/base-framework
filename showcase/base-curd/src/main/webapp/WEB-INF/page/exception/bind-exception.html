@@ -1,18 +1,7 @@
 <#include "*/basic/default.html"/>
 
 <#macro title>
-	500
-</#macro>
-
-<#macro head>
-	<script type="text/javascript">
-		function sendError(id) {
-			$.post("${base}/foundation/audit/operating-record/send-error",{id:id},function(data){
-				$("#message").html(data);
-				$("#alert-div").removeClass("hide");
-			});
-		}
-	</script>
+	验证错误
 </#macro>
 
 <#macro body>
