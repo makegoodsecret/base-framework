@@ -106,13 +106,4 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 		assertEquals(result.size(), 25);
 	}
 
-	@Test
-	@Transactional(readOnly=true)
-	public void testMergeResourcesToParent() {
-		List<Resource> result = accountManager.getUserResources("SJDK3849CKMS3849DJCK2039ZMSK0001");
-		result = accountManager.mergeResourcesToParent(result, ResourceType.Security);
-		assertEquals(result.size(), 2);
-		assertEquals(result.get(0).getChildren().size(),3);
-		assertEquals(result.get(1).getChildren().size(),3);
-	}
 }

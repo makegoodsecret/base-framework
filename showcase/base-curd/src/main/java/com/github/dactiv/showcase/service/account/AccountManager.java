@@ -10,7 +10,6 @@ import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.dactiv.orm.core.Page;
@@ -19,7 +18,6 @@ import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
-import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.dao.account.GroupDao;
 import com.github.dactiv.showcase.dao.account.ResourceDao;
 import com.github.dactiv.showcase.dao.account.UserDao;
@@ -265,53 +263,6 @@ public class AccountManager {
 	 */
 	public List<Resource> getUserResources(String userId) {
 		return resourceDao.getUserResources(userId);
-	}
-	
-	/**
-	 * 并合子类资源到父类中，返回一个新的资源集合
-	 * 
-	 * @param list 资源集合
-	 * @param resourceType 不需要并合的资源类型
-	 */
-	public List<Resource> mergeResourcesToParent(List<Resource> list,ResourceType ignoreType) {
-		List<Resource> result = new ArrayList<Resource>();
-		
-		for (Resource r : list) {
-			if (r.getParent() == null && !StringUtils.equals(ignoreType.getValue(),r.getType())) {
-				mergeResourcesToParent(list,r,ignoreType);
-				result.add(r);
-			}
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * 遍历list中的数据,如果数据的父类与parent相等，将数据加入到parent的children中
-	 * 
-	 * @param list 资源集合
-	 * @param parent 父类对象
-	 * @param ignoreType 不需要加入到parent的资源类型
-	 */
-	@Transactional(propagation=Propagation.NOT_SUPPORTED)
-	private void mergeResourcesToParent(List<Resource> list, Resource parent,ResourceType ignoreType) {
-		if (!parent.getLeaf()) {
-			return ;
-		}
-		
-		parent.setChildren(new ArrayList<Resource>());
-		parent.setLeaf(false);
-		
-		for (Resource r: list) {
-			//这是一个递归过程，如果当前遍历的r资源的parentId等于parent父类对象的id，将会在次递归r对象。通过遍历list是否也存在r对象的子级。
-			if (!StringUtils.equals(r.getType(), ignoreType.getValue()) && StringUtils.equals(r.getParentId(),parent.getId()) ) {
-				r.setChildren(null);
-				mergeResourcesToParent(list,r,ignoreType);
-				parent.getChildren().add(r);
-				parent.setLeaf(true);
-			}
-			
-		}
 	}
 	
 	//------------------------------组管理-----------------------------------//
