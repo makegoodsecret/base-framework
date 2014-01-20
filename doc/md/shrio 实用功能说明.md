@@ -589,10 +589,21 @@ PermissionsAuthorizationFilter的工作主要是判断当前subject是否有足�
 
 doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shiro 的 **AuthorizingRealm** 逐个循环里面的 permission 和当前访问链接的permission去做匹配，如果匹配到了，就表示当前用户可以访问本次请求的链接，否则就重定向到未授权页面。
 
-#### 动态filterChainDefinitions ####                                         
+实现认证和授权功能继承**AuthorizingRealm**已经可以达到效果，但是要注意几点就是：
+
+1. 表单提交的action要和filterChainDefinitions的一致。
+2. filterChainDefinitions的**“/login = authc”**这句话的左值要和**loginUrl**属性一致。
+3. 表单提交必须要**post方法**。
+
+完成认证和授权后现在的缺陷在于filterChainDefinitions都是要手动去一个个配置，一个系统那么多链接都要写上去非常不靠谱，下面将介绍如何使用资源表动态去构建filterChainDefinitions。
+
+#### 动态filterChainDefinitions ####
+                                    
 
 #### 扩展 filter 实现验证码登录 ####
 
+
 #### 更好性能的 shiro + cache ####
+
 
 #### 定义 AuthorizationRealm 抽象类,让多 realms 授权得到统一 ####
