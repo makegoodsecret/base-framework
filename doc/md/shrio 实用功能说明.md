@@ -64,7 +64,7 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 
 	/add = role[admin], perms[security:index]
 
-*提示:Shiro支持了权限（ **permissions** ）概念。权限是功能的原始表述，如：开门、创建一个博文、删除‘jsmith’用户等。通过让权限反映应用的原始功能，在改变应用功能时，你只需要改变权限检查。进而，你可以在运行时按需将权限分配给角色或用户。*
+*提示:Shiro支持了权限（permissions）概念。权限是功能的原始表述，如：开门、创建一个博文、删除jsmith用户等。通过让权限反映应用的原始功能，在改变应用功能时，你只需要改变权限检查。进而，你可以在运行时按需将权限分配给角色或用户。*
 
 如果不配置任何东西在里面的话，shiro会起不到安全框架的作用。但如果将整个系统的所有链接配置到 filterChainDefinitions 里面会有很多，这样作的做法会不靠谱。所以，应该通过动态的、可配置的形式来做 filterChainDefinitions，该功能会在**动态filterChainDefinitions**里说明如何通过数据库来创建动态的filterChainDefinitions。
 
@@ -529,7 +529,7 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 		<input type="submit" value="提交"/>
 	</form>
 
-*提示: input标签的所有name属性不一定要写死 username,password,remeberMe。可以在 **FormAuthenticationFilter** 修改*
+*提示: input标签的所有name属性不一定要写死 username,password,remeberMe。可以在 FormAuthenticationFilter 修改*
 
 当点击提交时，shiro 会拦截这次的表单提交，因为在配置文件里已经说明，/login 由 authc 做处理，就是:
 
@@ -554,9 +554,9 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 
 在SimpleAuthenticationInfo对象里的密码为数据库里面的用户密码，返回SimpleAuthenticationInfo后 shiro 会根据表单提交的密码和 SimpleAuthenticationInfo 的密码去做对比，如果完全正确，就表示认证成功，当成功后，会重定向到successUrl这个链接。
 
-*提示： **Subject** 实质上是一个当前执行用户的特定的安全“视图”。鉴于“User”一词通常意味着一个人，而一个 Subject 可以是一个人，但它还可以代表第三方服务，daemon account，cron job，或其他类似的任何东西——基本上是当前正与软件进行交互的任何东西。* 
+*提示： Subject 实质上是一个当前执行用户的特定的安全“视图”。鉴于“User”一词通常意味着一个人，而一个 Subject 可以是一个人，但它还可以代表第三方服务，daemon account，cron job，或其他类似的任何东西——基本上是当前正与软件进行交互的任何东西。* 
  
-*所有 **Subject** 实例都被绑定到（且这是必须的）一个 SecurityManager 上。当你与一个 Subject 交互时，那些交互作用转化为与 SecurityManager 交互的特定 subject 的交互作用。*
+*所有 Subject 实例都被绑定到（且这是必须的）一个 SecurityManager 上。当你与一个 Subject 交互时，那些交互作用转化为与 SecurityManager 交互的特定 subject 的交互作用。*
 
 当重定向到 index 时，会进入到 perms，就是 shiro 的**PermissionsAuthorizationFilter**，因为配置文件里已经说明,就是:
 
