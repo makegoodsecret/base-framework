@@ -10,6 +10,7 @@ import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.dactiv.orm.core.Page;
@@ -292,6 +293,7 @@ public class AccountManager {
 	 * @param parent 父类对象
 	 * @param ignoreType 不需要加入到parent的资源类型
 	 */
+	@Transactional(propagation=Propagation.NOT_SUPPORTED)
 	private void mergeResourcesToParent(List<Resource> list, Resource parent,ResourceType ignoreType) {
 		if (!parent.getLeaf()) {
 			return ;

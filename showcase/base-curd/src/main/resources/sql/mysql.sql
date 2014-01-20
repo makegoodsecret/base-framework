@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50614
 File Encoding         : 65001
 
-Date: 2014-01-13 22:14:47
+Date: 2014-01-20 21:35:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -260,4 +260,4 @@ INSERT INTO `tb_user` VALUES ('17909124407b8d7901407be4996c0004', 'es.nick@es.co
 INSERT INTO `tb_user` VALUES ('17909124407b8d7901407be4996c0005', 'es.nick@es.com', 'e10adc3949ba59abbe56e057f20f883e', null, 'user1', '1', 'es002');
 INSERT INTO `tb_user` VALUES ('17909124407b8d7901407be4996c0006', 'es.nick@es.com', 'e10adc3949ba59abbe56e057f20f883e', null, 'user2', '1', 'es003');
 INSERT INTO `tb_user` VALUES ('17909124407b8d7901407be4996c0007', 'es.nick@es.com', 'e10adc3949ba59abbe56e057f20f883e', null, 'user3', '1', 'es004');
-INSERT INTO `tb_user` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0001', 'es.chenxiaobo@gmail.com', '21232f297a57a5a743894a0e4a801fc3', null, 'maurice.chentest', '1', 'maurice');
+INSERT INTO `tb_user` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0001', 'es.chenxiaobo@gmail.com', '21232f297a57a5a743894a0e4a801fc3', null, 'maurice.chen', '1', 'maurice');
