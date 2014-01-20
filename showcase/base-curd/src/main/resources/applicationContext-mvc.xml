@@ -49,11 +49,6 @@
 	
 	<!-- 启动文件上传Resolver -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
-	
-	<!-- 启动异常Resolver -->
-	<!-- <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
-		
-	</bean> -->
 
 	<!-- freemarker的格式和其他配置 -->
 	<bean id="freemarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
