@@ -64,15 +64,17 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 
 	/add = role[admin], perms[security:index]
 
-如果不配置任何东西在里面的话，shiro会起不到安全框架的作用。所以在这里，如果将整个系统的所有链接配置到 filterChainDefinitions 里面会有很多，这样作的做法会不靠谱。所以，应该通过动态的、可配置的形式来做 filterChainDefinitions，该功能会在**动态filterChainDefinitions**里说明如何通过数据库来创建动态的filterChainDefinitions。
+*提示:Shiro支持了权限（ **permissions** ）概念。权限是功能的原始表述，如：开门、创建一个博文、删除‘jsmith’用户等。通过让权限反映应用的原始功能，在改变应用功能时，你只需要改变权限检查。进而，你可以在运行时按需将权限分配给角色或用户。*
+
+如果不配置任何东西在里面的话，shiro会起不到安全框架的作用。但如果将整个系统的所有链接配置到 filterChainDefinitions 里面会有很多，这样作的做法会不靠谱。所以，应该通过动态的、可配置的形式来做 filterChainDefinitions，该功能会在**动态filterChainDefinitions**里说明如何通过数据库来创建动态的filterChainDefinitions。
 
 到这里，shiro 和 spring 集成的关键点只有这么点东西。最重要的接口在 **securityManager** 中。securityManager 管理了**认证、授权，session** 等 web 安全的重要类，首先来完成认证、授权方面的功能。
 
 #### shiro 认证、授权 ####
 
-在 shiro 里，**认证**，主要是知道**“你是谁”**，**授权**，是给于你权限去**“做什么”**。所以，在完成认证和授权之前，我们要构造最经典的权限3张表去完成这些事，但在这里画表要图片，整体感也很丑。所以，以 hibernate 实体的方式去说明表的机构：
+在 shiro 里，**认证**，主要是知道**“你是谁”**，**授权**，是给于你权限去**“做什么”**。所以，在完成认证和授权之前，我们要构造最经典的权限3张表去完成这些事，但在这里画表要图片，整体感也很丑。所以，以 hibernate 实体的方式去说明表的结构：
 
-首先，经典3张表需要用户、组、资源，这3个实体，而3个实体的关系为多对多关系：
+首先，经典3张表需要用户、组、资源这3个实体，而3个实体的关系为多对多关系：
 
 	/**
 	 * 用户实体
@@ -230,9 +232,169 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 	</tr>
 </table>
 
+初始化数据假设是这样：
+
+<table>
+	<tr>
+		<td colspan="3" align="center">
+			TB_USER
+		</td>
+	</tr>
+	<tr>
+		<td>
+			id
+		</td>
+		<td>
+			username
+		</td>
+		<td>
+			password
+		</td>
+	</tr>
+	<tr>
+		<td>
+			17909124407b8d7901407be4996c0001
+		</td>
+		<td>
+			admin
+		</td>
+		<td>
+			admin
+		</td>
+	</tr>
+</table>
+
+***
+
+<table>
+	<tr>
+		<td colspan="4" align="center">
+			TB_GROUP
+		</td>
+	</tr>
+	<tr>
+		<td>
+			id
+		</td>
+		<td>
+			name
+		</td>
+		<td>
+			role
+		</td>
+		<td>
+			value
+		</td>
+	</tr>
+	<tr>
+		<td>
+			17909124407b8d7901407be4996c0002
+		</td>
+		<td>
+			超级管理员
+		</td>
+		<td>
+			
+		</td>
+		<td>
+			
+		</td>
+	</tr>
+</table>
+
+***
+
+<table>
+	<tr>
+		<td colspan="4" align="center">
+			TB_RESOURCE
+		</td>
+	</tr>
+	<tr>
+		<td>
+			id
+		</td>
+		<td>
+			name
+		</td>
+		<td>
+			permission
+		</td>
+		<td>
+			value
+		</td>
+	</tr>
+	<tr>
+		<td>
+			17909124407b8d7901407be4996c0003
+		</td>
+		<td>
+			进入首页
+		</td>
+		<td>
+			perms[security:index]
+		</td>
+		<td>
+			/index
+		</td>
+	</tr>
+</table>
+
+***
+
+<table>
+	<tr>
+		<td colspan="2" align="center">
+			TB_GROUP_USER
+		</td>
+	</tr>
+	<tr>
+		<td>
+			FK_USER_ID
+		</td>
+		<td>
+			FK_GROUP_ID
+		</td>
+	</tr>
+	<tr>
+		<td>
+			17909124407b8d7901407be4996c0001
+		</td>
+		<td>
+			17909124407b8d7901407be4996c0002
+		</td>
+	</tr>
+</table>
+
+***
+
+<table>
+	<tr>
+		<td colspan="2" align="center">
+			TB_GROUP_RESOURCE
+		</td>
+	</tr>
+	<tr>
+		<td>
+			FK_GROUP_ID
+		</td>
+		<td>
+			FK_RESOURCE_ID
+		</td>
+	</tr>
+	<tr>
+		<td>
+			17909124407b8d7901407be4996c0002
+		</td>
+		<td>
+			17909124407b8d7901407be4996c0003
+		</td>
+	</tr>
+</table>
+
 首先要认识的第一个对象是securityManager所管理的 **org.apache.shiro.realm.Realm** 接口,realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。但它实际上与安全相关的数据（如用来执行认证及授权）的用户帐户交互时，shiro 从一个或多个为应用程序配置的 realm 中寻找许多这样的东西。
 
-在这个意义上说，realm 本质上是一个特定安全的 dao：它封装了数据源的连接详细信息，使 shiro 所需的相关的数据可用。当配置 shiro 时，你必须指定至少一个 realm 用来进行身份验证和授权。securityManager 可能配置多个 realms，**但至少必须有一个**。
+在这个意义上说，realm 本质上是一个特定安全的 dao：它封装了数据源的连接详细信息，使 shiro 所需的相关数据可用。当配置 shiro 时，你必须指定至少一个 realm 用来进行身份验证和授权。securityManager 可能配置多个 realms，**但至少必须有一个**。
 
 shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录），如LDAP、关系数据库（JDBC）、文本配置源等。如果默认地 realm 不符合你的需求，你可以插入你自己的 realm 实现来代表自定义的数据源。
 
@@ -249,7 +411,8 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 	 * 用户认证方法
 	 * 
 	 */
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException;
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) 
+	throws AuthenticationException;
 
 **doGetAuthenticationInfo**方法的作用是在用户进行**登录**时通过该方法去做认证工作（你是谁），doGetAuthenticationInfo 方法里的 AuthenticationToken 参数是一个认证令牌，装载着表单提交过来的数据，由于 shiro 的认证 filter 默认为 FormAuthenticationFilter,通过 filter 创建的令牌为 UsernamePasswordToken类，该类里面包含了表单提交上来的username、password、remeberme等信息。
 
@@ -258,23 +421,19 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 	<!-- 将shiro与spring集合 -->
 	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<...>
-		<!-- 要求登录时的链接 -->
-	    <property name="loginUrl" value="/login" />
 	    <!-- 登陆成功后要跳转的连接 -->
 	    <property name="successUrl" value="/index" />
-		<!-- 没有权限要跳转的链接-->
-	    <property name="unauthorizedUrl" value="/unauthorized" />
+		<...>
 	    <!-- 默认的连接拦截配置 -->
 		<property name="filterChainDefinitions">
 			<value>
-				/login = authc
-				/logout = logout
+				...
 				/index = perms[security:index]
 			</value>
 		</property>
 	</bean>
 
-当用户登录成功后会跳转到successUrl这个链接，即：http://localhost:port/index。那么这个index又要当前用户存在 permission 为 security:index 才能进入，所以，当登录完成跳转successUrl时，会进入到doGetAuthorizationInfo方法里进行一次**授权**，让 shiro 了解该链接在当前认证的用户里是否可以访问，如果可以访问，那就执行接入到index，否则就会跳转到unauthorizedUrl。
+当用户登录成功后会跳转到 **successUrl** 这个链接，即：**http://localhost:port/index**。那么这个index又要当前用户存在 **permission** 为 **security:index** 才能进入，所以，当登录完成跳转 **successUrl** 时，会进入到 **doGetAuthorizationInfo** 方法里进行一次**授权**，让 shiro 了解该链接在当前认证的用户里是否可以访问，如果可以访问，那就执行接入到index，否则就会跳转到unauthorizedUrl。
 
 了解以上情况，首先我们创建UserDao和ResourceDao类来做数据访问工作:
 
@@ -345,7 +504,7 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 				throw new AuthorizationException("Principal对象不能为空");
 			}
 			
-			User user = (User) principals.getPrimaryPrincipal();
+			User user = principals.oneByType(User.class);
 			List<Resource> resource = resourceDao.getUserResource(user.getId());
 			
 			//获取用户相应的permission
@@ -361,12 +520,78 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 	
 	}
 
-以上代码首先从**doGetAuthenticationInfo**读起，首先。
+以上代码首先从**doGetAuthenticationInfo**读起，首先。假设我们有一个表单
 
+	<form action="${base}/login" method="post">
+		<input type="text" name="username" />
+		<input type="password" name="password" />
+		<input type="checkbox" name="remeberMe" />
+		<input type="submit" value="提交"/>
+	</form>
 
-#### 动态filterChainDefinitions ####
+*提示: input标签的所有name属性不一定要写死 username,password,remeberMe。可以在 **FormAuthenticationFilter** 修改*
 
-#### 扩张 filter 实现验证码登录 ####
+当点击提交时，shiro 会拦截这次的表单提交，因为在配置文件里已经说明，/login 由 authc 做处理，就是:
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<...>
+	    <!-- 默认的连接拦截配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = authc
+				...
+			</value>
+		</property>
+	</bean>
+
+而 authc 就是 shiro 的 **FormAuthenticationFilter** 。shiro 首先会判断 /login 这次请求是否为**post请求**，如果是，那么就交给 FormAuthenticationFilter 处理，否则将不做任何处理。
+
+当 FormAuthenticationFilter 接收到要处理时。那么 FormAuthenticationFilter 首先会根据表单提交过来的请求参数创建一个 **UsernamePasswordToken**，然后获取一个 **Subject** 对象，由Subject去执行登录，在Subject执行登录时，会将UsernamePasswordToken传入到Subject.login中。在经过一些小小的处理过程后，会进入到 **doGetAuthenticationInfo**方法里，而在doGetAuthenticationInfo方法做的事情就是：
+
+1. 通过用户名获取当前用户
+2. 通过当前用户和用户密码创建一个**SimpleAuthenticationInfo**然shiro去匹配密码是否正确
+
+在SimpleAuthenticationInfo对象里的密码为数据库里面的用户密码，返回SimpleAuthenticationInfo后 shiro 会根据表单提交的密码和 SimpleAuthenticationInfo 的密码去做对比，如果完全正确，就表示认证成功，当成功后，会重定向到successUrl这个链接。
+
+*提示： **Subject** 实质上是一个当前执行用户的特定的安全“视图”。鉴于“User”一词通常意味着一个人，而一个 Subject 可以是一个人，但它还可以代表第三方服务，daemon account，cron job，或其他类似的任何东西——基本上是当前正与软件进行交互的任何东西。* 
+ 
+*所有 **Subject** 实例都被绑定到（且这是必须的）一个 SecurityManager 上。当你与一个 Subject 交互时，那些交互作用转化为与 SecurityManager 交互的特定 subject 的交互作用。*
+
+当重定向到 index 时，会进入到 perms，就是 shiro 的**PermissionsAuthorizationFilter**，因为配置文件里已经说明,就是:
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<...>
+	    <!-- 默认的连接拦截配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				...
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+PermissionsAuthorizationFilter的工作主要是判断当前subject是否有足够的权限去访问index,判断条件有：
+
+1. 判断subject是否已认证，如果没认证，返回登录页面,就是在配置文件里指定的**loginUrl**。
+ 
+2. 如果认证了，判断当前用户是否存未授权，如果没有就去授权，当授权时，就会进入到 **doGetAuthorizationInfo** 方法
+
+3. 如果已经认证了。就判断是否存xx链接的permission,如果有，就进入，否则重定向到未授权页面，就是在配置文件里指定的**unauthorizedUrl**
+
+那么，认证我们上面已经认证过了。就会进入到第二个判断，第二个判断会跑到了doGetAuthorizationInfo方法，而doGetAuthorizationInfo方法里做了几件事：
+
+1. 获取当前的用户
+2. 通过用户id获取用户的资源集合
+3. 将资源实体集合里的permission获取出来形成一个List
+4. 将用户拥有的permission放入到**SimpleAuthorizationInfo**对象中
+
+doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shiro 的 **AuthorizingRealm** 逐个循环里面的 permission 和当前访问链接的permission去做匹配，如果匹配到了，就表示当前用户可以访问本次请求的链接，否则就重定向到未授权页面。
+
+#### 动态filterChainDefinitions ####                                         
+
+#### 扩展 filter 实现验证码登录 ####
 
 #### 更好性能的 shiro + cache ####
 
