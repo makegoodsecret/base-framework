@@ -10,14 +10,13 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import com.github.dactiv.common.utils.CollectionUtils;
-import com.github.dactiv.showcase.common.SessionVariable;
-import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
-import com.github.dactiv.showcase.entity.account.Group;
-import com.github.dactiv.showcase.entity.account.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.github.dactiv.common.utils.CollectionUtils;
+import com.github.dactiv.showcase.common.SessionVariable;
+import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
+import com.github.dactiv.showcase.entity.account.Resource;
 import com.google.common.collect.Lists;
 
 /**
@@ -87,19 +86,15 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
         
         String id = model.getUser().getId();
         
-        //加载用户的组信息和资源信息
+        //加载用户资源信息
         List<Resource> authorizationInfo = accountManager.getUserResources(id);
-        List<Group> groupsList = accountManager.getUserGroups(id);
         List<Resource> resourcesList = mergeResourcesToParent(authorizationInfo, ResourceType.Security);
         
         model.setAuthorizationInfo(authorizationInfo);
-        model.setGroupsList(groupsList);
         model.setMenusList(resourcesList);
         
         //添加用户拥有的permission
         addPermissions(info,authorizationInfo);
-        //添加用户拥有的role
-        addRoles(info,groupsList);
         
         return info;
 	}
@@ -150,28 +145,6 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
 		}
 	}
 	
-	/**
-	 * 通过组集合，将集合中的role字段内容解析后添加到SimpleAuthorizationInfo授权信息中
-	 * 
-	 * @param info SimpleAuthorizationInfo
-	 * @param groupsList 组集合
-	 */
-	private void addRoles(SimpleAuthorizationInfo info, List<Group> groupsList) {
-		
-		//解析当前用户组中的role
-        List<String> temp = CollectionUtils.extractToList(groupsList, "role", true);
-        List<String> roles = getValue(temp,"roles\\[(.*?)\\]");
-       
-        //添加默认的roles到roels
-        if (CollectionUtils.isNotEmpty(defaultRole)) {
-        	CollectionUtils.addAll(roles, defaultRole.iterator());
-        }
-        
-        //将当前用户拥有的roles设置到SimpleAuthorizationInfo中
-        info.addRoles(roles);
-		
-	}
-
 	/**
 	 * 通过资源集合，将集合中的permission字段内容解析后添加到SimpleAuthorizationInfo授权信息中
 	 * 

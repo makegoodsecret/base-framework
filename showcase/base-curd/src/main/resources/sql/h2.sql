@@ -10,10 +10,10 @@ drop table TB_OPERATING_RECORD if exists;
 
 --创建系统字典表
 create table TB_DATA_DICTIONARY (id varchar(32) not null, name varchar(256) not null, remark varchar(512), type varchar(1) not null, value varchar(32) not null, fk_category_id varchar(32) not null, primary key (id));
-create table TB_DICTIONARY_CATEGORY (id varchar(32) not null, code varchar(128) not null, name varchar(256) not null, remark varchar(512), fk_parent_id varchar(32), primary key (id));
+create table TB_DICTIONARY_CATEGORY (id varchar(32) not null, code varchar(128) not null, name varchar(256) not null, remark varchar(512), fk_parent_id varchar(32), leaf boolean, primary key (id));
 
 --创建权限表
-create table TB_GROUP (id varchar(32) not null, name varchar(32) not null, remark varchar(512), state integer not null, type varchar(2) not null, fk_parent_id varchar(32), role varchar(64), value varchar(256), leaf boolean, primary key (id));
+create table TB_GROUP (id varchar(32) not null, name varchar(32) not null, remark varchar(512), state integer not null, type varchar(2) not null, fk_parent_id varchar(32), leaf boolean, primary key (id));
 create table TB_GROUP_RESOURCE (fk_resource_id varchar(32) not null, fk_group_id varchar(32) not null);
 create table TB_GROUP_USER (fk_group_id varchar(32) not null, fk_user_id varchar(32) not null);
 create table TB_RESOURCE (id varchar(32) not null, permission varchar(64), remark varchar(512), sort integer not null, name varchar(32) not null, type varchar(2) not null, value varchar(256), fk_parent_id varchar(32), icon varchar(32), leaf boolean, primary key (id));
@@ -37,11 +37,11 @@ alter table TB_GROUP_USER add constraint FK_rgmkki7dggfag6ow6eivljmwv foreign ke
 alter table TB_RESOURCE add constraint FK_k2heqvi9muk4cjyyd53r9y37x foreign key (fk_parent_id) references TB_RESOURCE;
 
 --插入字典类别数据
-INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d46fc0e50001', 'state', '状态', null, null);
-INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d4709b9c0002', 'resource-type', '资源类型', null, null);
-INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d4712ca70003', 'group-type', '组类型', null, null);
-INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d47b250137d485274b0004', 'value-type', '值类型', null, null);
-INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d47b250137d485274b0005', 'operating-state', '操作状态', null, null);
+INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d46fc0e50001', 'state', '状态', null, null, 0);
+INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d4709b9c0002', 'resource-type', '资源类型', null, null, 0);
+INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d467d80137d4712ca70003', 'group-type', '组类型', null, null, 0);
+INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d47b250137d485274b0004', 'value-type', '值类型', null, null, 0);
+INSERT INTO TB_DICTIONARY_CATEGORY VALUES ('402881e437d47b250137d485274b0005', 'operating-state', '操作状态', null, null, 0);
 
 --插入数据字典数据
 INSERT INTO TB_DATA_DICTIONARY VALUES ('402881e437d47b250137d481b6920001', '启用', null, 'I', '1', '402881e437d467d80137d46fc0e50001');
@@ -62,9 +62,9 @@ INSERT INTO TB_DATA_DICTIONARY VALUES ('402881e437d49e430137d4a7783d0008', '成�
 INSERT INTO TB_DATA_DICTIONARY VALUES ('402881e437d49e430137d4a7ba1a0009', '失败', null, 'I', '2', '402881e437d47b250137d485274b0005');
 
 --插入组数据
-INSERT INTO TB_GROUP VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, null, null, 0);
-INSERT INTO TB_GROUP VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, null, null, 0);
-INSERT INTO TB_GROUP VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', null, '1', '03', null, null, null, 0);
+INSERT INTO TB_GROUP VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, 0);
+INSERT INTO TB_GROUP VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, 0);
+INSERT INTO TB_GROUP VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', null, '1', '03', null, 0);
 
 --插入资源数据
 INSERT INTO TB_RESOURCE VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0003', null, null, '1', '权限管理', '01', '#', null, 'glyphicon-briefcase', 1);

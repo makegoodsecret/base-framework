@@ -1,8 +1,14 @@
 package com.github.dactiv.showcase.test.manager.account;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
@@ -13,10 +19,6 @@ import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.service.account.AccountManager;
 import com.github.dactiv.showcase.test.manager.ManagerTestCaseSupport;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.google.common.collect.Lists;
 
 /**
@@ -49,13 +51,12 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 	}
 
 	@Test
+	@Transactional
 	public void testSaveGroup() {
 		Group entity = new Group();
 		entity.setName("test");
 		entity.setRemark("...");
-		entity.setRole("role[test]");
 		entity.setType(GroupType.RoleGorup.getValue());
-		entity.setValue("/**");
 		entity.setState(State.Enable.getValue());
 		
 		int before = countRowsInTable("tb_group");
@@ -63,6 +64,16 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 		int after = countRowsInTable("tb_group");
 		
 		assertEquals(before + 1, after);
+		assertFalse(entity.getLeaf());
+		
+		Group parent = accountManager.getGroup("SJDK3849CKMS3849DJCK2039ZMSK0002");
+		entity.setParent(parent);
+		accountManager.saveGroup(entity);
+		assertTrue(parent.getLeaf());
+		entity.setParent(null);
+		accountManager.saveGroup(entity);
+		assertFalse(entity.getLeaf());
+		
 	}
 
 	@Test
@@ -72,6 +83,7 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 		int after = countRowsInTable("tb_group");
 		
 		assertEquals(before - 1, after);
+		//TODO 实现删除后自动关联leaf单元测试
 	}
 
 	@Test
@@ -95,12 +107,6 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 		assertEquals(result.size(), 3);
 		
 		result = accountManager.getGroup(GroupType.RoleGorup,"402881c4408c7d2301408c870ed10002","SJDK3849CKMS3849DJCK2039ZMSK0002");
-		assertEquals(result.size(), 1);
-	}
-
-	@Test
-	public void testGetUserGroups() {
-		List<Group> result = accountManager.getUserGroups("SJDK3849CKMS3849DJCK2039ZMSK0001");
 		assertEquals(result.size(), 1);
 	}
 	

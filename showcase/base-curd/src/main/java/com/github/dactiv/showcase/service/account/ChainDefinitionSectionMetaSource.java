@@ -3,12 +3,11 @@ package com.github.dactiv.showcase.service.account;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
-import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
-import com.github.dactiv.showcase.entity.account.Group;
-import com.github.dactiv.showcase.entity.account.Resource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.github.dactiv.showcase.entity.account.Resource;
 
 
 /**
@@ -44,13 +43,6 @@ public class ChainDefinitionSectionMetaSource implements FactoryBean<Ini.Section
         for (Resource resource : accountManager.getResources()) {
         	if(StringUtils.isNotEmpty(resource.getValue()) && StringUtils.isNotEmpty(resource.getPermission())) {
         		section.put(resource.getValue(), resource.getPermission());
-        	}
-        }
-        
-        //循环数据库组的url
-        for (Group group : accountManager.getGroup(GroupType.RoleGorup)) {
-        	if(StringUtils.isNotEmpty(group.getValue()) && StringUtils.isNotEmpty(group.getRole())) {
-        		section.put(group.getValue(), group.getRole());
         	}
         }
         

@@ -18,7 +18,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -37,23 +36,13 @@ import com.github.dactiv.showcase.entity.IdEntity;
  */
 @Entity
 @Table(name="TB_GROUP")
-@NamedQueries({
-		@NamedQuery(name=Group.UserGroups,
-            query="select gl from User u left join u.groupsList gl  where u.id=?1 and gl.type= '03'"),
-        @NamedQuery(name=Group.LeafTureNotAssociated,
-			query="from Group g where g.leaf = 1 and (select count(sr) from Group sr where sr.parent.id = g.id) = 0")
-})
+@NamedQuery(name=Group.LeafTureNotAssociated,query="from Group g where g.leaf = 1 and (select count(sr) from Group sr where sr.parent.id = g.id) = 0")
 public class Group extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 获取用户所有组集合NamedQuery
-	 */
-	public static final String UserGroups = "userGroups";
 	
 	/**
-	 * 获取所有资源的leaf = true 并且没有子类的资源
+	 * 获取所有组的leaf = true 并且没有子类的组
 	 */
 	public static final String LeafTureNotAssociated = "groupLeafTureNotAssociated";
 	
@@ -72,13 +61,9 @@ public class Group extends IdEntity{
 	//状态
 	private Integer state;
 	//是否包含叶子节点
-	private Boolean leaf;
+	private Boolean leaf = Boolean.FALSE;
 	//拥有资源
 	private List<Resource> resourcesList = new ArrayList<Resource>();
-	//shiro role 字符串
-	private String role;
-	//shiro role连定义的值
-	private String value;
 	
 	/**
 	 * 构造方法
@@ -278,42 +263,6 @@ public class Group extends IdEntity{
 	public Boolean getLeaf() {
 		return leaf;
 		
-	}
-	
-	/**
-	 * 获取shiro role字符串
-	 * @return String
-	 */
-	@Length(max=64)
-	@Column(length=64)
-	public String getRole() {
-		return role;
-	}
-
-	/**
-	 * 设置shiro role字符串
-	 * @param role 字符串
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	/**
-	 * 获取shiro role连定义的值
-	 * @return String
-	 */
-	@Length(max=256)
-	@Column(length=256)
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * 设置 shiro role连定义的值
-	 * @param value 值
-	 */
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	/**

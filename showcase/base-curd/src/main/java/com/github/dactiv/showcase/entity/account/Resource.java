@@ -37,7 +37,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name="TB_RESOURCE")
 @NamedQueries({
 	@NamedQuery(name=Resource.UserResources,
-				query="select rl from User u left join u.groupsList gl left join gl.resourcesList rl where u.id=?1 and gl.type= '03' order by rl.sort"),
+				query="select rl from User u left join u.groupsList gl left join gl.resourcesList rl where u.id=?1 and gl.type= '03' and gl.state = 1 order by rl.sort"),
 	@NamedQuery(name=Resource.LeafTureNotAssociated,
 				query="from Resource r where r.leaf = 1 and (select count(sr) from Resource sr where sr.parent.id = r.id) = 0")
 })
@@ -64,7 +64,7 @@ public class Resource extends IdEntity{
 	//顺序值
 	private Long sort;
 	//是否包含叶子节点
-	private Boolean leaf;
+	private Boolean leaf = Boolean.FALSE;
 	//子类
 	private List<Resource> children = new ArrayList<Resource>();
 	//备注

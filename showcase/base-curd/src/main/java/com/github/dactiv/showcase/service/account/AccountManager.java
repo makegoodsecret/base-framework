@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
@@ -199,6 +200,7 @@ public class AccountManager {
 	 * 
 	 * @param entity 资源实体
 	 */
+	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void saveResource(Resource entity) {
 		
 		//如果sort等于null值，设置一个最新的值给entity
@@ -216,13 +218,18 @@ public class AccountManager {
 	}
 	
 	/**
-	 * 通过资源id删除资源
+	 * 通过资源实体集合删除资源
 	 * 
-	 * @param ids 资源id集合 
+	 * @param resources 资源实体集合 
 	 */
-	public void deleteResources(List<String> ids) {
-		List<Resource> list = resourceDao.get(ids);
-		for (Resource entity : list) {
+	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
+	public void deleteResources(List<Resource> resources) {
+		
+		if (CollectionUtils.isEmpty(resources)) {
+			return ;
+		}
+		
+		for (Resource entity : resources) {
 			resourceDao.delete(entity);
 		}
 		resourceDao.refreshAllLeaf();
@@ -347,17 +354,6 @@ public class AccountManager {
 		filters.add(PropertyFilters.build("EQS_type", groupType.getValue()));
 		
 		return groupDao.findByPropertyFilter(filters);
-	}
-
-	/**
-	 * 通过用户id获取所有资源
-	 * 
-	 * @param userId 用户id
-	 * 
-	 * @return List
-	 */
-	public List<Group> getUserGroups(String userId) {
-		return groupDao.getUserGorups(userId);
 	}
 
 }

@@ -17,17 +17,6 @@ import com.github.dactiv.showcase.entity.account.Group;
 public class GroupDao extends HibernateSupportDao<Group, String>{
 
 	/**
-	 * 通过用户id获取所有组
-	 * 
-	 * @param userId 用户id
-	 * 
-	 * @return List
-	 */
-	public List<Group> getUserGorups(String userId) {
-		return findByQuery(Group.UserGroups, userId);
-	}
-	
-	/**
 	 * 刷新一次Group的leaf字段，如果该leaf = 1 并且该组没有子类，把该组的leaf改成0
 	 */
 	public void refreshAllLeaf() {

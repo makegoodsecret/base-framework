@@ -3,20 +3,18 @@ package com.github.dactiv.showcase.common;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.common.enumeration.ValueEnum;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.service.foundation.SystemVariableManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.google.common.collect.Lists;
 
 /**
@@ -35,14 +33,6 @@ public class SystemVariableUtils {
 	@Autowired
 	public void setSystemVariableManager(SystemVariableManager systemDictionaryManager) {
 		SystemVariableUtils.systemVariableManager = systemDictionaryManager;
-	}
-	
-	/**
-	 * 为了能够借助Spring自动注入systemDictionaryManager这个Bean.写一个空方法借助@PostConstruct注解注入
-	 */
-	@PostConstruct
-	public void init() {
-		
 	}
 
 	/**

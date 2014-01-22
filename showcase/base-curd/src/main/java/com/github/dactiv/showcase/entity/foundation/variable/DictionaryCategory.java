@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -26,9 +27,15 @@ import com.github.dactiv.showcase.entity.IdEntity;
  */
 @Entity
 @Table(name="TB_DICTIONARY_CATEGORY")
+@NamedQuery(name=DictionaryCategory.LeafTureNotAssociated,query="from DictionaryCategory dc where dc.leaf = 1 and (select count(sr) from DictionaryCategory sr where sr.parent.id = dc.id) = 0")
 public class DictionaryCategory extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 获取所有字典类别的leaf = true 并且没有子类的字典类别
+	 */
+	public static final String LeafTureNotAssociated = "dictionaryCategoryLeafTureNotAssociated";
 	
 	//名称
 	private String name;
@@ -42,6 +49,8 @@ public class DictionaryCategory extends IdEntity{
 	private List<DictionaryCategory> children = new ArrayList<DictionaryCategory>();
 	//对应父类
 	private DictionaryCategory parent;
+	//是否包含叶子节点
+	private Boolean leaf = Boolean.FALSE;
 	
 	public DictionaryCategory() {
 		
@@ -167,15 +176,23 @@ public class DictionaryCategory extends IdEntity{
 	}
 	
 	/**
-	 * 获取当前实体是否是为根节点,如果是返回ture，否则返回false
+	 * 获取是否包含叶子节点,如果是返回ture，否则返回false
 	 * 
-	 * @return boolean
+	 * @return Boolean
 	 */
-	@Transient
 	public Boolean getLeaf() {
-		return this.children != null && this.getChildren().size() > 0;
+		return leaf;
 	}
 	
+	/**
+	 * 设置是否包含叶子节点
+	 * 
+	 * @param leaf 如果是返回ture，否则返回false
+	 */
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
+	}
+
 	/**
 	 * 获取父类名称
 	 * 

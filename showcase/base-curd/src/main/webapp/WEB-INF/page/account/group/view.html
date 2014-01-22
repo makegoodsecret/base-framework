@@ -120,8 +120,6 @@
 							<th><input type="checkbox" id="selectAll"/></th>
 							<th>组名称</th>
 							<th>状态</th>
-							<th>访问允许role</th>
-							<th>拦截uri</th>
 							<th>所属父类</th>
 							<th>备注</th>
 							<th>操作</th>
@@ -129,15 +127,13 @@
 					</thead>
 					<tbody>
 						<#if page.result?size == 0>
-							<tr><td colspan="8"> 找不到要查询的记录 </td></tr>
+							<tr><td colspan="6"> 找不到要查询的记录 </td></tr>
 							<#else>
 							<#list page.result as r>
 							<tr>
 								<td><input type="checkbox" name="ids" value="${r.id}" /></td>
 								<td>${r.name!""}</td>
 								<td>${r.stateName!""}</td>
-								<td>${r.role!""}</td>
-								<td>${r.value!""}</td>
 								<td>${r.parentName!""}</td>
 								<td>${r.remark!""}</td>
 								<td>

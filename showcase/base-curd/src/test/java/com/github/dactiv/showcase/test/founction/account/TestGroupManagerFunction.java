@@ -35,8 +35,6 @@ public class TestGroupManagerFunction extends FunctionTestCaseSupport{
 		s.click(By.xpath("//a[@href='/dactiv-base-curd/account/group/read']"));
 		//填写表单
 		s.type(By.xpath("//form[@id='save-group-form']//input[@name='name']"), "test_group");
-		s.type(By.xpath("//form[@id='save-group-form']//input[@name='value']"), "/admin/**");
-		s.type(By.xpath("//form[@id='save-group-form']//input[@name='role']"), "role[admin]");
 		s.getSelect(By.xpath("//form[@id='save-group-form']//select[@name='parentId']")).selectByValue("402881c4408c7d2301408c86b7a80001");
 		//选中所有复选框
 		s.check(s.findElement(By.id("selectAll")));

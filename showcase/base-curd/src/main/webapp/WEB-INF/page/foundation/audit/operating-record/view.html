@@ -128,7 +128,7 @@
 								<td>${r.endDate!""}</td>
 								<td>${r.stateName}</td>
 								<td>
-									<@shiro.hasPermission name="data-dictionary:read">
+									<@shiro.hasPermission name="operating-record:read">
 									<a class="btn btn-default btn-sm" href="${base}/foundation/audit/operating-record/read?id=${r.id}">
 										<span class="glyphicon glyphicon-edit"></span>
 									</a>

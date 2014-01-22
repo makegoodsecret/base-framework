@@ -59,17 +59,18 @@ CREATE TABLE `tb_dictionary_category` (
   `name` varchar(256) NOT NULL,
   `remark` varchar(512) DEFAULT NULL,
   `fk_parent_id` varchar(32) DEFAULT NULL,
+  `leaf` tinyint(1) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tb_dictionary_category
 -- ----------------------------
-INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d46fc0e50001', 'state', '状态', null, null);
-INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d4709b9c0002', 'resource-type', '资源类型', null, null);
-INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d4712ca70003', 'group-type', '组类型', null, null);
-INSERT INTO `tb_dictionary_category` VALUES ('402881e437d47b250137d485274b0004', 'value-type', '值类型', null, null);
-INSERT INTO `tb_dictionary_category` VALUES ('402881e437d47b250137d485274b0005', 'operating-state', '操作状态', null, null);
+INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d46fc0e50001', 'state', '状态', null, null, '0');
+INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d4709b9c0002', 'resource-type', '资源类型', null, null, '0');
+INSERT INTO `tb_dictionary_category` VALUES ('402881e437d467d80137d4712ca70003', 'group-type', '组类型', null, null, '0');
+INSERT INTO `tb_dictionary_category` VALUES ('402881e437d47b250137d485274b0004', 'value-type', '值类型', null, null, '0');
+INSERT INTO `tb_dictionary_category` VALUES ('402881e437d47b250137d485274b0005', 'operating-state', '操作状态', null, null, '0');
 
 -- ----------------------------
 -- Table structure for tb_group
@@ -82,8 +83,6 @@ CREATE TABLE `tb_group` (
   `state` int(11) NOT NULL,
   `type` varchar(2) NOT NULL,
   `fk_parent_id` varchar(32) DEFAULT NULL,
-  `role` varchar(64) DEFAULT NULL,
-  `value` varchar(256) DEFAULT NULL,
   `leaf` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -91,9 +90,9 @@ CREATE TABLE `tb_group` (
 -- ----------------------------
 -- Records of tb_group
 -- ----------------------------
-INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, null, null, '0');
-INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, null, null, '0');
-INSERT INTO `tb_group` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', '', '1', '03', null, '', '', '0');
+INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c86b7a80001', '普通用户', null, '1', '03', null, '0');
+INSERT INTO `tb_group` VALUES ('402881c4408c7d2301408c870ed10002', '运维人员', null, '1', '03', null, '0');
+INSERT INTO `tb_group` VALUES ('SJDK3849CKMS3849DJCK2039ZMSK0002', '超级管理员', '', '1', '03', null, '0');
 
 -- ----------------------------
 -- Table structure for tb_group_resource

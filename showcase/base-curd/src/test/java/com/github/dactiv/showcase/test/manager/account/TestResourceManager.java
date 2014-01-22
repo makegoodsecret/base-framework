@@ -1,6 +1,6 @@
 package com.github.dactiv.showcase.test.manager.account;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -66,6 +66,7 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 	}
 
 	@Test
+	@Transactional
 	public void testSaveResource() {
 		Resource entity = new Resource();
 		entity.setName("test");
@@ -79,16 +80,26 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 		int after = countRowsInTable("tb_resource");
 		
 		assertEquals(before + 1, after);
+		assertFalse(entity.getLeaf());
+		
+		Resource parent = accountManager.getResource("SJDK3849CKMS3849DJCK2039ZMSK0004");
+		entity.setParent(parent);
+		accountManager.saveResource(entity);
+		assertTrue(parent.getLeaf());
+		entity.setParent(null);
+		accountManager.saveResource(entity);
+		assertFalse(entity.getLeaf());
 	}
 
 	@Test
 	public void testDeleteResources() {
 		
 		int before = countRowsInTable("tb_resource");
-		accountManager.deleteResources(Lists.newArrayList("SJDK3849CKMS3849DJCK2039ZMSK0004"));
+		accountManager.deleteResources(accountManager.getResources(Lists.newArrayList("SJDK3849CKMS3849DJCK2039ZMSK0004")));
 		int after = countRowsInTable("tb_resource");
 		
 		assertEquals(before - 5, after);
+		//TODO 实现删除后自动关联leaf单元测试
 	}
 
 	@Test
