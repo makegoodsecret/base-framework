@@ -19,6 +19,30 @@
 	</script>
 </#macro>
 
+<#macro recursionTree parent>
+	<li>
+	
+		<@shiro.hasPermission name="dictionary-category:read">
+		<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${parent.id}">
+			<span class="glyphicon glyphicon-edit"></span>
+		</a>
+		</@shiro.hasPermission>
+		<div class="node">
+			<label class="checkbox-inline"> 
+				<input type="checkbox" name="groupId" value="${parent.id}"> ${parent.name}
+			</label>
+		</div>
+		<#if parent.leaf>
+			<ul>
+				<#list parent.children as c>
+					<@recursionTree c />
+				</#list>
+			</ul>
+		</#if>
+		
+	</li>
+</#macro>
+
 <#macro body>
 	<div class="data-content">
 	
@@ -89,52 +113,38 @@
 								<div class="panel-heading">
 									<h3 class="panel-title"><span class="glyphicon glyphicon-briefcase"></span> 用户所在组</h3>
 								</div>
-								<div class="table-container">
-									<table class="table table-hover table-striped">
-							            <thead>
-								            <tr>
-								                <th>
-													<input type="checkbox" id="selectAll"/>
-								                </th>
-								                <th>
-													组名称
-								                </th>
-								                <th>
-								                	访问允许role
-								            	</th>
-								            	<th>
-								                	所属父类
-								            	</th>
-								                <th>
-													描述
-								                </th>
-								            </tr>
-								            </thead>
-								            <tbody>
-								            	<#list groupsList as gl>
-									            <tr>
-									            	<td>
-									                    <input type="checkbox" value="${gl.id}" name="groupId"/>
-									                </td>
-									                <td>
-									                    ${gl.name!""}
-									                </td>
-									                <td>
-								                    	${gl.role!""}
-								                    </td>
-								                    <td>
-								                    	${gl.parentName!""}
-								                    </td>
-									                <td>
-									                	${gl.remark!""}
-									                </td>
-									            </tr>
-									            </#list>
-								           </tbody>
-								        </table>
+								<div class="panel-body">
+									<div class="tree" data-cascade="true">
+										
+										<div class="input-group">
+											<div class="input-group-btn">
+												<button type="button" class="btn btn-default" data-toggle="checkAll">
+													<span class="glyphicon glyphicon-check"></span>
+												</button>
+												<button type="button" class="btn btn-default" data-toggle="uncheckedAll">
+													<span class="glyphicon glyphicon glyphicon-unchecked"></span>
+												</button>
+												<button type="button" class="btn btn-default" data-toggle="expandAll">
+													<span class="glyphicon glyphicon-folder-open"></span>
+												</button>
+												
+												<button type="button" class="btn btn-default" data-toggle="collapseAll">
+													<span class="glyphicon glyphicon-folder-close"></span>
+												</button>
+											</div>
+											<input type="text" placeholder="输入关键字可以过滤不匹配的数据" data-toggle='filter' class="form-control">
+										</div>
+										
+										<#if groupsList??>
+									    <ul>
+									    	<#list groupsList as gl>
+												<@recursionTree gl/>
+											</#list>
+									    </ul>
+									    </#if>
 									</div>
 								</div>
-							
+							</div>
 						</div>
 					</div>
 				</div>

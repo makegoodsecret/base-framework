@@ -5,11 +5,15 @@ import java.util.List;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
+import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.dao.foundation.variable.DataDictionaryDao;
 import com.github.dactiv.showcase.dao.foundation.variable.DictionaryCategoryDao;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.entity.foundation.variable.DictionaryCategory;
+import com.google.common.collect.Lists;
+
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -126,18 +130,6 @@ public class SystemVariableManager {
 	}
 	
 	/**
-	 * 获取字典类别分页对象
-	 * 
-	 * @param request 分页参数请求
-	 * @param filters 属性过滤器集合
-	 * 
-	 * @return {@link Page}
-	 */
-	public Page<DictionaryCategory> searchDictionaryCategoryPage(PageRequest request,List<PropertyFilter> filters) {
-		return dictionaryCategoryDao.findPage(request, filters);
-	}
-	
-	/**
 	 * 获取所有字典类别
 	 * 
 	 * @return List
@@ -155,6 +147,18 @@ public class SystemVariableManager {
 	 */
 	public List<DictionaryCategory> getDictionaryCategories(List<PropertyFilter> filters) {
 		return dictionaryCategoryDao.findByPropertyFilter(filters);
+	}
+
+	/**
+	 * 获取最顶级(父类)的字典类别集合
+	 * 
+	 * @return List
+	 */
+	public List<DictionaryCategory> getParentDictionaryCategories() {
+		List<PropertyFilter> filters = Lists.newArrayList(
+			PropertyFilters.build("EQS_parent.id","null")
+		);
+		return dictionaryCategoryDao.findByPropertyFilter(filters, Order.desc("id"));
 	}
 
 }

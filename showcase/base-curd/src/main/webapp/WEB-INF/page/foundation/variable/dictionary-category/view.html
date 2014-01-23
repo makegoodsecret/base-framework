@@ -8,16 +8,15 @@
 	<script type="text/javascript">
 
 		$(document).ready(function(){
-			
-			$("#selectAll").click(function(){
-				var checkbox = $(this),
-				children = checkbox.parents("table").find("tbody input[type='checkbox']");
-				
-				children.prop("checked",checkbox.is(":checked"));
+			$("#dictionary-category-view-form").submit(function(){
+				return $(this).find("checkbox:checked").length > 0;
 			});
 		});
 		
 		function submitDeleteForm() {
+			if ($("#dictionary-category-view-form").find("checkbox:checked").length == 0) {
+				return ;
+			}
 			bootbox.confirm("确定要删除吗？",function(result){
 				if (result) {
 					$("#dictionary-category-view-form").submit();
@@ -28,137 +27,97 @@
 	</script>
 </#macro>
 
+<#macro recursionTree parent>
+	<li>
+	
+		<@shiro.hasPermission name="dictionary-category:read">
+		<a class="btn btn-default btn-sm" href="${base}/foundation/variable/dictionary-category/read?id=${parent.id}">
+			<span class="glyphicon glyphicon-edit"></span>
+		</a>
+		</@shiro.hasPermission>
+		<div class="node">
+			<label class="checkbox-inline"> 
+				<input type="checkbox" name="ids" value="${parent.id}"> ${parent.name}
+			</label>
+			<strong>${parent.code}</strong>
+			<span>${parent.remark!''}</span>
+		</div>
+		<#if parent.leaf>
+			<ul>
+				<#list parent.children as c>
+					<@recursionTree c />
+				</#list>
+			</ul>
+		</#if>
+		
+	</li>
+</#macro>
+
 <#macro body>
-	<div class="modal fade" id="search-modal" role="dialog" aria-hidden="true">
-	   <div class="modal-dialog">
-	     <div class="modal-content">
-	     
-	       <div class="modal-header">
-	         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	         <h4 class="modal-title"><span class="glyphicon glyphicon-search"></span> 内容查询</h4>
-	       </div>
-	       <form id="dictionary-category-search-form" action="${base}/foundation/variable/dictionary-category/view" method="post">
-	       	   <input type="hidden" id="pageNo" name="pageNo" value="1" />
-		       <div class="modal-body">
-		       
-					<div class="form-group">
-			   			<div class="row">
-			    			<div class="col-xs-6">
-								<label for="filter_LIKES_name">类别名称:</label>
-								<input type="text" class="form-control" id="filter_LIKES_name" name="filter_LIKES_name" value="${RequestParameters.filter_LIKES_name!''}">
-							</div>
-							<div class="col-xs-6">
-								<label for="filter_EQS_code">类别代码:</label>
-								<input type="text" class="form-control" id="filter_EQS_code" name="filter_EQS_code" value="${RequestParameters.filter_EQS_code!''}">
-							</div>
-			   			</div>
-		   			</div>
-		   			
-		   			<div class="form-group">
-			   			<div class="row">
-			    			<div class="col-xs-12">
-								<label for="filter_EQS_parent.id">所属父类:</label>
-								<select class="form-control" name="filter_EQS_parent.id" id="filter_EQS_parent.id">
-									<option value="">无</option>
-					                <#list categoriesList as cl>
-					                	<option value="${cl.id}" <#if RequestParameters['filter_EQS_parent.id']?has_content && RequestParameters['filter_EQS_parent.id'] == cl.id>selected="selected"</#if> >${cl.name}</option>
-					                </#list>
-					           </select>
-							</div>
-			   			</div>
-		   			</div>
-				
-				</div>
-		       
-		       <div class="modal-footer">
-					<button type="submit" class="btn btn-success">
-						<span class="glyphicon glyphicon-ok"></span> 确定
-					</button>
-					<button type="reset" class="btn btn-warning">
-						<span class="glyphicon glyphicon-trash"></span> 重置
-					</button>
-		       </div>
-	       </form>
-	     </div>
-	   </div>
-	</div>
-  
+	
 	<div class="data-content">
 	
-	<ol class="breadcrumb">
-		<li class="active">字典类型管理</li>
-	</ol>
-	
-	<#if success?has_content>
-	<div class="alert alert-success fade in">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		<span class="glyphicon glyphicon-ok"></span> ${success}
-	</div>
-	</#if>
-	
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title"><span class="glyphicon glyphicon-folder-close"></span> 字典类型管理</h3>
+		<ol class="breadcrumb">
+			<li class="active">字典类型管理</li>
+		</ol>
+		
+		<#if success?has_content>
+		<div class="alert alert-success fade in">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<span class="glyphicon glyphicon-ok"></span> ${success}
 		</div>
-		<form id="dictionary-category-view-form" action="${base}/foundation/variable/dictionary-category/delete" valid="false" method="post">
-			<div class="table-container">
-				<table class="table table-hover table-striped">
-					<thead>
-						<tr>
-							<th><input type="checkbox" id="selectAll" /></th>
-							<th>类别名称</th>
-							<th>类别代码</th>
-							<th>所属父类</th>
-							<th>备注</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#if page.result?size == 0>
-							<tr><td colspan="6"> 找不到要查询的记录 </td></tr>
-							<#else>
-							<#list page.result as r>
-							<tr>
-								<td><input type="checkbox" name="ids" value="${r.id}" /></td>
-								<td>${r.name!""}</td>
-								<td>${r.code!""}</td>
-								<td>${r.parentName!""}</td>
-								<td>${r.remark!""}</td>
-								<td>
-									<@shiro.hasPermission name="dictionary-category:read">
-									<a class="btn btn-default btn-sm" href="${base}/foundation/variable/dictionary-category/read?id=${r.id}">
-										<span class="glyphicon glyphicon-edit"></span>
-									</a>
-									</@shiro.hasPermission>
-								</td>
-							</tr>
-							</#list>
-						</#if>
+		</#if>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-close"></span> 字典类型管理</h3>
+			</div>
+			<form id="dictionary-category-view-form" action="${base}/foundation/variable/dictionary-category/delete" valid="false" method="post">
+				<div class="panel-body">
+					<div class="tree">
 						
-					</tbody>
-				</table>
-			</div>
-			
-			<div class="panel-footer">
-				<a class="btn btn-info" data-toggle="modal" data-target="#search-modal">
-					<span class="glyphicon glyphicon-search"></span> 查询
-				</a>
+						<div class="input-group">
+							<div class="input-group-btn">
+								<button type="button" class="btn btn-default" data-toggle="expandAll">
+									<span class="glyphicon glyphicon-folder-open"></span>
+								</button>
+								
+								<button type="button" class="btn btn-default" data-toggle="collapseAll">
+									<span class="glyphicon glyphicon-folder-close"></span>
+								</button>
+							</div>
+							<input type="text" placeholder="输入关键字可以过滤不匹配的数据" data-toggle='filter' class="form-control">
+						</div>
+						
+						<#if dictionaryCategoryList??>
+					    <ul>
+					    	<#list dictionaryCategoryList as dc>
+								<@recursionTree dc />
+							</#list>
+					    </ul>
+					    </#if>
+					    
+					</div>
+				</div>
+					
 				
-				<@shiro.hasPermission name="dictionary-category:save">
-				<a href="${base}/foundation/variable/dictionary-category/read" class="btn btn-primary">
-					<span class="glyphicon glyphicon-plus"></span> 添加
-				</a>
-				</@shiro.hasPermission>
+				<div class="panel-footer">
+					<@shiro.hasPermission name="dictionary-category:save">
+					<a href="${base}/foundation/variable/dictionary-category/read" class="btn btn-primary">
+						<span class="glyphicon glyphicon-plus"></span> 添加
+					</a>
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="dictionary-category:delete">
+					<button type="button" class="btn btn-danger" onclick="submitDeleteForm();">
+						<span class="glyphicon glyphicon-remove"></span> 删除
+					</button>
+					</@shiro.hasPermission>
+					
+				</div>
 				
-				<@shiro.hasPermission name="dictionary-category:delete">
-				<button type="button" class="btn btn-danger" onclick="submitDeleteForm();">
-					<span class="glyphicon glyphicon-remove"></span> 删除
-				</button>
-				</@shiro.hasPermission>
-				
-				<@pagination 'dictionary-category-search-form' page />
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
 </#macro>
 

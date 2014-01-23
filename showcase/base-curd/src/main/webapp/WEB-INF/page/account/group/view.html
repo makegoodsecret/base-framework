@@ -6,17 +6,17 @@
 
 <#macro head>
 	<script type="text/javascript">
-
+		
 		$(document).ready(function(){
-			$("#selectAll").click(function(){
-				var checkbox = $(this),
-				children = checkbox.parents("table").find("tbody input[type='checkbox']");
-				
-				children.prop("checked",checkbox.is(":checked"));
+			$("#group-view-form").submit(function(){
+				return $(this).find("checkbox:checked").length > 0;
 			});
 		});
 		
 		function submitDeleteForm() {
+			if ($("#group-view-form").find("checkbox:checked").length == 0) {
+				return ;
+			}
 			bootbox.confirm("确定要删除吗？",function(result){
 				if (result) {
 					$("#group-view-form").submit();
@@ -27,73 +27,31 @@
 	</script>
 </#macro>
 
+<#macro recursionTree parent>
+	<li>
+	
+		<@shiro.hasPermission name="dictionary-category:read">
+		<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${parent.id}">
+			<span class="glyphicon glyphicon-edit"></span>
+		</a>
+		</@shiro.hasPermission>
+		<div class="node">
+			<label class="checkbox-inline"> 
+				<input type="checkbox" name="ids" value="${parent.id}"> ${parent.name}
+			</label>
+		</div>
+		<#if parent.leaf>
+			<ul>
+				<#list parent.children as c>
+					<@recursionTree c />
+				</#list>
+			</ul>
+		</#if>
+		
+	</li>
+</#macro>
+
 <#macro body>
-	<div class="modal fade" id="search-modal" role="dialog" aria-hidden="true">
-	   <div class="modal-dialog">
-	     <div class="modal-content">
-	     
-	       <div class="modal-header">
-	         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	         <h4 class="modal-title"><span class="glyphicon glyphicon-search"></span> 内容查询</h4>
-	       </div>
-	       <form id="group-search-form" action="${base}/account/group/view" method="post">
-	       	   <input type="hidden" id="pageNo" name="pageNo" value="1" />
-		       <div class="modal-body">
-		       
-					<div class="form-group">
-			   			<div class="row">
-			    			<div class="col-xs-12">
-								<label for="filter_LIKES_name">组名称:</label>
-								<input type="text" class="form-control" id="filter_LIKES_name" name="filter_LIKES_name" value="${RequestParameters.filter_LIKES_name!''}">
-							</div>
-			   			</div>
-		   			</div>
-		   			
-		   			<div class="form-group">
-			   			<div class="row">
-			    			<div class="col-xs-6">
-								<label for="filter_EQS_parent.id">所属父类:</label>
-								<select class="form-control" name="filter_EQS_parent.id" id="filter_EQS_parent.id">
-					        		<option value="">
-										无
-					                </option>
-					           		<#list groupsList as gl>
-						           		<option value="${gl.id}" <#if RequestParameters['filter_EQS_parent.id']?has_content && RequestParameters['filter_EQS_parent.id'] == gl.id >selected="selected"</#if> >
-											${gl.name}
-						                </option>
-					           		</#list>
-					           </select>
-							</div>
-							<div class="col-xs-6">
-								<label for="filter_EQI_state">状态:</label>
-								<select class="form-control" name="filter_EQI_state" id="filter_EQI_state">
-					           		<option value="">
-										全部
-					                </option>
-					                <#list states as s>
-						                <option value="${s.value}" <#if RequestParameters.filter_EQI_state?has_content && RequestParameters.filter_EQI_state == s.value >selected="selected"</#if>>
-											${s.name}
-						                </option>
-					                </#list>
-					           </select>
-							</div>
-			   			</div>
-		   			</div>
-				
-				</div>
-		       
-		       <div class="modal-footer">
-					<button type="submit" class="btn btn-success">
-						<span class="glyphicon glyphicon-ok"></span> 确定
-					</button>
-					<button type="reset" class="btn btn-warning">
-						<span class="glyphicon glyphicon-trash"></span> 重置
-					</button>
-		       </div>
-	       </form>
-	     </div>
-	   </div>
-	</div>
   
 	<div class="data-content">
 	
@@ -113,48 +71,33 @@
 			<h3 class="panel-title"><span class="glyphicon glyphicon-briefcase"></span> 组管理</h3>
 		</div>
 		<form id="group-view-form" action="${base}/account/group/delete" valid="false" method="post">
-			<div class="table-container">
-				<table class="table table-hover table-striped">
-					<thead>
-						<tr>
-							<th><input type="checkbox" id="selectAll"/></th>
-							<th>组名称</th>
-							<th>状态</th>
-							<th>所属父类</th>
-							<th>备注</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#if page.result?size == 0>
-							<tr><td colspan="6"> 找不到要查询的记录 </td></tr>
-							<#else>
-							<#list page.result as r>
-							<tr>
-								<td><input type="checkbox" name="ids" value="${r.id}" /></td>
-								<td>${r.name!""}</td>
-								<td>${r.stateName!""}</td>
-								<td>${r.parentName!""}</td>
-								<td>${r.remark!""}</td>
-								<td>
-									<@shiro.hasPermission name="group:read">
-									<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${r.id}">
-										<span class="glyphicon glyphicon-edit"></span>
-									</a>
-									</@shiro.hasPermission>
-								</td>
-							</tr>
-							</#list>
-						</#if>
-						
-					</tbody>
-				</table>
+			<div class="panel-body">
+				<div class="tree">
+					
+					<div class="input-group">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default" data-toggle="expandAll">
+								<span class="glyphicon glyphicon-folder-open"></span>
+							</button>
+							
+							<button type="button" class="btn btn-default" data-toggle="collapseAll">
+								<span class="glyphicon glyphicon-folder-close"></span>
+							</button>
+						</div>
+						<input type="text" placeholder="输入关键字可以过滤不匹配的数据" data-toggle='filter' class="form-control">
+					</div>
+					
+					<#if groupList??>
+				    <ul>
+				    	<#list groupList as gl>
+							<@recursionTree gl />
+						</#list>
+				    </ul>
+				    </#if>
+				    
+				</div>
 			</div>
 			<div class="panel-footer">
-				<a class="btn btn-info" data-toggle="modal" data-target="#search-modal">
-					<span class="glyphicon glyphicon-search"></span> 查询
-				</a>
-				
 				<@shiro.hasPermission name="group:save">
 				<a href="${base}/account/group/read" class="btn btn-primary">
 					<span class="glyphicon glyphicon-plus"></span> 添加
@@ -166,8 +109,6 @@
 					<span class="glyphicon glyphicon-remove"></span> 删除
 				</button>
 				</@shiro.hasPermission>
-				
-				<@pagination 'group-search-form' page />
 			</div>
 		</form>
 	</div>

@@ -10,10 +10,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.dactiv.orm.core.Page;
-import com.github.dactiv.orm.core.PageRequest;
-import com.github.dactiv.orm.core.PropertyFilter;
-import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
 import com.github.dactiv.showcase.entity.account.Group;
@@ -87,26 +83,11 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 	}
 
 	@Test
-	public void testSearchGroupPage() {
-		PageRequest request = new PageRequest();
-		
-		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_name", "员"),
-				PropertyFilters.build("EQS_type", "03")
-		);
-		
-		Page<Group> page = accountManager.searchGroupPage(request, filters);
-		
-		assertEquals(page.getTotalItems(), 2);
-		assertEquals(page.getTotalPages(), 1);
-	}
-
-	@Test
 	public void testGetAllGroupGroupType() {
-		List<Group> result = accountManager.getGroup(GroupType.RoleGorup);
+		List<Group> result = accountManager.getGroups(GroupType.RoleGorup);
 		assertEquals(result.size(), 3);
 		
-		result = accountManager.getGroup(GroupType.RoleGorup,"402881c4408c7d2301408c870ed10002","SJDK3849CKMS3849DJCK2039ZMSK0002");
+		result = accountManager.getGroups(GroupType.RoleGorup,"402881c4408c7d2301408c870ed10002","SJDK3849CKMS3849DJCK2039ZMSK0002");
 		assertEquals(result.size(), 1);
 	}
 	

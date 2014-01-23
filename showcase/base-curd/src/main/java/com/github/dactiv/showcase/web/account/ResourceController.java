@@ -3,7 +3,6 @@ package com.github.dactiv.showcase.web.account;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,11 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.common.utils.ReflectionUtils;
-import com.github.dactiv.orm.core.Page;
-import com.github.dactiv.orm.core.PageRequest;
-import com.github.dactiv.orm.core.PageRequest.Sort;
-import com.github.dactiv.orm.core.PropertyFilter;
-import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.annotation.OperatingAudit;
 import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
@@ -57,25 +51,11 @@ public class ResourceController {
 	/**
 	 * 获取资源列表,返回account/resource/view.html页面
 	 * 
-	 * @param pageRequest 分页实体信息
-	 * @param request HttpServlet请求
-	 * 
-	 * @return {@link Page}
+	 * @return List
 	 */
 	@RequestMapping("view")
-	public Page<Resource> view(PageRequest pageRequest,HttpServletRequest request) {
-		
-		List<PropertyFilter> filters = PropertyFilters.build(request,true);
-		
-		request.setAttribute("resourceType", SystemVariableUtils.getVariables(ResourceType.class));
-		request.setAttribute("resourcesList", accountManager.getResources());
-		
-		if (!pageRequest.isOrderBySetted()) {
-			pageRequest.setOrderBy("sort");
-			pageRequest.setOrderDir(Sort.DESC);
-		}
-		
-		return accountManager.searchResourcePage(pageRequest, filters);
+	public List<Resource> view() {
+		return accountManager.getParentResources();
 	}
 	
 	/**

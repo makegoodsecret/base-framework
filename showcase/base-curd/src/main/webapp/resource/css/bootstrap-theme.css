@@ -214,3 +214,37 @@ div, a:focus, .btn:focus {
 .no-margin {
 	margin: 0px;
 }
+
+.tree {
+    min-height:20px;
+    background-color:#fbfbfb;
+}
+
+.tree > ul {
+	padding-left: 0px;
+}
+
+.tree ul li {
+    list-style-type:none;
+    padding-top:5px;
+    position:relative;
+}
+
+.tree ul li .node {
+    border:1px solid #999;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none;
+}
+
+.tree ul li .node .glyphicon {
+	margin-right: 3px;
+}
+.tree ul li .node > * {
+	vertical-align: middle;
+} 
+
+.tree > ul li ul{
+	padding-left: 25px;
+}

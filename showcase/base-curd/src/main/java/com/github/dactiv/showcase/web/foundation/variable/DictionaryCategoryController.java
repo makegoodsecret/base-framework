@@ -3,7 +3,6 @@ package com.github.dactiv.showcase.web.foundation.variable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.github.dactiv.orm.core.Page;
-import com.github.dactiv.orm.core.PageRequest;
-import com.github.dactiv.orm.core.PageRequest.Sort;
 import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.annotation.OperatingAudit;
@@ -41,24 +37,12 @@ public class DictionaryCategoryController {
 	/**
 	 * 获取字典类别列表,返回foundation/variable/data-dictionary/view.html页面
 	 * 
-	 * @param pageRequest 分页实体信息
-	 * @param request HttpServlet请求
-	 * 
-	 * @return {@link Page}
+	 * @return List
 	 */
 	@RequestMapping("view")
-	public Page<DictionaryCategory> view(PageRequest pageRequest,HttpServletRequest request) {
-		
-		List<PropertyFilter> filters = PropertyFilters.build(request,true);
-		
-		if (!pageRequest.isOrderBySetted()) {
-			pageRequest.setOrderBy("id");
-			pageRequest.setOrderDir(Sort.DESC);
-		}
-		
-		request.setAttribute("categoriesList", systemDictionaryManager.getDictionaryCategories());
-		
-		return systemDictionaryManager.searchDictionaryCategoryPage(pageRequest, filters);
+	public List<DictionaryCategory> view() {
+		//查询所有父类的字典类别
+		return systemDictionaryManager.getParentDictionaryCategories();
 	}
 	
 	/**

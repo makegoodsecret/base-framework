@@ -16,10 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.dactiv.common.utils.ServletUtils;
 import com.github.dactiv.orm.core.Page;
-import com.github.dactiv.orm.core.PageRequest;
-import com.github.dactiv.orm.core.PageRequest.Sort;
-import com.github.dactiv.orm.core.PropertyFilter;
-import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.annotation.OperatingAudit;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
@@ -44,27 +40,11 @@ public class GroupController {
 	/**
 	 * 获取组列表,返回account/group/view.html页面
 	 * 
-	 * @param pageRequest 分页实体信息
-	 * @param request HttpServlet请求
-	 * 
 	 * @return {@link Page}
 	 */
 	@RequestMapping("view")
-	public Page<Group> view(PageRequest pageRequest,HttpServletRequest request) {
-		
-		List<PropertyFilter> filters = PropertyFilters.build(request,true);
-		
-		request.setAttribute("states", SystemVariableUtils.getVariables(State.class,3));
-		request.setAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup));
-		
-		if (!pageRequest.isOrderBySetted()) {
-			pageRequest.setOrderBy("id");
-			pageRequest.setOrderDir(Sort.DESC);
-		}
-		
-		filters.add(PropertyFilters.build("EQS_type", GroupType.RoleGorup.getValue()));
-		
-		return accountManager.searchGroupPage(pageRequest, filters);
+	public List<Group> view() {
+		return accountManager.getParentGroups(GroupType.RoleGorup);
 	}
 	
 	/**
@@ -113,9 +93,9 @@ public class GroupController {
 	@RequestMapping(value="read")
 	public void read(String id, Model model) {
 		
-		model.addAttribute("resourcesList", accountManager.getResources());
+		model.addAttribute("resourcesList", accountManager.getParentResources());
 		model.addAttribute("states", SystemVariableUtils.getVariables(State.class,3));
-		model.addAttribute("groupsList", accountManager.getGroup(GroupType.RoleGorup, id));
+		model.addAttribute("groupsList", accountManager.getGroups(GroupType.RoleGorup, id));
 	}
 	
 	/**

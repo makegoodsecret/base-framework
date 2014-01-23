@@ -1,21 +1,19 @@
 package com.github.dactiv.showcase.test.manager.account;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import com.github.dactiv.orm.core.Page;
-import com.github.dactiv.orm.core.PageRequest;
-import com.github.dactiv.orm.core.PropertyFilter;
-import com.github.dactiv.orm.core.PropertyFilters;
-import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
-import com.github.dactiv.showcase.entity.account.Resource;
-import com.github.dactiv.showcase.service.account.AccountManager;
-import com.github.dactiv.showcase.test.manager.ManagerTestCaseSupport;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
+import com.github.dactiv.showcase.entity.account.Resource;
+import com.github.dactiv.showcase.service.account.AccountManager;
+import com.github.dactiv.showcase.test.manager.ManagerTestCaseSupport;
 import com.google.common.collect.Lists;
 
 /**
@@ -49,20 +47,6 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 		List<Resource> result = accountManager.getResources(ids);
 		
 		assertEquals(result.size(), 4);
-	}
-
-	@Test
-	public void testSearchResourcePage() {
-		PageRequest request = new PageRequest();
-		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_name", "管理"),
-				PropertyFilters.build("LIKES_type", "01")
-				
-		);
-		Page<Resource> page = accountManager.searchResourcePage(request, filters);
-		
-		assertEquals(page.getTotalItems(), 8);
-		assertEquals(page.getTotalPages(), 1);
 	}
 
 	@Test

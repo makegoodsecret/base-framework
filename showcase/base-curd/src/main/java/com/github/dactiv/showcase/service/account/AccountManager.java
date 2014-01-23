@@ -26,6 +26,7 @@ import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.entity.account.Resource;
 import com.github.dactiv.showcase.entity.account.User;
 import com.github.dactiv.showcase.service.ServiceException;
+import com.google.common.collect.Lists;
 
 /**
  * 账户管理业务逻辑
@@ -184,15 +185,15 @@ public class AccountManager {
 	}
 	
 	/**
-	 * 通过属性过滤器查询资源分页
+	 * 获取最顶级(父类)的资源集合
 	 * 
-	 * @param request 分页参数
-	 * @param filters 属性过滤器集合
-	 * 
-	 * @return {@link Page}
+	 * @return List
 	 */
-	public Page<Resource> searchResourcePage(PageRequest request,List<PropertyFilter> filters) {
-		return resourceDao.findPage(request, filters);
+	public List<Resource> getParentResources() {
+		List<PropertyFilter> filters = Lists.newArrayList(
+			PropertyFilters.build("EQS_parent.id","null")
+		);
+		return resourceDao.findByPropertyFilter(filters, Order.asc("sort"));
 	}
 	
 	/**
@@ -321,19 +322,6 @@ public class AccountManager {
 		groupDao.deleteAll(ids);
 		groupDao.refreshAllLeaf();
 	}
-
-	/**
-	 * 通过属性过滤器查询组分页
-	 * 
-	 * @param request 分页参数
-	 * @param filters 属性过滤器集合
-	 * 
-	 * @return {@link Page}
-	 */
-	public Page<Group> searchGroupPage(PageRequest request,List<PropertyFilter> filters) {
-		
-		return groupDao.findPage(request, filters);
-	}
 	
 	/**
 	 * 根据组类型获取所有组信息
@@ -343,7 +331,7 @@ public class AccountManager {
 	 * 
 	 * @return List
 	 */
-	public List<Group> getGroup(GroupType groupType,String... ignoreIdValue) {
+	public List<Group> getGroups(GroupType groupType,String... ignoreIdValue) {
 		
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
 		
@@ -354,6 +342,21 @@ public class AccountManager {
 		filters.add(PropertyFilters.build("EQS_type", groupType.getValue()));
 		
 		return groupDao.findByPropertyFilter(filters);
+	}
+
+	/**
+	 * 获取最顶级(父类)的组集合
+	 * 
+	 * @param type 组类型
+	 * 
+	 * @return List
+	 */
+	public List<Group> getParentGroups(GroupType type) {
+		List<PropertyFilter> filters = Lists.newArrayList(
+			PropertyFilters.build("EQS_parent.id","null"),
+			PropertyFilters.build("EQS_type", type.getValue())
+		);
+		return groupDao.findByPropertyFilter(filters, Order.asc("id"));
 	}
 
 }

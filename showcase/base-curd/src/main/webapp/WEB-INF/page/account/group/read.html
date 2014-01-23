@@ -19,6 +19,42 @@
 	</script>
 </#macro>
 
+<#macro recursionTree parent resourcesList>
+	<li>
+	
+		<@shiro.hasPermission name="dictionary-category:read">
+		<a class="btn btn-default btn-sm" href="${base}/account/resource/read?id=${parent.id}">
+			<span class="glyphicon glyphicon-edit"></span>
+		</a>
+		</@shiro.hasPermission>
+		<div class="node">
+			<#if parent.icon??>
+			<span class="glyphicon ${parent.icon!''}"></span>
+			</#if>
+			<label class="checkbox-inline">
+				<#assign isSelected = false />
+               	<#list resourcesList as erl>
+               		<#if erl.id == parent.id>
+               			<#assign isSelected = true />
+               			<#break />
+               		</#if>
+               	</#list>
+				<input type="checkbox" name="resourceId" <#if isSelected>checked="true"</#if> value="${parent.id}"> ${parent.name}
+			</label>
+			<span>${parent.typeName}</span>
+			<span>${parent.remark!''}</span>
+		</div>
+		<#if parent.leaf>
+			<ul>
+				<#list parent.children as c>
+					<@recursionTree c resourcesList/>
+				</#list>
+			</ul>
+		</#if>
+		
+	</li>
+</#macro>
+
 <#macro body>
 	<div class="data-content">
 	
@@ -82,59 +118,38 @@
 								<div class="panel-heading">
 									<h3 class="panel-title"><span class="glyphicon glyphicon-link"></span> 拥有资源</h3>
 								</div>
-								<div class="table-container">
-									<table class="table table-hover table-striped">
-							            <thead>
-								            <tr>
-								                <th>
-													<input type="checkbox" id="selectAll"/>
-								                </th>
-								                <th>
-													资源名称
-								                </th>
-								                <th>
-								                	访问允许permission
-								            	</th>
-								                <th>
-								                	资源类型
-								            	</th>
-								                <th>
-													描述
-								                </th>
-								            </tr>
-								            </thead>
-								            <tbody>
-								            	<#list resourcesList as rl>
-									            <tr>
-									            	<td>
-									            		<#assign isSelected = false />
-									                	<#list entity.resourcesList as erl>
-									                		<#if erl.id == rl.id>
-									                			<#assign isSelected = true />
-									                			<#break />
-									                		</#if>
-									                	</#list>
-									                    <input type="checkbox" value="${rl.id}" name="resourceId" <#if isSelected>checked="true"</#if>/>
-									                </td>
-									                <td>
-									                    ${rl.name!""}
-									                </td>
-									                <td>
-								                    	${rl.permission!""}
-								                    </td>
-								                    <td>
-								                    	${rl.typeName!""}
-								                    </td>
-									                <td>
-									                	${rl.remark!""}
-									                </td>
-									            </tr>
-									            </#list>
-								           </tbody>
-								        </table>
+								<div class="panel-body">
+									<div class="tree" data-cascade="true">
+										
+										<div class="input-group">
+											<div class="input-group-btn">
+												<button type="button" class="btn btn-default" data-toggle="checkAll">
+													<span class="glyphicon glyphicon-check"></span>
+												</button>
+												<button type="button" class="btn btn-default" data-toggle="uncheckedAll">
+													<span class="glyphicon glyphicon glyphicon-unchecked"></span>
+												</button>
+												<button type="button" class="btn btn-default" data-toggle="expandAll">
+													<span class="glyphicon glyphicon-folder-open"></span>
+												</button>
+												
+												<button type="button" class="btn btn-default" data-toggle="collapseAll">
+													<span class="glyphicon glyphicon-folder-close"></span>
+												</button>
+											</div>
+											<input type="text" placeholder="输入关键字可以过滤不匹配的数据" data-toggle='filter' class="form-control">
+										</div>
+										
+										<#if resourcesList??>
+									    <ul>
+									    	<#list resourcesList as rl>
+												<@recursionTree rl entity.resourcesList/>
+											</#list>
+									    </ul>
+									    </#if>
 									</div>
 								</div>
-							
+							</div>
 						</div>
 					</div>
 				</div>
