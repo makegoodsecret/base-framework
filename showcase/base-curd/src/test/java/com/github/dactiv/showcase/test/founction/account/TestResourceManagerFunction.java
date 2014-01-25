@@ -26,10 +26,10 @@ public class TestResourceManagerFunction extends FunctionTestCaseSupport{
 		s.click(By.id("SJDK3849CKMS3849DJCK2039ZMSK0003"));
 		s.click(By.id("SJDK3849CKMS3849DJCK2039ZMSK0010"));
 		
-		//获取table中的所有操作前的tr
-		List<WebElement> beforeTrs = s.findElements(By.xpath("//table//tbody//tr"));
-		//断言所有tr是否等于期望值
-		assertEquals(beforeTrs.size(), 10);
+		//获取tree中的所有操作前的li节点
+		List<WebElement> beforeLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(beforeLi.size(), 25);
 		
 		//打开添加页面
 		s.click(By.xpath("//a[@href='/dactiv-base-curd/account/resource/read']"));
@@ -50,8 +50,13 @@ public class TestResourceManagerFunction extends FunctionTestCaseSupport{
 		String message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("保存成功"));
 		
+		//获取tree中的所有操作后的li节点
+		List<WebElement> afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
+		
 		//点击编辑功能
-		s.findElement(By.xpath("//*//td[contains(text(),'test_menu')]//..//a")).click();
+		s.findElement(By.xpath("//*//div//*[contains(text(),'test_menu')]//..//..//..//a[@href!='']")).click();
 		//填写表单
 		s.type(By.xpath("//form[@id='save-resource-form']//input[@name='name']"), "test_menu_modify");
 		s.getSelect(By.xpath("//form[@id='save-resource-form']//select[@name='type']")).selectByValue("02");
@@ -63,8 +68,12 @@ public class TestResourceManagerFunction extends FunctionTestCaseSupport{
 		message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("保存成功"));
 		
+		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
+		
 		//选中删除的记录
-		s.check(By.xpath("//*//td[contains(text(),'test_menu_modify')]//..//input"));
+		s.check(By.xpath("//*//div//*[contains(text(),'test_menu')]//..//input"));
 		//提交删除表单
 		s.click(By.xpath("//div[@class='panel-footer']//*[@type='button']"));
 		s.click(By.xpath("//div[@class='bootbox modal fade bootbox-confirm in']//*[@data-bb-handler='confirm']"));
@@ -73,23 +82,9 @@ public class TestResourceManagerFunction extends FunctionTestCaseSupport{
 		message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("删除1条信息成功"));
 		
-		//打开查询框
-		s.click(By.xpath("//div[@class='panel-footer']//*[@data-toggle='modal']"));
-		s.waitForVisible(By.id("search-modal"));
-		
-		//设置查询条件值
-		s.type(By.id("filter_LIKES_name"), "查看");
-		s.getSelect(By.name("filter_EQS_type")).selectByValue("02");
-		s.type(By.id("filter_LIKES_value"), "/foundation/");
-		s.type(By.id("filter_LIKES_permission"), "operating-record");
-		s.getSelect(By.name("filter_EQS_parent.id")).selectByValue("SJDK3849CKMS3849DJCK2039ZMSK0026");
-		
-		//查询
-		s.click(By.xpath("//div[@class='modal-footer']//button[@type='submit']"));
-		
-		List<WebElement> aflterTrs = s.findElement(By.tagName("table")).findElements(By.xpath("//tbody//tr"));
-		//断言查询后的记录数
-		assertEquals(aflterTrs.size(), 1);
+		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
 	}
 	
 }

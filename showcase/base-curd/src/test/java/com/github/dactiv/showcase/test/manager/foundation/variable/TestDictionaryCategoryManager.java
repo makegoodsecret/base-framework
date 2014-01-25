@@ -57,7 +57,6 @@ public class TestDictionaryCategoryManager extends ManagerTestCaseSupport {
 		int afterRow = countRowsInTable("TB_DICTIONARY_CATEGORY");
 		
 		assertEquals(beforeRow, afterRow + 1);
-		//TODO 实现删除后自动关联leaf单元测试
 	}
 
 	@Test
@@ -65,5 +64,10 @@ public class TestDictionaryCategoryManager extends ManagerTestCaseSupport {
 		List<DictionaryCategory> result = systemVariableManager.getDictionaryCategories();
 		assertEquals(5, result.size());
 	}
-
+	
+	@Test
+	public void testGetParentDictionaryCategories() {
+		List<DictionaryCategory> list = systemVariableManager.getParentDictionaryCategories();
+		assertEquals(list.size(), 5);
+	}
 }

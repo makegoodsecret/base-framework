@@ -76,14 +76,17 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 	}
 
 	@Test
+	@Transactional
 	public void testDeleteResources() {
 		
 		int before = countRowsInTable("tb_resource");
-		accountManager.deleteResources(accountManager.getResources(Lists.newArrayList("SJDK3849CKMS3849DJCK2039ZMSK0004")));
+		List<String> ids = Lists.newArrayList("SJDK3849CKMS3849DJCK2039ZMSK0022","SJDK3849CKMS3849DJCK2039ZMSK0023","SJDK3849CKMS3849DJCK2039ZMSK0024");
+		accountManager.deleteResources(accountManager.getResources(ids));
 		int after = countRowsInTable("tb_resource");
 		
-		assertEquals(before - 5, after);
-		//TODO 实现删除后自动关联leaf单元测试
+		assertEquals(before - 3, after);
+		Resource r = accountManager.getResource("SJDK3849CKMS3849DJCK2039ZMSK0018");
+		assertFalse(r.getLeaf());
 	}
 
 	@Test
@@ -100,5 +103,13 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 		List<Resource> result = accountManager.getUserResources("SJDK3849CKMS3849DJCK2039ZMSK0001");
 		assertEquals(result.size(), 25);
 	}
-
+	
+	@Test
+    public void testMergeResourcesToParent() {
+            List<Resource> result = accountManager.getUserResources("SJDK3849CKMS3849DJCK2039ZMSK0001");
+            result = accountManager.mergeResourcesToParent(result, ResourceType.Security);
+            assertEquals(result.size(), 2);
+            assertEquals(result.get(0).getChildren().size(),3);
+            assertEquals(result.get(1).getChildren().size(),3);
+    }
 }

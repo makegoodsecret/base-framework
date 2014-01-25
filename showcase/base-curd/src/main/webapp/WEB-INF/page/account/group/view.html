@@ -9,12 +9,12 @@
 		
 		$(document).ready(function(){
 			$("#group-view-form").submit(function(){
-				return $(this).find("checkbox:checked").length > 0;
+				return $(this).find("input[type='checkbox']:checked").length > 0;
 			});
 		});
 		
 		function submitDeleteForm() {
-			if ($("#group-view-form").find("checkbox:checked").length == 0) {
+			if ($("#group-view-form").find("input[type='checkbox']:checked").length == 0) {
 				return ;
 			}
 			bootbox.confirm("确定要删除吗？",function(result){
@@ -37,7 +37,7 @@
 		</@shiro.hasPermission>
 		<div class="node">
 			<label class="checkbox-inline"> 
-				<input type="checkbox" name="ids" value="${parent.id}"> ${parent.name}
+				<input type="checkbox" name="ids" value="${parent.id}"> <strong>${parent.name}</strong>
 			</label>
 		</div>
 		<#if parent.leaf>
@@ -76,6 +76,15 @@
 					
 					<div class="input-group">
 						<div class="input-group-btn">
+						
+							<button type="button" class="btn btn-default" data-toggle="checkAll">
+								<span class="glyphicon glyphicon-check"></span>
+							</button>
+							
+							<button type="button" class="btn btn-default" data-toggle="uncheckedAll">
+								<span class="glyphicon glyphicon glyphicon-unchecked"></span>
+							</button>
+							
 							<button type="button" class="btn btn-default" data-toggle="expandAll">
 								<span class="glyphicon glyphicon-folder-open"></span>
 							</button>

@@ -19,6 +19,7 @@ import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
+import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.dao.account.GroupDao;
 import com.github.dactiv.showcase.dao.account.ResourceDao;
 import com.github.dactiv.showcase.dao.account.UserDao;
@@ -271,6 +272,16 @@ public class AccountManager {
 	 */
 	public List<Resource> getUserResources(String userId) {
 		return resourceDao.getUserResources(userId);
+	}
+	
+	/**
+	 * 并合子类资源到父类中，返回一个新的资源集合
+	 * 
+	 * @param list 资源集合
+	 * @param resourceType 不需要并合的资源类型
+	 */
+	public List<Resource> mergeResourcesToParent(List<Resource> list,ResourceType ignoreType) {
+		return resourceDao.mergeToParent(list,ignoreType);
 	}
 	
 	//------------------------------组管理-----------------------------------//

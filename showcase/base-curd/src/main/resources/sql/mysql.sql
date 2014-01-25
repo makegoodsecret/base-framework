@@ -59,7 +59,7 @@ CREATE TABLE `tb_dictionary_category` (
   `name` varchar(256) NOT NULL,
   `remark` varchar(512) DEFAULT NULL,
   `fk_parent_id` varchar(32) DEFAULT NULL,
-  `leaf` tinyint(1) DEFAULT NULL
+  `leaf` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

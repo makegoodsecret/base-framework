@@ -1,20 +1,24 @@
 package com.github.dactiv.showcase.test.manager.foundation.variable;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.dactiv.common.type.FieldType;
+import com.github.dactiv.orm.core.Page;
+import com.github.dactiv.orm.core.PageRequest;
+import com.github.dactiv.orm.core.PropertyFilter;
+import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.entity.foundation.variable.DictionaryCategory;
 import com.github.dactiv.showcase.service.foundation.SystemVariableManager;
 import com.github.dactiv.showcase.test.manager.ManagerTestCaseSupport;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.collect.Lists;
 
 /**
@@ -51,6 +55,20 @@ public class TestDataDictionaryManager extends ManagerTestCaseSupport{
 		int afterRow = countRowsInTable("TB_DATA_DICTIONARY");
 		
 		assertEquals(afterRow, beforeRow - 2);
+	}
+	
+	@Test
+	public void testSearchDataDictionary() {
+		PageRequest request = new PageRequest();
+		
+		List<PropertyFilter> filters = Lists.newArrayList(
+				PropertyFilters.build("LIKES_type", "S")
+		);
+		
+		Page<DataDictionary> page = systemVariableManager.searchDataDictionaryPage(request, filters);
+		
+		assertEquals(page.getTotalItems(), 11);
+		assertEquals(page.getTotalPages(), 2);
 	}
 	
 	@Test

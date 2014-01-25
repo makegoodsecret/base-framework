@@ -2,6 +2,12 @@ package com.github.dactiv.showcase.service.foundation;
 
 import java.util.List;
 
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
@@ -12,12 +18,6 @@ import com.github.dactiv.showcase.dao.foundation.variable.DictionaryCategoryDao;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.entity.foundation.variable.DictionaryCategory;
 import com.google.common.collect.Lists;
-
-import org.hibernate.criterion.Order;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 系统字典管理业务逻辑

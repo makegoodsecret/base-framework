@@ -31,6 +31,8 @@ import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.common.utils.ConvertUtils;
 import com.github.dactiv.common.utils.ReflectionUtils;
 import com.github.dactiv.orm.annotation.StateDelete;
+import com.google.common.collect.Lists;
+
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
@@ -641,6 +643,11 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	public <X> List<X> distinct(String queryOrNamedQuery,Object... values) {
 		Query query = createQuery(queryOrNamedQuery, values);
 		query.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+		List<X> result = query.list();
+		
+		if (CollectionUtils.isEmpty(result) || result.get(0) == null) {
+			return Lists.newArrayList();
+		} 
 		
 		return query.list();
 	}

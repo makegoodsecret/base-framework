@@ -154,9 +154,12 @@ public class ResourceController {
 	 * @return {@link Resource}
 	 */
 	@RequestMapping("read")
-	public void read(String id, Model model) {
+	public void read(String id, Model model,@ModelAttribute("entity")Resource entity) {
 		model.addAttribute("resourceType", SystemVariableUtils.getVariables(ResourceType.class));
 		model.addAttribute("resourcesList", accountManager.getResources(id));
+		if (StringUtils.isEmpty(id)) {
+			entity.setSort(accountManager.getResourceCount() + 1);
+		}
 	}
 	
 	/**
@@ -194,10 +197,9 @@ public class ResourceController {
 	public Resource bindingModel(String id) {
 
 		Resource resource = new Resource();
+		
 		if (StringUtils.isNotEmpty(id)) {
 			resource = accountManager.getResource(id);
-		} else {
-			resource.setSort(accountManager.getResourceCount() + 1);
 		}
 
 		return resource;

@@ -42,7 +42,7 @@ public class TestUserManagerFunction extends FunctionTestCaseSupport{
 		s.type(By.xpath("//form[@id='create-user-form']//input[@name='email']"), "es.chenxiaobo@gmail.com");
 		
 		//选中所有复选框
-		s.check(s.findElement(By.id("selectAll")));
+		s.check(s.findElement(By.xpath("//button[@data-toggle='checkAll']")));
 		//提交表单，页面验证不通过
 		s.click(By.xpath("//div[@class='panel-footer']//button[@type='submit']"));
 		//设置最后的一个值
@@ -64,10 +64,8 @@ public class TestUserManagerFunction extends FunctionTestCaseSupport{
 		//填写表单
 		s.type(By.xpath("//form[@id='update-user-form']//input[@name='realname']"), "test_realname");
 		s.getSelect(By.xpath("//form[@id='update-user-form']//select[@name='state']")).selectByValue("2");
-		//选中所有复选框
-		for (WebElement element : s.findElements(By.name("groupId"))) {
-			s.uncheck(element);
-		}
+		//反选所有复选框
+		s.check(s.findElement(By.xpath("//button[@data-toggle='uncheckedAll']")));
 		
 		//提交表单
 		s.click(By.xpath("//div[@class='panel-footer']//button[@type='submit']"));

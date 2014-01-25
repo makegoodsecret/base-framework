@@ -79,7 +79,6 @@ public class TestGroupManager extends ManagerTestCaseSupport{
 		int after = countRowsInTable("tb_group");
 		
 		assertEquals(before - 1, after);
-		//TODO 实现删除后自动关联leaf单元测试
 	}
 
 	@Test

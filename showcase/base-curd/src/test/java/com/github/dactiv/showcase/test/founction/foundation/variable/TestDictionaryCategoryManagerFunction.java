@@ -27,9 +27,9 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		s.click(By.id("SJDK3849CKMS3849DJCK2039ZMSK0019"));
 		
 		//获取table中的所有操作前的tr
-		List<WebElement> beforeTrs = s.findElements(By.xpath("//table//tbody//tr"));
+		List<WebElement> beforeLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
 		//断言所有tr是否等于期望值
-		assertEquals(beforeTrs.size(), 5);
+		assertEquals(beforeLi.size(), 5);
 		
 		//打开添加页面
 		s.click(By.xpath("//a[@href='/dactiv-base-curd/foundation/variable/dictionary-category/read']"));
@@ -45,13 +45,13 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		String message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("保存成功"));
 		
-		//获取table中的所有操作前的tr
-		List<WebElement> aflterTrs = s.findElements(By.xpath("//table//tbody//tr"));
-		//添加成功后应该比开始的记录多一条
-		assertEquals(aflterTrs.size(), beforeTrs.size() + 1);
+		//获取tree中的所有操作后的li节点
+		List<WebElement> afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
 		
 		//点击编辑功能
-		s.findElement(By.xpath("//table//tbody//tr//*[text()='test_dictionary_category']//..//a")).click();
+		s.findElement(By.xpath("//*//div//*[contains(text(),'test_dictionary_category')]//..//..//..//a[@href!='']")).click();
 		//填写表单
 		s.type(By.xpath("//form[@id='save-dictionary-category-form']//input[@name='name']"), "test_dictionary_category_modify");
 		//提交表单
@@ -61,12 +61,13 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("保存成功"));
 		
-		aflterTrs = s.findElement(By.tagName("table")).findElements(By.xpath("//tbody//tr"));
-		//添加成功后应该比开始的记录多一条
-		assertEquals(aflterTrs.size(), beforeTrs.size() + 1);
+		//获取tree中的所有操作后的li节点
+		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
 		
 		//选中删除的记录
-		s.check(By.xpath("//table//tbody//tr//*[text()='test_dictionary_category_modify']//..//input"));
+		s.check(By.xpath("//*//div//*[contains(text(),'test_dictionary_category_modify')]//..//input"));
 		//提交删除表单
 		s.click(By.xpath("//div[@class='panel-footer']//*[@type='button']"));
 		s.click(By.xpath("//div[@class='bootbox modal fade bootbox-confirm in']//*[@data-bb-handler='confirm']"));
@@ -75,23 +76,10 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		message = s.findElement(By.className("alert")).getText();
 		assertTrue(message.contains("删除1条信息成功"));
 		
-		aflterTrs = s.findElement(By.tagName("table")).findElements(By.xpath("//tbody//tr"));
-		//删除成功后应该刚刚开始的记录一样
-		assertEquals(aflterTrs.size(), beforeTrs.size());
-		
-		//打开查询框
-		s.click(By.xpath("//div[@class='panel-footer']//*[@data-toggle='modal']"));
-		s.waitForVisible(By.id("search-modal"));
-		
-		//设置查询条件值
-		s.type(By.id("filter_LIKES_name"), "操作");
-		s.type(By.id("filter_EQS_code"), "operating-state");
-		//查询
-		s.click(By.xpath("//div[@class='modal-footer']//button[@type='submit']"));
-		
-		aflterTrs = s.findElement(By.tagName("table")).findElements(By.xpath("//tbody//tr"));
-		//断言查询后的记录数
-		assertEquals(aflterTrs.size(), 1);
+		//获取tree中的所有操作后的li节点
+		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
+		//断言所有li是否等于期望值
+		assertEquals(afterLi.size(), beforeLi.size() + 1);
 		
 	}
 	

@@ -111,7 +111,7 @@ public class User extends IdEntity{
 	 * @return String
 	 */
 	@NotEmpty
-	@Length(min=6,max=64)
+	@Length(max=64)
 	@Column(length=64,nullable=false)
 	public String getRealname() {
 		return realname;

@@ -42,7 +42,8 @@ public class FunctionTestCaseSupport {
 		//如果jetty没启动，启动jetty
 		if (jettyServer == null) {
 			// 设定Spring的profile
-			System.setProperty(LaunchJetty.ACTIVE_PROFILE, "test");
+			//FIXME 测试环境开启时,hibernate无法lazy
+			//System.setProperty(LaunchJetty.ACTIVE_PROFILE, "test");
 			
 			jettyServer = JettyFactory.createServerInSource(LaunchJetty.PORT, LaunchJetty.CONTEXT);
 			//JettyFactory.setTldJarNames(jettyServer, LaunchJetty.TLD_JAR_NAMES);

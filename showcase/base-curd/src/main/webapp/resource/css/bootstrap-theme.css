@@ -218,6 +218,8 @@ div, a:focus, .btn:focus {
 .tree {
     min-height:20px;
     background-color:#fbfbfb;
+    padding: 10px;
+    overflow: auto;
 }
 
 .tree > ul {
@@ -228,6 +230,7 @@ div, a:focus, .btn:focus {
     list-style-type:none;
     padding-top:5px;
     position:relative;
+    white-space: nowrap;
 }
 
 .tree ul li .node {
@@ -247,4 +250,7 @@ div, a:focus, .btn:focus {
 
 .tree > ul li ul{
 	padding-left: 25px;
+}
+.panel-body > .tree {
+	margin : -15px;
 }

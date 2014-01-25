@@ -9,12 +9,12 @@
 
 		$(document).ready(function(){
 			$("#resource-view-form").submit(function(){
-				return $(this).find("checkbox:checked").length > 0;
+				return $(this).find("input[type='checkbox']:checked").length > 0;
 			});
 		});
 		
 		function submitDeleteForm() {
-			if ($("#resource-view-form").find("checkbox:checked").length == 0) {
+			if ($("#resource-view-form").find("input[type='checkbox']:checked").length == 0) {
 				return ;
 			}
 			bootbox.confirm("确定要删除吗？",function(result){
@@ -36,11 +36,11 @@
 		</a>
 		</@shiro.hasPermission>
 		<div class="node">
-			<#if parent.icon??>
+			<#if parent.icon?has_content>
 			<span class="glyphicon ${parent.icon!''}"></span>
 			</#if>
 			<label class="checkbox-inline"> 
-				<input type="checkbox" name="ids" value="${parent.id}"> ${parent.name}
+				<input type="checkbox" name="ids" value="${parent.id}"> <strong>${parent.name}</strong>
 			</label>
 			<span>${parent.typeName}</span>
 			<span>${parent.remark!''}</span>
@@ -81,6 +81,13 @@
 					
 					<div class="input-group">
 						<div class="input-group-btn">
+							<button type="button" class="btn btn-default" data-toggle="checkAll">
+								<span class="glyphicon glyphicon-check"></span>
+							</button>
+							
+							<button type="button" class="btn btn-default" data-toggle="uncheckedAll">
+								<span class="glyphicon glyphicon glyphicon-unchecked"></span>
+							</button>
 							<button type="button" class="btn btn-default" data-toggle="expandAll">
 								<span class="glyphicon glyphicon-folder-open"></span>
 							</button>
