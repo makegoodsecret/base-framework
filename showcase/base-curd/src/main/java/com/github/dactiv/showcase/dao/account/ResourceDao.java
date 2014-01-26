@@ -31,18 +31,6 @@ public class ResourceDao extends HibernateSupportDao<Resource, String>{
 	}
 	
 	/**
-	 * 刷新一次Resource的leaf字段，如果该leaf = 1 并且该资源没有子类，把该资源的leaf改成0
-	 */
-	public void refreshAllLeaf() {
-		List<Resource> list = findByQuery(Resource.LeafTureNotAssociated);
-		for (Resource entity : list) {
-			entity.setLeaf(false);
-			save(entity);
-		}
-		
-	}
-	
-	/**
 	 * 并合子类资源到父类中，返回一个新的资源集合
 	 * 
 	 * @param list 资源集合

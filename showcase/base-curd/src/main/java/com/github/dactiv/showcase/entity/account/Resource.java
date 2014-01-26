@@ -18,13 +18,14 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.github.dactiv.showcase.common.SystemVariableUtils;
-import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
-import com.github.dactiv.showcase.entity.IdEntity;
-import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.github.dactiv.orm.annotation.TreeEntity;
+import com.github.dactiv.showcase.common.SystemVariableUtils;
+import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
+import com.github.dactiv.showcase.entity.IdEntity;
 
 
 /**
@@ -34,13 +35,9 @@ import org.hibernate.validator.constraints.NotEmpty;
  *
  */
 @Entity
+@TreeEntity
 @Table(name="TB_RESOURCE")
-@NamedQueries({
-	@NamedQuery(name=Resource.UserResources,
-				query="select rl from User u left join u.groupsList gl left join gl.resourcesList rl where u.id=?1 and gl.type= '03' and gl.state = 1 order by rl.sort"),
-	@NamedQuery(name=Resource.LeafTureNotAssociated,
-				query="from Resource r where r.leaf = 1 and (select count(sr) from Resource sr where sr.parent.id = r.id) = 0")
-})
+@NamedQuery(name=Resource.UserResources,query="select rl from User u left join u.groupsList gl left join gl.resourcesList rl where u.id=?1 and gl.type= '03' and gl.state = 1 order by rl.sort")
 public class Resource extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
@@ -49,11 +46,6 @@ public class Resource extends IdEntity{
 	 * 通过用户id和资源类型获取该用户下的所有资源
 	 */
 	public static final String UserResources = "userResources";
-	
-	/**
-	 * 获取所有资源的leaf = true 并且没有子类的资源
-	 */
-	public static final String LeafTureNotAssociated = "resourceLeafTureNotAssociated";
 	
 	//名称
 	private String name;

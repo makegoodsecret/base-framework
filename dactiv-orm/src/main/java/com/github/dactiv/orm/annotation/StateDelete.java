@@ -25,7 +25,7 @@ import com.github.dactiv.common.type.FieldType;
 
 
 /**
- * Hibernate状态删除，如果在orm实体配置该注解，将不会物理删除数据，会根据该配置来进行对orm实体的update操作
+ * 状态删除，如果在orm实体配置该注解，将不会物理删除数据，会根据该配置来进行对orm实体的update操作
  * 
  * 
  * <pre>

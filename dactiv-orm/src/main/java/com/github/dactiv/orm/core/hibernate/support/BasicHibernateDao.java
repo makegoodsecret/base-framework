@@ -17,6 +17,7 @@ package com.github.dactiv.orm.core.hibernate.support;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,12 +28,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.github.dactiv.common.utils.CollectionUtils;
-import com.github.dactiv.common.utils.ConvertUtils;
-import com.github.dactiv.common.utils.ReflectionUtils;
-import com.github.dactiv.orm.annotation.StateDelete;
-import com.google.common.collect.Lists;
-
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
@@ -50,10 +45,19 @@ import org.hibernate.internal.AbstractQueryImpl;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.jdbc.Work;
 import org.hibernate.metadata.ClassMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
+import com.github.dactiv.common.utils.CollectionUtils;
+import com.github.dactiv.common.utils.ReflectionUtils;
+import com.github.dactiv.orm.core.hibernate.interceptor.SecurityCodeInterceptor;
+import com.github.dactiv.orm.core.hibernate.interceptor.StateDeleteInterceptor;
+import com.github.dactiv.orm.core.hibernate.interceptor.TreeEntityInterceptor;
+import com.github.dactiv.orm.interceptor.OrmDeleteInterceptor;
+import com.github.dactiv.orm.interceptor.OrmInsertInterceptor;
+import com.github.dactiv.orm.interceptor.OrmSaveInterceptor;
+import com.github.dactiv.orm.interceptor.OrmUpdateInterceptor;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -62,10 +66,10 @@ import org.springframework.util.Assert;
  * @author maurice
  *
  * @param <T> ROM对象
- * @param <PK> ORM主键ID类型
+ * @param <ID> ORM主键ID类型
  */
 @SuppressWarnings("unchecked")
-public class BasicHibernateDao<T,PK extends Serializable> {
+public class BasicHibernateDao<T,ID extends Serializable> {
 	
 	protected SessionFactory sessionFactory;
 
@@ -73,13 +77,22 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	
 	protected final String DEFAULT_ALIAS = "X";
 	
-	private static Logger logger = LoggerFactory.getLogger(BasicHibernateDao.class); 
+	//当删除对象时的拦截器
+	private List<OrmDeleteInterceptor<T, BasicHibernateDao<T, ID>>> deleteInterceptors;
+	//当保存或更新对象时的拦截器
+	private List<OrmSaveInterceptor<T, BasicHibernateDao<T, ID>>> saveInterceptors;
+	//当插入对象时的拦截器
+	private List<OrmInsertInterceptor<T, BasicHibernateDao<T, ID>>> insertInterceptors;
+	//当更新对象时的拦截器
+	private List<OrmUpdateInterceptor<T, BasicHibernateDao<T, ID>>> updateInterceptors;
+	
 	
 	/**
 	 * 构造方法
 	 */
 	public BasicHibernateDao() {
 		entityClass = ReflectionUtils.getSuperClassGenricType(getClass());
+		installInterceptors();
 	}
 
 	/**
@@ -89,6 +102,105 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	 */
 	public BasicHibernateDao(Class<T> entityClass) {
 		this.entityClass = entityClass;
+		installInterceptors();
+	}
+	
+	/**
+	 * 获取删除拦截器集合
+	 * 
+	 * @return List
+	 */
+	public List<OrmDeleteInterceptor<T, BasicHibernateDao<T, ID>>> getDeleteInterceptors() {
+		return deleteInterceptors;
+	}
+
+	/**
+	 * 设置删除拦截器集合
+	 * 
+	 * @param deleteInterceptors 删除拦截器集合
+	 */
+	public void setDeleteInterceptors(List<OrmDeleteInterceptor<T, BasicHibernateDao<T, ID>>> deleteInterceptors) {
+		this.deleteInterceptors = deleteInterceptors;
+	}
+
+	/**
+	 * 获取保存或更新拦截器集合
+	 * 
+	 * @return List
+	 */
+	public List<OrmSaveInterceptor<T, BasicHibernateDao<T, ID>>> getSaveInterceptors() {
+		return saveInterceptors;
+	}
+
+	/**
+	 * 设置保存或更新拦截器集合
+	 * 
+	 * @param saveInterceptors 保存或更新拦截器集合
+	 */
+	public void setSaveInterceptors(List<OrmSaveInterceptor<T, BasicHibernateDao<T, ID>>> saveInterceptors) {
+		this.saveInterceptors = saveInterceptors;
+	}
+
+	/**
+	 * 获取插入拦截器集合
+	 * 
+	 * @return List
+	 */
+	public List<OrmInsertInterceptor<T, BasicHibernateDao<T, ID>>> getInsertInterceptors() {
+		return insertInterceptors;
+	}
+
+	/**
+	 * 设置插入拦截器集合
+	 * 
+	 * @param insertInterceptors 插入拦截器集合
+	 */
+	public void setInsertInterceptors(List<OrmInsertInterceptor<T, BasicHibernateDao<T, ID>>> insertInterceptors) {
+		this.insertInterceptors = insertInterceptors;
+	}
+
+	/**
+	 * 获取更新拦截器集合
+	 * 
+	 * @return List
+	 */
+	public List<OrmUpdateInterceptor<T, BasicHibernateDao<T, ID>>> getUpdateInterceptors() {
+		return updateInterceptors;
+	}
+
+	/**
+	 * 设置更新拦截器集合
+	 * 
+	 * @param updateInterceptors 更新拦截器集合
+	 */
+	public void setUpdateInterceptors(List<OrmUpdateInterceptor<T, BasicHibernateDao<T, ID>>> updateInterceptors) {
+		this.updateInterceptors = updateInterceptors;
+	}
+
+	/**
+	 * 初始化所有拦截器
+	 */
+	private void installInterceptors() {
+		
+		//----初始化删除需要的所有拦截器----//
+		deleteInterceptors = new ArrayList<OrmDeleteInterceptor<T,BasicHibernateDao<T,ID>>>();
+		deleteInterceptors.add(new StateDeleteInterceptor<T, ID>());
+		deleteInterceptors.add(new TreeEntityInterceptor<T, ID>());
+		
+		//----初始化保存或更新需要的所有拦截器----//
+		saveInterceptors = new ArrayList<OrmSaveInterceptor<T,BasicHibernateDao<T,ID>>>();
+		saveInterceptors.add(new TreeEntityInterceptor<T, ID>());
+		saveInterceptors.add(new SecurityCodeInterceptor<T, ID>());
+		
+		//----初始化插入需要的所有拦截器----//
+		updateInterceptors = new ArrayList<OrmUpdateInterceptor<T,BasicHibernateDao<T,ID>>>();
+		updateInterceptors.add(new TreeEntityInterceptor<T, ID>());
+		updateInterceptors.add(new SecurityCodeInterceptor<T, ID>());
+		
+		//----初始化更新需要的所有拦截器----//
+		insertInterceptors = new ArrayList<OrmInsertInterceptor<T,BasicHibernateDao<T,ID>>>();
+		insertInterceptors.add(new TreeEntityInterceptor<T, ID>());
+		insertInterceptors.add(new SecurityCodeInterceptor<T, ID>());
 	}
 
 	/**
@@ -125,7 +237,20 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	 * @param entity orm实体
 	 */
 	public void insert(T entity) {
+		
+		for (OrmInsertInterceptor<T,BasicHibernateDao<T, ID>> interceptor : insertInterceptors) {
+			if (!interceptor.onInsert(entity, this)) {
+				return ;
+			}
+		}
+		
 		getSession().save(entity);
+		
+		Serializable id = ReflectionUtils.invokeGetterMethod(entity, getIdName());
+		
+		for (OrmInsertInterceptor<T,BasicHibernateDao<T, ID>> interceptor : insertInterceptors) {
+			interceptor.onPostInsert(entity, this, id);
+		}
 	}
 	
 	/**
@@ -150,7 +275,20 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	 * @param entity orm实体
 	 */
 	public void update(T entity) {
+		Serializable id = ReflectionUtils.invokeGetterMethod(entity, getIdName());
+		
+		for (OrmUpdateInterceptor<T,BasicHibernateDao<T, ID>> interceptor : updateInterceptors) {
+			if (!interceptor.onUpdate(entity, this,id)) {
+				return ;
+			}
+		}
+		
 		getSession().update(entity);
+		
+		for (OrmUpdateInterceptor<T,BasicHibernateDao<T, ID>> interceptor : updateInterceptors) {
+			
+			interceptor.onPostUpdate(entity, this,id);
+		}
 	}
 	
 	/**
@@ -172,7 +310,20 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	 * @param entity orm实体
 	 */
 	public void save(T entity) {
+		Serializable id = ReflectionUtils.invokeGetterMethod(entity, getIdName());
+		
+		for (OrmSaveInterceptor<T,BasicHibernateDao<T, ID>> interceptor : saveInterceptors) {
+			if (!interceptor.onSave(entity, this, id)) {
+				return ;
+			}
+		}
+		
 		getSession().saveOrUpdate(entity);
+		
+		for (OrmSaveInterceptor<T,BasicHibernateDao<T, ID>> interceptor : saveInterceptors) {
+			interceptor.onPostSave(entity, this, id);
+		}
+		
 	}
 	
 	/**
@@ -193,45 +344,45 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	/**
 	 * 删除对象.
 	 * 
-	 * @param entity 对象必须是session中的对象或含PK属性的transient对象.
+	 * @param entity 对象必须是session中的对象或含ID属性的transient对象.
 	 */
 	public void delete(T entity) {
 		
-		if (entity == null) {
-			logger.warn("要删除的对象为:null");
-			return ;
+		for (OrmDeleteInterceptor<T,BasicHibernateDao<T, ID>> interceptor : deleteInterceptors) {
+			ID id = ReflectionUtils.invokeGetterMethod(entity, getIdName());
+			if (!interceptor.onDelete(id, entity, this)) {
+				return ;
+			}
 		}
-		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
-		StateDelete stateDelete = ReflectionUtils.getAnnotation(entityClass,StateDelete.class);
-		if (stateDelete != null) {
-			Object value = ConvertUtils.convertToObject(stateDelete.value(), stateDelete.type().getValue());
-			ReflectionUtils.invokeSetterMethod(entity, stateDelete.propertyName(), value);
-			update(entity);
-		} else {
-			getSession().delete(entity);
+		
+		getSession().delete(entity);
+		
+		for (OrmDeleteInterceptor<T,BasicHibernateDao<T, ID>> interceptor : deleteInterceptors) {
+			ID id = ReflectionUtils.invokeGetterMethod(entity, getIdName());
+			interceptor.onPostDelete(id, entity, this);
 		}
 		
 	}
 
 	/**
-	 * 按PK删除对象.
+	 * 按ID删除对象.
 	 * 
 	 * @param id 主键ID
 	 */
-	public void delete(PK id) {
+	public void delete(ID id) {
 		delete(get(id));
 	}
 
 	/**
-	 * 按PK批量删除对象
+	 * 按ID批量删除对象
 	 * 
 	 * @param ids 主键ID集合
 	 */
-	public void deleteAll(List<PK> ids) {
+	public void deleteAll(List<ID> ids) {
 		if (CollectionUtils.isEmpty(ids)) {
 			return ;
 		}
-		for (Iterator<PK> it = ids.iterator(); it.hasNext();) {
+		for (Iterator<ID> it = ids.iterator(); it.hasNext();) {
 			delete(it.next());
 		}
 		
@@ -253,14 +404,14 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	
 
 	/**
-	 * 按PK获取对象实体.如果找不到对象或者id为null值时，返回null,参考{@link Session#get(Class, Serializable)}
+	 * 按ID获取对象实体.如果找不到对象或者id为null值时，返回null,参考{@link Session#get(Class, Serializable)}
 	 * 
 	 * @see Session#get(Class, Serializable)
 	 * 
 	 * @param id 主键ID
 	 * 
 	 */
-	public T get(PK id) {
+	public T get(ID id) {
 		
 		if (id == null) {
 			return null;
@@ -270,14 +421,14 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	}
 	
 	/**
-	 * 按PK获取对象代理.如果id为null，返回null。参考{@link Session#load(Class, Serializable)}
+	 * 按ID获取对象代理.如果id为null，返回null。参考{@link Session#load(Class, Serializable)}
 	 * 
 	 * @see Session#load(Class, Serializable)
 	 * 
 	 * @param id 主键ID
 	 * 
 	 */
-	public T load(PK id) {
+	public T load(ID id) {
 		if (id == null) {
 			return null;
 		}
@@ -286,13 +437,13 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	}
 
 	/**
-	 * 按PK列表获取对象列表.
+	 * 按ID列表获取对象列表.
 	 * 
 	 * @param ids 主键ID集合
 	 * 
 	 * @return List
 	 */
-	public List<T> get(Collection<PK> ids) {
+	public List<T> get(Collection<ID> ids) {
 		if (CollectionUtils.isEmpty(ids)) {
 			return Collections.emptyList();
 		}
@@ -300,13 +451,13 @@ public class BasicHibernateDao<T,PK extends Serializable> {
 	}
 	
 	/**
-	 * 按PK列表获取对象列表.
+	 * 按ID列表获取对象列表.
 	 * 
 	 * @param ids 主键ID数据
 	 * 
 	 * @return List
 	 */
-	public List<T> get(PK[] ids) {
+	public List<T> get(ID[] ids) {
 		return createCriteria(Restrictions.in(getIdName(), ids)).list();
 	}
 

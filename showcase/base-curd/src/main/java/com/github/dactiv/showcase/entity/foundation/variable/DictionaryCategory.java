@@ -13,10 +13,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.github.dactiv.orm.annotation.TreeEntity;
 import com.github.dactiv.showcase.entity.IdEntity;
 
 /**
@@ -26,16 +26,11 @@ import com.github.dactiv.showcase.entity.IdEntity;
  *
  */
 @Entity
+@TreeEntity
 @Table(name="TB_DICTIONARY_CATEGORY")
-@NamedQuery(name=DictionaryCategory.LeafTureNotAssociated,query="from DictionaryCategory dc where dc.leaf = 1 and (select count(sr) from DictionaryCategory sr where sr.parent.id = dc.id) = 0")
 public class DictionaryCategory extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * 获取所有字典类别的leaf = true 并且没有子类的字典类别
-	 */
-	public static final String LeafTureNotAssociated = "dictionaryCategoryLeafTureNotAssociated";
 	
 	//名称
 	private String name;

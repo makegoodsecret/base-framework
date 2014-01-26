@@ -85,12 +85,14 @@
 				</props>
 			</property>
 		</bean>
-		
 		<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 			<property name="entityManagerFactory" ref="entityManagerFactory"/>
 		</bean>
 		
-		<jpa:repositories base-package="com.github.dactiv.orm.test"  transaction-manager-ref="transactionManager" />
+		<jpa:repositories base-package="com.github.dactiv.orm.test"  
+						  transaction-manager-ref="transactionManager" 
+						  factory-class="com.github.dactiv.orm.core.spring.data.jpa.factory.BasicRepositoryFactoryBean" 
+						  entity-manager-factory-ref="entityManagerFactory"/>
 	</beans>
 	
 </beans>

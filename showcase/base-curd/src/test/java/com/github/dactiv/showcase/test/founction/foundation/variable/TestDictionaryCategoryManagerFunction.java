@@ -79,7 +79,7 @@ public class TestDictionaryCategoryManagerFunction extends FunctionTestCaseSuppo
 		//获取tree中的所有操作后的li节点
 		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
 		//断言所有li是否等于期望值
-		assertEquals(afterLi.size(), beforeLi.size() + 1);
+		assertEquals(afterLi.size(), beforeLi.size());
 		
 	}
 	

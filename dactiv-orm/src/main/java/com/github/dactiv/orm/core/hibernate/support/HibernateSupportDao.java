@@ -51,10 +51,10 @@ import com.google.common.collect.Lists;
  * @author maurice
  *
  * @param <T> ORM对象
- * @param <PK> 主键Id类型
+ * @param <ID> 主键Id类型
  */
 @SuppressWarnings({"rawtypes","unchecked"})
-public class HibernateSupportDao<T,PK extends Serializable> extends BasicHibernateDao<T, PK>{
+public class HibernateSupportDao<T,ID extends Serializable> extends BasicHibernateDao<T, ID>{
 
 	public HibernateSupportDao(){
 

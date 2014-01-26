@@ -210,13 +210,7 @@ public class AccountManager {
 			entity.setSort(resourceDao.entityCount() + 1);
 		}
 		
-		//如果他父类不为null，将父类的leaf设置成true，表示父类下存在子节点
-		if (entity.getParent() != null) {
-			entity.getParent().setLeaf(true);
-		}
-		
 		resourceDao.save(entity);
-		resourceDao.refreshAllLeaf();
 	}
 	
 	/**
@@ -234,7 +228,6 @@ public class AccountManager {
 		for (Resource entity : resources) {
 			resourceDao.delete(entity);
 		}
-		resourceDao.refreshAllLeaf();
 	}
 	
 	/**
@@ -315,12 +308,7 @@ public class AccountManager {
 	 */
 	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void saveGroup(Group entity) {
-		//如果他父类不为null，将父类的leaf设置成true，表示父类下存在子节点
-		if (entity.getParent() != null) {
-			entity.getParent().setLeaf(true);
-		}
 		groupDao.save(entity);
-		groupDao.refreshAllLeaf();
 	}
 	
 	/**
@@ -331,7 +319,6 @@ public class AccountManager {
 	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void deleteGroups(List<String> ids) {
 		groupDao.deleteAll(ids);
-		groupDao.refreshAllLeaf();
 	}
 	
 	/**

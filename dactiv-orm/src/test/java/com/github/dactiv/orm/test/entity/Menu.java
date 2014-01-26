@@ -6,11 +6,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.github.dactiv.orm.annotation.TreeEntity;
 
 
 @Entity
@@ -25,6 +29,7 @@ import javax.persistence.Table;
 			"left join rl.menuList ml " +
 			"where u.id=? and u.state=?")
 })
+@TreeEntity
 public class Menu extends UniversallyUniqueIdentifier{
 	//名称
 	private String name;
@@ -34,6 +39,10 @@ public class Menu extends UniversallyUniqueIdentifier{
 	private List<Menu> childerList;
 	
 	private int type;
+	
+	private Boolean leaf;
+	
+	private List<Role> roleList;
 	
 	/**
 	 * 构造方法
@@ -99,6 +108,24 @@ public class Menu extends UniversallyUniqueIdentifier{
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public Boolean getLeaf() {
+		return leaf;
+	}
+
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
+	}
+	
+	@ManyToMany
+	@JoinTable(name = "TB_ACCOUNT_ROLE_MENU", joinColumns = { @JoinColumn(name = "MENU_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
+	public List<Role> getRoleList() {
+		return roleList;
+	}
+
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
 	}
 	
 }

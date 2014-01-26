@@ -111,12 +111,7 @@ public class SystemVariableManager {
 	 * @param entity 字典类别实体
 	 */
 	public void saveDictionaryCategory(DictionaryCategory entity) {
-		//如果他父类不为null，将父类的leaf设置成true，表示父类下存在子节点
-		if (entity.getParent() != null) {
-			entity.getParent().setLeaf(true);
-		}
 		dictionaryCategoryDao.save(entity);
-		dictionaryCategoryDao.refreshAllLeaf();
 	}
 	
 	/**
@@ -126,7 +121,6 @@ public class SystemVariableManager {
 	 */
 	public void deleteDictionaryCategory(List<String> ids) {
 		dictionaryCategoryDao.deleteAll(ids);
-		dictionaryCategoryDao.refreshAllLeaf();
 	}
 	
 	/**

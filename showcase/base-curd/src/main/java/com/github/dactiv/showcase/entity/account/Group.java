@@ -18,11 +18,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.github.dactiv.common.utils.CollectionUtils;
+import com.github.dactiv.orm.annotation.TreeEntity;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.State;
@@ -35,16 +35,11 @@ import com.github.dactiv.showcase.entity.IdEntity;
  *
  */
 @Entity
+@TreeEntity
 @Table(name="TB_GROUP")
-@NamedQuery(name=Group.LeafTureNotAssociated,query="from Group g where g.leaf = 1 and (select count(sr) from Group sr where sr.parent.id = g.id) = 0")
 public class Group extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * 获取所有组的leaf = true 并且没有子类的组
-	 */
-	public static final String LeafTureNotAssociated = "groupLeafTureNotAssociated";
 	
 	//名称
 	private String name;
