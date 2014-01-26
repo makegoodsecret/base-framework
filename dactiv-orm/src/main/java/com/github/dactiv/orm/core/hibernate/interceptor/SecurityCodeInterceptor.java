@@ -13,14 +13,26 @@ import com.github.dactiv.orm.interceptor.OrmInsertInterceptor;
 import com.github.dactiv.orm.interceptor.OrmSaveInterceptor;
 import com.github.dactiv.orm.interceptor.OrmUpdateInterceptor;
 
+/**
+ * 安全码拦截器
+ * 
+ * @author maurice
+ *
+ * @param <E> 持久化对象类型
+ * @param <ID> id主键类型
+ */
 @SuppressWarnings("unchecked")
-public class SecurityCodeInterceptor<E,PK extends Serializable> implements 
-		OrmSaveInterceptor<E, BasicHibernateDao<E,PK>>,
-		OrmInsertInterceptor<E, BasicHibernateDao<E,PK>>,
-		OrmUpdateInterceptor<E, BasicHibernateDao<E,PK>> {
+public class SecurityCodeInterceptor<E,ID extends Serializable> implements 
+		OrmSaveInterceptor<E, BasicHibernateDao<E,ID>>,
+		OrmInsertInterceptor<E, BasicHibernateDao<E,ID>>,
+		OrmUpdateInterceptor<E, BasicHibernateDao<E,ID>> {
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onSave(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public boolean onSave(E entity, BasicHibernateDao<E, PK> persistentContext,Serializable id) {
+	public boolean onSave(E entity, BasicHibernateDao<E, ID> persistentContext,Serializable id) {
 		
 		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
 		SecurityCode securityCode = ReflectionUtils.getAnnotation(entityClass,SecurityCode.class);
@@ -30,7 +42,7 @@ public class SecurityCodeInterceptor<E,PK extends Serializable> implements
 				String code = generateSecurityCode(entity,securityCode);
 				ReflectionUtils.invokeSetterMethod(entity, securityCode.value(), code);
 			} else {
-				E e = persistentContext.get((PK) id);
+				E e = persistentContext.get((ID) id);
 				String originalCode = ReflectionUtils.invokeGetterMethod(e, securityCode.value());
 				String currentCode = generateSecurityCode(e, securityCode);
 				
@@ -46,28 +58,48 @@ public class SecurityCodeInterceptor<E,PK extends Serializable> implements
 		return Boolean.TRUE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onPostSave(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public void onPostSave(E entity,BasicHibernateDao<E, PK> persistentContext, Serializable id) {
+	public void onPostSave(E entity,BasicHibernateDao<E, ID> persistentContext, Serializable id) {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmInsertInterceptor#onInsert(java.lang.Object, java.lang.Object)
+	 */
 	@Override
-	public boolean onInsert(E entity, BasicHibernateDao<E, PK> persistentContext) {
+	public boolean onInsert(E entity, BasicHibernateDao<E, ID> persistentContext) {
 		return onSave(entity,persistentContext,null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmInsertInterceptor#onPostInsert(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public void onPostInsert(E entity,BasicHibernateDao<E, PK> persistentContext, Serializable id) {
+	public void onPostInsert(E entity,BasicHibernateDao<E, ID> persistentContext, Serializable id) {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmUpdateInterceptor#onUpdate(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public boolean onUpdate(E entity,BasicHibernateDao<E, PK> persistentContext, Serializable id) {
+	public boolean onUpdate(E entity,BasicHibernateDao<E, ID> persistentContext, Serializable id) {
 		return onSave(entity,persistentContext,id);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmUpdateInterceptor#onPostUpdate(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public void onPostUpdate(E entity,BasicHibernateDao<E, PK> persistentContext, Serializable id) {
+	public void onPostUpdate(E entity,BasicHibernateDao<E, ID> persistentContext, Serializable id) {
 		
 	}
 

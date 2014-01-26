@@ -11,12 +11,24 @@ import com.github.dactiv.orm.core.exception.SecurityCodeNotEqualException;
 import com.github.dactiv.orm.core.spring.data.jpa.repository.support.JpaSupportRepository;
 import com.github.dactiv.orm.interceptor.OrmSaveInterceptor;
 
+/**
+ * 安全码拦截器
+ * 
+ * @author maurice
+ *
+ * @param <E> 持久化对象类型
+ * @param <ID> id主键类型
+ */
 @SuppressWarnings("unchecked")
-public class SecurityCodeInterceptor<E,PK extends Serializable> implements 
-		OrmSaveInterceptor<E, JpaSupportRepository<E,PK>> {
+public class SecurityCodeInterceptor<E,ID extends Serializable> implements 
+		OrmSaveInterceptor<E, JpaSupportRepository<E,ID>> {
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onSave(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public boolean onSave(E entity, JpaSupportRepository<E, PK> persistentContext,Serializable id) {
+	public boolean onSave(E entity, JpaSupportRepository<E, ID> persistentContext,Serializable id) {
 		
 		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
 		SecurityCode securityCode = ReflectionUtils.getAnnotation(entityClass,SecurityCode.class);
@@ -25,7 +37,7 @@ public class SecurityCodeInterceptor<E,PK extends Serializable> implements
 			String code = generateSecurityCode(entity,securityCode);
 			ReflectionUtils.invokeSetterMethod(entity, securityCode.value(), code);
 		} else {
-			E e = persistentContext.findOne((PK) id);
+			E e = persistentContext.findOne((ID) id);
 			String originalCode = ReflectionUtils.invokeGetterMethod(e, securityCode.value());
 			String currentCode = generateSecurityCode(e, securityCode);
 			
@@ -39,8 +51,12 @@ public class SecurityCodeInterceptor<E,PK extends Serializable> implements
 		return Boolean.TRUE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onPostSave(java.lang.Object, java.lang.Object, java.io.Serializable)
+	 */
 	@Override
-	public void onPostSave(E entity,JpaSupportRepository<E, PK> persistentContext, Serializable id) {
+	public void onPostSave(E entity,JpaSupportRepository<E, ID> persistentContext, Serializable id) {
 		
 	}
 

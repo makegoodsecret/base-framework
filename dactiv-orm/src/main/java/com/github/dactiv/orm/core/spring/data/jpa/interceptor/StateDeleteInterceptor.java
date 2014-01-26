@@ -14,16 +14,16 @@ import com.github.dactiv.orm.interceptor.OrmDeleteInterceptor;
  * @author maurice
  *
  * @param <E> 持久化对象类型
- * @param <PK> id主键类型
+ * @param <ID> id主键类型
  */
-public class StateDeleteInterceptor<E,PK extends Serializable> implements OrmDeleteInterceptor<E, JpaSupportRepository<E,PK>>{
+public class StateDeleteInterceptor<E,ID extends Serializable> implements OrmDeleteInterceptor<E, JpaSupportRepository<E,ID>>{
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.github.dactiv.orm.interceptor.OrmDeleteInterceptor#onDelete(java.io.Serializable, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public boolean onDelete(Serializable id, E entity,JpaSupportRepository<E, PK> persistentContext) {
+	public boolean onDelete(Serializable id, E entity,JpaSupportRepository<E, ID> persistentContext) {
 		
 		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
 		StateDelete stateDelete = ReflectionUtils.getAnnotation(entityClass,StateDelete.class);
@@ -43,7 +43,7 @@ public class StateDeleteInterceptor<E,PK extends Serializable> implements OrmDel
 	 * @see com.github.dactiv.orm.interceptor.OrmDeleteInterceptor#onPostDelete(java.io.Serializable, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public void onPostDelete(Serializable id, E entity,JpaSupportRepository<E, PK> persistentContext) {
+	public void onPostDelete(Serializable id, E entity,JpaSupportRepository<E, ID> persistentContext) {
 		
 	}
 

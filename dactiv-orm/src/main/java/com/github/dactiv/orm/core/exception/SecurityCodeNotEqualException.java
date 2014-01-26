@@ -3,7 +3,7 @@ package com.github.dactiv.orm.core.exception;
 import org.hibernate.HibernateException;
 
 /**
- * 安全吗不匹配异常,才使用SecurityCode注解时，如果匹配安全码不正确，会丢出该异常
+ * 安全码不匹配异常,才使用SecurityCode注解时，如果匹配安全码不正确，会丢出该异常
  * 
  * @author maurice
  *

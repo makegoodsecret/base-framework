@@ -4,14 +4,6 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
 import com.github.dactiv.common.utils.ConvertUtils;
 import com.github.dactiv.common.utils.ReflectionUtils;
 import com.github.dactiv.orm.annotation.TreeEntity;
@@ -20,25 +12,25 @@ import com.github.dactiv.orm.interceptor.OrmDeleteInterceptor;
 import com.github.dactiv.orm.interceptor.OrmSaveInterceptor;
 
 /**
- * 属性实体拦截器
+ * 树形实体拦截器
  * 
  * @author maurice
  * 
  * @param <E>
  *            持久化对象类型
- * @param <PK>
+ * @param <ID>
  *            id主键类型
  */
-public class TreeEntityInterceptor<E, PK extends Serializable> implements
-		OrmSaveInterceptor<E, JpaSupportRepository<E, PK>>,
-		OrmDeleteInterceptor<E, JpaSupportRepository<E, PK>>{
+public class TreeEntityInterceptor<E, ID extends Serializable> implements
+		OrmSaveInterceptor<E, JpaSupportRepository<E, ID>>,
+		OrmDeleteInterceptor<E, JpaSupportRepository<E, ID>>{
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onSave(java.lang.Object, java.lang.Object, java.lang.String, java.lang.String, java.io.Serializable)
 	 */
 	@Override
-	public boolean onSave(E entity, JpaSupportRepository<E, PK> persistentContext,Serializable id) {
+	public boolean onSave(E entity, JpaSupportRepository<E, ID> persistentContext,Serializable id) {
 
 		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
 		TreeEntity treeEntity = ReflectionUtils.getAnnotation(entityClass,TreeEntity.class);
@@ -60,7 +52,8 @@ public class TreeEntityInterceptor<E, PK extends Serializable> implements
 	 * @see com.github.dactiv.orm.interceptor.OrmSaveInterceptor#onPostSave(java.lang.Object, java.lang.Object, java.lang.String, java.lang.String, java.io.Serializable)
 	 */
 	@Override
-	public void onPostSave(E entity,JpaSupportRepository<E, PK> persistentContext,Serializable id) {
+	@SuppressWarnings("unchecked")
+	public void onPostSave(E entity,JpaSupportRepository<E, ID> persistentContext,Serializable id) {
 		
 		Class<?> entityClass = ReflectionUtils.getTargetClass(entity);
 		TreeEntity treeEntity = ReflectionUtils.getAnnotation(entityClass,TreeEntity.class);
@@ -91,7 +84,7 @@ public class TreeEntityInterceptor<E, PK extends Serializable> implements
 	 * @see com.github.dactiv.orm.interceptor.OrmDeleteInterceptor#onDelete(java.io.Serializable, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public boolean onDelete(Serializable id, E entity, JpaSupportRepository<E, PK> persistentContext) {
+	public boolean onDelete(Serializable id, E entity, JpaSupportRepository<E, ID> persistentContext) {
 		
 		return Boolean.TRUE;
 	}
@@ -101,7 +94,7 @@ public class TreeEntityInterceptor<E, PK extends Serializable> implements
 	 * @see com.github.dactiv.orm.interceptor.OrmDeleteInterceptor#onPostDelete(java.io.Serializable, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public void onPostDelete(Serializable id, E entity, JpaSupportRepository<E, PK> persistentContext) {
+	public void onPostDelete(Serializable id, E entity, JpaSupportRepository<E, ID> persistentContext) {
 		onPostSave(entity, persistentContext, id);
 		
 	}
