@@ -234,7 +234,7 @@ div, a:focus, .btn:focus {
 }
 
 .tree ul li .node {
-    border:1px solid #999;
+    border:1px solid #adadad;
     border-radius:5px;
     display:inline-block;
     padding:3px 8px;
