@@ -12,6 +12,16 @@
 			classpath*:/applicationContext-mail.xml
 		</param-value>
 	</context-param>
+
+	<!--Spring的ApplicationContext 载入 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Spring 刷新Introspector防止内存泄露 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
 	
 	<!-- 开发环境配置 -->
 	<context-param>
@@ -50,14 +60,6 @@
 	    </init-param>
 	</filter>
 	
-	<!-- gzip 压缩文件 filter -->
-	<filter>   
-        <filter-name>gzipFilter</filter-name>   
-        <filter-class>   
-            net.sf.ehcache.constructs.web.filter.GzipFilter   
-        </filter-class>   
-    </filter>
-	
 	<!-- spring mvc Servlet -->
 	<servlet>
 		<servlet-name>springMvc</servlet-name>
@@ -90,55 +92,19 @@
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
     
-	<filter-mapping>   
-        <filter-name>gzipFilter</filter-name>   
-        <url-pattern>*.css</url-pattern>   
-    </filter-mapping>   
-    <filter-mapping>   
-        <filter-name>gzipFilter</filter-name>   
-        <url-pattern>*.png</url-pattern>   
-    </filter-mapping>   
-    <filter-mapping>   
-        <filter-name>gzipFilter</filter-name>   
-        <url-pattern>*.gif</url-pattern>   
-    </filter-mapping>   
-    <filter-mapping>   
-        <filter-name>gzipFilter</filter-name>   
-        <url-pattern>*.jpg</url-pattern>   
-    </filter-mapping>  
-    <filter-mapping>   
-        <filter-name>gzipFilter</filter-name>   
-        <url-pattern>*.js</url-pattern>   
-    </filter-mapping>
-	
 	<servlet-mapping>
 		<servlet-name>springMvc</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-	
-	<!-- session超时定义,单位为分钟 -->
-	<session-config>
-		<session-timeout>20</session-timeout>
-	</session-config>
-
-	<!--Spring的ApplicationContext 载入 -->
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-	<!-- Spring 刷新Introspector防止内存泄露 -->
-	<listener>
-		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-	</listener>
 	
 	<error-page>
 		<error-code>404</error-code>
 		<location>/WEB-INF/error-page/404.jsp</location>
 	</error-page>
 	
-	<!-- <error-page>
+	<error-page>
 		<error-code>500</error-code>
 		<location>/WEB-INF/error-page/500.jsp</location>
-	</error-page> -->
+	</error-page>
 	
 </web-app>

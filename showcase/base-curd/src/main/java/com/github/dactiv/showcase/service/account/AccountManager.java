@@ -202,7 +202,6 @@ public class AccountManager {
 	 * 
 	 * @param entity 资源实体
 	 */
-	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void saveResource(Resource entity) {
 		
 		//如果sort等于null值，设置一个最新的值给entity
@@ -218,7 +217,6 @@ public class AccountManager {
 	 * 
 	 * @param resources 资源实体集合 
 	 */
-	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void deleteResources(List<Resource> resources) {
 		
 		if (CollectionUtils.isEmpty(resources)) {

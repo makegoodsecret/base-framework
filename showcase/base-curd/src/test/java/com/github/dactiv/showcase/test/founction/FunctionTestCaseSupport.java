@@ -42,7 +42,7 @@ public class FunctionTestCaseSupport {
 		//如果jetty没启动，启动jetty
 		if (jettyServer == null) {
 			// 设定Spring的profile
-			//FIXME 测试环境开启时,hibernate无法lazy
+			//FIXME 测试环境开启时,当shiro清除授权缓存时，hibernate无法lazy
 			//System.setProperty(LaunchJetty.ACTIVE_PROFILE, "test");
 			
 			jettyServer = JettyFactory.createServerInSource(LaunchJetty.PORT, LaunchJetty.CONTEXT);
@@ -55,7 +55,6 @@ public class FunctionTestCaseSupport {
 			dataSource = SpringContextHolder.getBean(DataSource.class);
 			jdbcTemplate = new JdbcTemplate(dataSource);
 		}
-		
 		//如果selenium没初始化，初始化selenium
 		if (s == null) {
 			//System.setProperty ( "webdriver.firefox.bin" , "E:/Firefox/firefox.exe" );

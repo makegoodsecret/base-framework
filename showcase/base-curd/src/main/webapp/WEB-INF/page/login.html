@@ -42,16 +42,16 @@
 						<#if Session.loginNum?? && Session.loginNum gte 1>
 						<div class="form-group">
 							<label for="captcha">验证码:</label>
-							<div class="row">
-								<div class="col-xs-8">
-								<input type="text" class="form-control required" title="请输入验证码" name="captcha" id="captcha" >
-								</div>
-								<div class="col-xs-2">
-									<img id="captchaImg" src="get-captcha" />
-								</div>
-								<div class="col-xs-2">
-									<a class="btn btn-link" href="javascript:reloadCaptcha();">看不清?</a>
-								</div>
+							<div class="input-group">
+							  <input type="text" class="form-control required" title="请输入验证码" name="captcha" id="captcha" >
+							  <span class="input-group-addon no-padding">
+							  	<img id="captchaImg" src="get-captcha" />
+							  </span>
+							  <span class="input-group-btn">
+						        <button class="btn btn-default" type="button" onclick="reloadCaptcha();">
+						        	<span class="glyphicon glyphicon-refresh"></span>
+								</button>
+						      </span>
 							</div>
 						</div>
 						</#if>
