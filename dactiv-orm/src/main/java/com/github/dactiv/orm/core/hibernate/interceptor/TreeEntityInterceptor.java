@@ -43,7 +43,7 @@ public class TreeEntityInterceptor<E, ID extends Serializable> implements
 			E parent = ReflectionUtils.invokeGetterMethod(entity,treeEntity.parentProperty());
 			// 如果对象父类不为null，将父类的leaf设置成true，表示父类下存在子节点
 			if (parent != null) {
-				Object value = ConvertUtils.convertToObject(treeEntity.hasLeafValue(), treeEntity.leafClass());
+				Object value = ConvertUtils.convertToObject(treeEntity.leafValue(), treeEntity.leafClass());
 				ReflectionUtils.invokeSetterMethod(parent,treeEntity.leafProperty(), value);
 			}
 		}
@@ -66,15 +66,15 @@ public class TreeEntityInterceptor<E, ID extends Serializable> implements
 			String hql = MessageFormat.format(treeEntity.refreshHql(),
 					persistentContext.getEntityName(),
 					treeEntity.leafProperty(),
-					treeEntity.hasLeafValue(),
+					treeEntity.leafValue(),
 					treeEntity.parentProperty(), 
 					persistentContext.getIdName(), 
-					treeEntity.notHasLeafValue());
+					treeEntity.unleafValue());
 			
 			List<E> list = persistentContext.findByQuery(hql);
 
 			for (E e : list) {
-				Object value = ConvertUtils.convertToObject(treeEntity.notHasLeafValue(), treeEntity.leafClass());
+				Object value = ConvertUtils.convertToObject(treeEntity.unleafValue(), treeEntity.leafClass());
 				ReflectionUtils.invokeSetterMethod(e,treeEntity.leafProperty(), value);
 				persistentContext.merge(e);
 			}

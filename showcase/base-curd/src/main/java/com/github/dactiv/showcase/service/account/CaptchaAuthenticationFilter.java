@@ -33,16 +33,16 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
 	
 	/**
-	 * 默认在session中存储的登录次数名称
+	 * 默认在session中存储的登录错误次数的名称
 	 */
-	private static final String DEFAULT_LOGIN_NUM_KEY_ATTRIBUTE = "loginNum";
+	private static final String DEFAULT_LOGIN_INCORRECT_NUMBER_KEY_ATTRIBUTE = "incorrectNumber";
 	
 	//验证码参数名称
     private String captchaParam = DEFAULT_CAPTCHA_PARAM;
     //在session中的存储验证码的key名称
     private String sessionCaptchaKeyAttribute = DEFAULT_CAPTCHA_PARAM;
-    //在session中存储的登录次数名称
-    private String loginNumKeyAttribute = DEFAULT_LOGIN_NUM_KEY_ATTRIBUTE;
+    //在session中存储的登录错误次数名称
+    private String loginIncorrectNumberKeyAttribute = DEFAULT_LOGIN_INCORRECT_NUMBER_KEY_ATTRIBUTE;
     //允许登录次数，当登录次数大于该数值时，会在页面中显示验证码
     private Integer allowLoginNum = 1;
     
@@ -54,12 +54,12 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 		
 		Session session = SystemVariableUtils.createSessionIfNull();
 		//获取登录次数
-		Integer number = (Integer) session.getAttribute(getLoginNumKeyAttribute());
+		Integer number = (Integer) session.getAttribute(getLoginIncorrectNumberKeyAttribute());
 		
 		//首次登录，将该数量记录在session中
 		if (number == null) {
 			number = new Integer(1);
-			session.setAttribute(getLoginNumKeyAttribute(), number);
+			session.setAttribute(getLoginIncorrectNumberKeyAttribute(), number);
 		}
 		
 		//如果登录次数大于allowLoginNum，需要判断验证码是否一致
@@ -115,21 +115,21 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	}
 
 	/**
-	 * 获取在session中存储的登录次数名称
+	 * 获取登录错误次数的key属性名称
 	 * 
-	 * @return Stromg
+	 * @return String
 	 */
-	public String getLoginNumKeyAttribute() {
-		return loginNumKeyAttribute;
+	public String getLoginIncorrectNumberKeyAttribute() {
+		return loginIncorrectNumberKeyAttribute;
 	}
 
 	/**
-	 * 设置在session中存储的登录次数名称
+	 * 设置登录错误次数的key属性名称
 	 * 
-	 * @param loginNumKeyAttribute 登录次数名称
+	 * @param loginIncorrectNumberKeyAttribute 属性名称
 	 */
-	public void setLoginNumKeyAttribute(String loginNumKeyAttribute) {
-		this.loginNumKeyAttribute = loginNumKeyAttribute;
+	public void setLoginIncorrectNumberKeyAttribute(String loginIncorrectNumberKeyAttribute) {
+		this.loginIncorrectNumberKeyAttribute = loginIncorrectNumberKeyAttribute;
 	}
 
 	/**
@@ -180,14 +180,14 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	protected boolean onLoginFailure(AuthenticationToken token,AuthenticationException e, ServletRequest request,ServletResponse response) {
 		Session session = SystemVariableUtils.getSession();
 		
-		Integer number = (Integer) session.getAttribute(getLoginNumKeyAttribute());
+		Integer number = (Integer) session.getAttribute(getLoginIncorrectNumberKeyAttribute());
 		
 		//如果失败登录次数大于allowLoginNum时，展示验证码
 		if (number > getAllowLoginNum() - 1) {
-			session.setAttribute(getLoginNumKeyAttribute(), ++number);
+			session.setAttribute(getLoginIncorrectNumberKeyAttribute(), ++number);
 		}
 		
-		session.setAttribute(getLoginNumKeyAttribute(),++number);
+		session.setAttribute(getLoginIncorrectNumberKeyAttribute(),++number);
 		
 		return super.onLoginFailure(token, e, request, response);
 	}
@@ -199,7 +199,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
 		Session session = SystemVariableUtils.getSession();
 		
-		session.removeAttribute(getLoginNumKeyAttribute());
+		session.removeAttribute(getLoginIncorrectNumberKeyAttribute());
 
 		session.setAttribute("sv", subject.getPrincipal());
 		return super.onLoginSuccess(token, subject, request, response);

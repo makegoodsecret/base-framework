@@ -38,7 +38,8 @@ public @interface TreeEntity {
 	
 	/**
 	 * 是否包含叶子的标记属性类型
-	 * @return
+	 * 
+	 * @return Class
 	 */
 	public Class<?> leafClass() default Boolean.class;
 	
@@ -47,12 +48,13 @@ public @interface TreeEntity {
 	 * 
 	 * @return String
 	 */
-	public String hasLeafValue() default "1";
+	public String leafValue() default "1";
 	
 	/**
 	 * 如果不是包含叶子节点需要设置的值
-	 * @return
+	 * 
+	 * @return String
 	 */
-	public String notHasLeafValue() default "0";
+	public String unleafValue() default "0";
 	
 }
