@@ -36,7 +36,7 @@
         <property name="cacheManager" ref="ehCacheManagerFactory" />
     </bean>
     
-    <!-- 使用EnterpriseCacheSessionDAO，解决session同步问题，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上 -->
+    <!-- 使用EnterpriseCacheSessionDAO，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上，解决session同步问题。 -->
     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
     	<!-- 活动session缓存名称 -->
     	<property name="activeSessionsCacheName" value="shiroActiveSessionCache" />
@@ -44,7 +44,7 @@
     
    <!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上 -->
+    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题 -->
     	<property name="sessionDAO" ref="sessionDAO" />
     </bean>
     
@@ -71,53 +71,23 @@
 		</property>
 	</bean>
 	
-    <beans profile="dev">
-		<!-- 将shiro与spring集合 -->
-		<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-			<property name="filters">
-				<map>
-					<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
-				</map>
-			</property>
-			<!-- shiro的核心安全接口 -->
-	    	<property name="securityManager" ref="securityManager" />
-	    	<!-- 要求登录时的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.login()方法-->
-		    <property name="loginUrl" value="/login" />
-		    <!-- 登陆成功后要跳转的连接，该连接是com.github.dactiv.showcase.web.SystemCommonController.index()方法 -->
-		    <property name="successUrl" value="/index" />
-		    <!-- 没有权限要跳转的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.unauthorized()方法 -->
-		    <property name="unauthorizedUrl" value="/unauthorized" />
-		    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
-		    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
-		</bean>
-	</beans>
-	
-	<beans profile="test">
-		<!-- 将shiro与spring集合 -->
-		<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-			<property name="filters">
-				<map>
-					<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
-				</map>
-			</property>
-			<!-- shiro的核心安全接口 -->
-	    	<property name="securityManager" ref="securityManager" />
-	    	<!-- 要求登录时的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.login()方法-->
-		    <property name="loginUrl" value="/login" />
-		    <!-- 登陆成功后要跳转的连接，该连接是com.github.dactiv.showcase.web.SystemCommonController.index()方法 -->
-		    <property name="successUrl" value="/index" />
-		    <!-- 没有权限要跳转的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.unauthorized()方法 -->
-		    <property name="unauthorizedUrl" value="/unauthorized" />
-		    <!-- 默认的连接配置 -->
-			<property name="filterChainDefinitions">
-				<value>
-					/login = captchaAuthc
-					/logout = logout
-					/index = perms[security:index]
-					/changePassword = perms[security:change-password]
-				</value>
-			</property>
-		</bean>
-	</beans>
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.login()方法-->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接，该连接是com.github.dactiv.showcase.web.SystemCommonController.index()方法 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.unauthorized()方法 -->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
 	
 </beans>

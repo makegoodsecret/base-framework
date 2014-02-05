@@ -1,4 +1,4 @@
--删除所有表
+--删除所有表
 drop table TB_DATA_DICTIONARY if exists;
 drop table TB_DICTIONARY_CATEGORY if exists;
 drop table TB_GROUP if exists;

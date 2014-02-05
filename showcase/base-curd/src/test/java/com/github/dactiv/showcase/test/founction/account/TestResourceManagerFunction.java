@@ -84,7 +84,7 @@ public class TestResourceManagerFunction extends FunctionTestCaseSupport{
 		
 		afterLi = s.findElements(By.xpath("//div[@class='tree']//*//li"));
 		//断言所有li是否等于期望值
-		assertEquals(afterLi.size(), beforeLi.size() + 1);
+		assertEquals(afterLi.size(), beforeLi.size());
 	}
 	
 }
