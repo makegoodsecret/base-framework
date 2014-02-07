@@ -1,6 +1,6 @@
 ### 1 shrio 实用功能说明 ###
 
-apache shiro 是功能强大并且容易集成的开源权限框架，它能够完成认证、授权、加密、会话管理等功能。认证和授权为权限控制的核心，简单来说，“认证”就是证明“你是谁？” Web 应用程序一般做法是通过表单提交的用户名及密码达到认证目的。“授权”即是"你能做什么?"，很多系统通过资源表的形式来完成用户能做什么。关于 shiro 的一系列特征及优点，很多文章已有列举，这里不再逐一赘述，本文首先会简单的讲述 shiro 和spring该如何集成，重点介绍 shiro 的几个实用功能和一些 shiro 的扩张知识。
+apache shiro 是功能强大并且容易集成的开源权限框架，它能够完成认证、授权、加密、会话管理等功能。认证和授权为权限控制的核心，简单来说，“认证”就是证明“你是谁？” Web 应用程序一般做法是通过表单提交的用户名及密码达到认证目的。“授权”即是"你能做什么?"，很多系统通过资源表的形式来完成用户能做什么。关于 shiro 的一系列特征及优点，很多文章已有列举，这里不再逐一赘述，本文首先会简单的讲述 shiro 和spring该如何集成，重点介绍 shiro 的几个实用功能和一些 shiro 的扩展知识。
 
 #### 1.1 shiro 集成 spring ####
 
@@ -848,9 +848,9 @@ ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了
 
 #### 1.4 扩展 shiro 的 filter 实现验证码登录 ####
 
-验证码登录在web开发中最常见，shiro对于验证码登录的功能没有支持，但shiro的设计模式让开发人员自定义一个小小的验证码登录不会很难。[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目所扩张的验证码登录需求是：**当用户登录失败次数达到指标时，才出现验证码。**
+验证码登录在web开发中最常见，shiro对于验证码登录的功能没有支持，但shiro的设计模式让开发人员自定义一个小小的验证码登录不会很难。[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目所扩展的验证码登录需求是：**当用户登录失败次数达到指标时，才出现验证码。**
 
-通过该需求，我们回到上面提到的 FormAuthenticationFilter，该filter是专门做认证用的filter，所以本人第一时间想到扩张它，如果有更好的实现方式希望能够分享。
+通过该需求，我们回到上面提到的 FormAuthenticationFilter，该filter是专门做认证用的filter，所以本人第一时间想到扩展它，如果有更好的实现方式希望能够分享。
 
 实现验证码登录，我们首先创建一个CaptchaAuthenticationFilter类，并继承FormAuthenticationFilter。FormAuthenticationFilter最需要重写的方法有：
 

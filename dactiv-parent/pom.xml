@@ -41,19 +41,19 @@
 	
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- web 依赖框架版本 -->
-		<spring.version>3.2.5.RELEASE</spring.version>
-		<slf4j.version>1.7.5</slf4j.version>
+		<spring.version>3.2.6.RELEASE</spring.version>
+		<slf4j.version>1.7.6</slf4j.version>
 		<h2.version>1.3.174</h2.version>
 		<mysql.connector.version>5.1.27</mysql.connector.version>
-		<hibernate.version>4.2.7.Final</hibernate.version>
+		<hibernate.version>4.2.8.Final</hibernate.version>
 		<cxf.version>2.7.7</cxf.version>
-		<jackson.version>2.2.3</jackson.version>
+		<jackson.version>2.3.1</jackson.version>
 		<jetty.version>7.6.11.v20130520</jetty.version>
 		<freemarker.version>2.3.20</freemarker.version>
 		<shiro.version>1.2.2</shiro.version>
 		<ehcache.version>2.6.6</ehcache.version>
-		<logback.version>1.0.13</logback.version>
-		<aspectj.version>1.7.3</aspectj.version>
+		<logback.version>1.1.1</logback.version>
+		<aspectj.version>1.7.4</aspectj.version>
 		<poi.version>3.9</poi.version>
 		<selenium.version>2.37.1</selenium.version>
 	</properties>
@@ -135,7 +135,7 @@
 			<dependency>
 			    <groupId>org.hibernate</groupId>
 			    <artifactId>hibernate-validator</artifactId>
-			    <version>5.0.2.Final</version>
+			    <version>5.0.3.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -167,7 +167,7 @@
 			<dependency>
 			    <groupId>org.springframework.data</groupId>
 			    <artifactId>spring-data-jpa</artifactId>
-			    <version>1.4.1.RELEASE</version>
+			    <version>1.4.3.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -235,7 +235,7 @@
 			<dependency>
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>tomcat-jdbc</artifactId>
-				<version>7.0.42</version>
+				<version>7.0.50</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
@@ -251,17 +251,17 @@
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
-				<version>1.8.3</version>
+				<version>1.9.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
+				<version>3.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.8</version>
+				<version>1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-collections</groupId>
@@ -291,7 +291,7 @@
 			<dependency>
 			    <groupId>jaxen</groupId>
 			    <artifactId>jaxen</artifactId>
-			    <version>1.1.4</version>
+			    <version>1.1.6</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
@@ -301,13 +301,13 @@
 			<dependency>
 				<groupId>net.sf.dozer</groupId>
 				<artifactId>dozer</artifactId>
+				<version>5.4.0</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
       					<artifactId>slf4j-log4j12</artifactId>
 					</exclusion>
 			    </exclusions>
-				<version>5.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.mail</groupId>
@@ -317,7 +317,7 @@
 			<dependency>
 			    <groupId>org.javassist</groupId>
 			    <artifactId>javassist</artifactId>
-			    <version>3.18.0-GA</version>
+			    <version>3.18.1-GA</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
@@ -352,7 +352,7 @@
 			<dependency>
 			    <groupId>com.google.guava</groupId>
 			    <artifactId>guava</artifactId>
-			    <version>15.0</version>
+			    <version>16.0.1</version>
 			</dependency>
 			<!-- commons end -->
 
@@ -491,13 +491,13 @@
 			<dependency>
 			    <groupId>net.sf.ehcache</groupId>
 			    <artifactId>ehcache-web</artifactId>
+			    <version>2.0.4</version>
 			    <exclusions>
 					<exclusion>
 						<groupId>net.sf.ehcache</groupId>
 						<artifactId>ehcache-core</artifactId>
 					</exclusion>
 			    </exclusions>
-			    <version>2.0.4</version>
 			</dependency>
 			<!-- ehcache end -->
 

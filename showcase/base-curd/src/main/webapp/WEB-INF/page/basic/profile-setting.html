@@ -21,11 +21,13 @@
 	function changePortrait(){
 		$("#change-profile").addClass("hide");
 		$("#change-portrait").removeClass("hide");
+		$("#profile-seeting").find(".modal-dialog").addClass("modal-md");
 	}
 	
 	function changeProfile(){
 		$("#change-profile").removeClass("hide");
 		$("#change-portrait").addClass("hide");
+		$("#profile-seeting").find(".modal-dialog").removeClass("modal-md");
 	}
 	
 	$(document).ready(function(){
@@ -96,11 +98,11 @@
 					   			<div class="row">
 					    			<div class="col-xs-6">
 										<label for="realname">真实姓名:</label> 
-										<input type="text" class="form-control required" name="realname" id="realname" value="${Session['sv'].user.realname!''}">
+										<input type="text" class="form-control required" maxlength="64" name="realname" id="realname" value="${Session['sv'].user.realname!''}">
 									</div>
 									<div class="col-xs-6">
 										<label for="email">电子邮箱:</label> 
-										<input type="text" class="form-control email" name="email" id="email"  value="${Session['sv'].user.email!''}">
+										<input type="text" class="form-control email" name="email" maxlength="128" id="email"  value="${Session['sv'].user.email!''}">
 									</div>
 					   			</div>
 				   			</div>
@@ -128,17 +130,17 @@
 		        	
 						<div class="form-group">
 							<label for="oldPassword">旧密码:</label> 
-							<input type="password" class="form-control required" name="oldPassword" id="oldPassword" >
+							<input type="password" class="form-control required" maxlength="32" minlength="6" name="oldPassword" id="oldPassword" >
 						</div>
 						
 						<div class="form-group">
 							<label for="newPassword">新密码:</label> 
-							<input type="password" class="form-control required" name="newPassword" id="newPassword" >
+							<input type="password" class="form-control required" maxlength="32" minlength="6" name="newPassword" id="newPassword" >
 						</div>
 						
 						<div class="form-group">
 							<label for=confirmPassword>新密码:</label> 
-							<input type="password" class="form-control required" name="confirmPassword" equalTo="#newPassword" id="confirmPassword" >
+							<input type="password" class="form-control required" maxlength="32" minlength="6" name="confirmPassword" equalTo="#newPassword" id="confirmPassword" >
 						</div>
 						
 						<hr>

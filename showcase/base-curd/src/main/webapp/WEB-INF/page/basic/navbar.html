@@ -43,14 +43,14 @@
 		<ul class="nav navbar-nav">
 			<li>
 				<a href="${base}/index" >
-					<span class="glyphicon glyphicon-home center-block"></span>
+					<span class="glyphicon glyphicon-home"></span>
 					<span class="nav-title">首 页</span>
 				</a>
 			</li>
 			<#list Session["sv"].menusList as m>
 				<li class="dropdown">
 					<a id="${m.id}" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon ${m.icon!'glyphicon-file'} center-block"></span>
+						<span class="glyphicon ${m.icon!'glyphicon-file'}"></span>
 						<span class="nav-title">${m.name}</span>
 					</a>
 					<@recursionMenu m true/>

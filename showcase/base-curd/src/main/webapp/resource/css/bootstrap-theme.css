@@ -2,6 +2,10 @@ div, a:focus, .btn:focus {
 	outline: none;
 }
 
+.modal-md{
+	width:700px
+}
+
 .modal-header,
 .panel-title, 
 .panel > .panel-heading{
@@ -53,8 +57,10 @@ div, a:focus, .btn:focus {
 	border-right: 1px solid transparent;
 }
 
-.navbar-default .navbar-nav > li > a > .nav-title {
+.navbar-default .navbar-nav > li > a > .nav-title,
+.navbar-default .navbar-nav > li > a > .glyphicon  {
 	display: block;
+	text-align: center;
 }
 
 .navbar-default .navbar-nav > li > a > .glyphicon {
@@ -187,10 +193,6 @@ div, a:focus, .btn:focus {
 .modal-backdrop {
     background-color: #FFFFFF;
     position: absolute;
-}
-
-.modal-dialog {
-	width:650px;
 }
 
 .modal {
