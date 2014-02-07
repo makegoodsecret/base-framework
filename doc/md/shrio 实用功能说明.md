@@ -423,7 +423,8 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 		<...>
 	    <!-- 登陆成功后要跳转的连接 -->
 	    <property name="successUrl" value="/index" />
-		<...>
+		<!-- 没有权限要跳转的链接 -->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
 	    <!-- 默认的连接拦截配置 -->
 		<property name="filterChainDefinitions">
 			<value>
@@ -434,6 +435,8 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 	</bean>
 
 当用户登录成功后会跳转到 **successUrl** 这个链接，即：**http://localhost:port/index**。那么这个index又要当前用户存在 **permission** 为 **security:index** 才能进入，所以，当登录完成跳转 **successUrl** 时，会进入到 **doGetAuthorizationInfo** 方法里进行一次**授权**，让 shiro 了解该链接在当前认证的用户里是否可以访问，如果可以访问，那就执行接入到index，否则就会跳转到unauthorizedUrl。
+
+*提示： shiro 支持了权限（permissions）概念。权限是功能的原始表述，如‘开门’，‘创建一个博文’，‘删除‘jsmith’用户’等。通过让权限反映应用的原始功能，在改变应用功能时，你只需要改变权限检查。进而，你可以在运行时按需将权限分配给角色或用户。*
 
 了解以上情况，首先我们创建UserDao和ResourceDao类来做数据访问工作:
 
@@ -547,18 +550,20 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 
 而 authc 就是 shiro 的 **FormAuthenticationFilter** 。shiro 首先会判断 /login 这次请求是否为**post请求**，如果是，那么就交给 FormAuthenticationFilter 处理，否则将不做任何处理。
 
-当 FormAuthenticationFilter 接收到要处理时。那么 FormAuthenticationFilter 首先会根据表单提交过来的请求参数创建一个 **UsernamePasswordToken**，然后获取一个 **Subject** 对象，由Subject去执行登录，在Subject执行登录时，会将UsernamePasswordToken传入到Subject.login中。在经过一些小小的处理过程后，会进入到 **doGetAuthenticationInfo**方法里，而在doGetAuthenticationInfo方法做的事情就是：
-
-1. 通过用户名获取当前用户
-2. 通过当前用户和用户密码创建一个**SimpleAuthenticationInfo**然shiro去匹配密码是否正确
-
-在SimpleAuthenticationInfo对象里的密码为数据库里面的用户密码，返回SimpleAuthenticationInfo后 shiro 会根据表单提交的密码和 SimpleAuthenticationInfo 的密码去做对比，如果完全正确，就表示认证成功，当成功后，会重定向到successUrl这个链接。
+当 FormAuthenticationFilter 接收到要处理时。那么 FormAuthenticationFilter 首先会根据表单提交过来的请求参数创建一个 **UsernamePasswordToken**，然后获取一个 **Subject** 对象，由Subject去执行登录。
 
 *提示： Subject 实质上是一个当前执行用户的特定的安全“视图”。鉴于“User”一词通常意味着一个人，而一个 Subject 可以是一个人，但它还可以代表第三方服务，daemon account，cron job，或其他类似的任何东西——基本上是当前正与软件进行交互的任何东西。* 
  
 *所有 Subject 实例都被绑定到（且这是必须的）一个 SecurityManager 上。当你与一个 Subject 交互时，那些交互作用转化为与 SecurityManager 交互的特定 subject 的交互作用。*
 
-当重定向到 index 时，会进入到 perms，就是 shiro 的**PermissionsAuthorizationFilter**，因为配置文件里已经说明,就是:
+Subject执行登录时，会将UsernamePasswordToken传入到Subject.login方法中。在经过一些小小的处理过程后（如：是否启用了认证缓存，如果是，获取认证缓存，执行登录，不在查询数据库），会进入到 **doGetAuthenticationInfo**方法里，而在doGetAuthenticationInfo方法做的事情就是：
+
+1. 通过用户名获取当前用户
+2. 通过当前用户和用户密码创建一个 **SimpleAuthenticationInfo** 然后去匹配密码是否正确
+
+在SimpleAuthenticationInfo对象里的密码为数据库里面的用户密码，返回SimpleAuthenticationInfo后 shiro 会根据表单提交的密码和 SimpleAuthenticationInfo 的密码去做对比，如果完全正确，就表示认证成功，当成功后，会重定向到successUrl这个链接。
+
+当重定向到 index 时，会进入到 perms过滤器，就是 shiro 的**PermissionsAuthorizationFilter**，因为配置文件里已经说明,就是:
 
 	<!-- 将shiro与spring集合 -->
 	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -578,7 +583,7 @@ PermissionsAuthorizationFilter的工作主要是判断当前subject是否有足�
  
 2. 如果认证了，判断当前用户是否存未授权，如果没有就去授权，当授权时，就会进入到 **doGetAuthorizationInfo** 方法
 
-3. 如果已经认证了。就判断是否存xx链接的permission,如果有，就进入，否则重定向到未授权页面，就是在配置文件里指定的**unauthorizedUrl**
+3. 如果已经认证了。就判断是否存在xx链接的permission,如果有，就进入，否则重定向到未授权页面，就是在配置文件里指定的**unauthorizedUrl**
 
 那么，认证我们上面已经认证过了。就会进入到第二个判断，第二个判断会跑到了doGetAuthorizationInfo方法，而doGetAuthorizationInfo方法里做了几件事：
 
@@ -587,7 +592,7 @@ PermissionsAuthorizationFilter的工作主要是判断当前subject是否有足�
 3. 将资源实体集合里的permission获取出来形成一个List
 4. 将用户拥有的permission放入到**SimpleAuthorizationInfo**对象中
 
-doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shiro 的 **AuthorizingRealm** 逐个循环里面的 permission 和当前访问链接的permission去做匹配，如果匹配到了，就表示当前用户可以访问本次请求的链接，否则就重定向到未授权页面。
+doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shiro 的 **AuthorizingRealm** 逐个循环里面的 permission 和当前访问链接的 permission 去做匹配，如果匹配到了，就表示当前用户可以访问本次请求的链接，否则就重定向到未授权页面。
 
 实现认证和授权功能继承**AuthorizingRealm**已经可以达到效果，但是要注意几点就是：
 
@@ -598,12 +603,150 @@ doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shir
 完成认证和授权后现在的缺陷在于filterChainDefinitions都是要手动去一个个配置，一个系统那么多链接都要写上去非常不靠谱，下面将介绍如何使用资源表动态去构建filterChainDefinitions。
 
 #### 动态filterChainDefinitions ####
-                                    
+
+动态 filterChainDefinitions 是为了能够通过数据库的数据，将 filterChainDefinitions 构造出来，而不在是一个个手动的写入到配置文件中，在shiro的 ShiroFilterFactoryBean 启动时，会通过 filterChainDefinitions 的配置信息构造成一个Map，在赋值到 **filterChainDefinitionMap** 中，shiro的源码如下:
+
+	/**
+     * A convenience method that sets the {@link #setFilterChainDefinitionMap(java.util.Map) filterChainDefinitionMap}
+     * property by accepting a {@link java.util.Properties Properties}-compatible string (multi-line key/value pairs).
+     * Each key/value pair must conform to the format defined by the
+     * {@link FilterChainManager#createChain(String,String)} JavaDoc - each property key is an ant URL
+     * path expression and the value is the comma-delimited chain definition.
+     *
+     * @param definitions a {@link java.util.Properties Properties}-compatible string (multi-line key/value pairs)
+     *                    where each key/value pair represents a single urlPathExpression-commaDelimitedChainDefinition.
+     */
+    public void setFilterChainDefinitions(String definitions) {
+        Ini ini = new Ini();
+        ini.load(definitions);
+        //did they explicitly state a 'urls' section?  Not necessary, but just in case:
+        Ini.Section section = ini.getSection(IniFilterChainResolverFactory.URLS);
+        if (CollectionUtils.isEmpty(section)) {
+            //no urls section.  Since this _is_ a urls chain definition property, just assume the
+            //default section contains only the definitions:
+            section = ini.getSection(Ini.DEFAULT_SECTION_NAME);
+        }
+        setFilterChainDefinitionMap(section);
+    }
+
+*提示:Ini.Section 该类是一个 Map 子类。*
+
+ShiroFilterFactoryBean 也提供了设置 filterChainDefinitionMap 的方法，配置 filterChainDefinitions 和 filterChainDefinitionMap 两者只需一个即可。
+
+在实现动态 filterChainDefinitions 时，需要借助 spring 的 **FactoryBean** 接口去做这件事。spring 的 FactoryBean 接口是专门暴露bean对象的接口，通过接口的 **getObject()** 方法获取bean实例，也可以通过 **getObjectType()** 方法去指定bean的类型，让注解Autowired能够注入或在 spring 上下文中 getBean()方法直接通过class去获取该bean。
+
+那么，继续用上面的经典三张表的资源数据访问去动态构造 filterChainDefinitions。 首先创建一个 ChainDefinitionSectionMetaSource 类并实现 FactoryBean 的方法,实现FactoryBean接口的所有方法，并且在resourceDao中添加一个获取所有资源的方法，如下:
+
+	@Repository
+	public class ResourceDao extends BasicHibernateDao<Resource, String> {
+	
+		/**通过用户id获取用户所有的资源集合**/
+	    public List<Resource> getUserResource(String id) {
+			String h = "select rl from User u left join u.groupsList gl left join gl.resourcesList rl where u.id=?1";
+	        return distinct(h, id);
+	    }
+		
+		/**获取有时有资源**/		
+		public List<Resource> getAllResource() {
+			return getAll();
+		}
+	
+	}
+
+***
+
+	/**
+	 * 借助spring {@link FactoryBean} 对apache shiro的premission进行动态创建
+	 * 
+	 * @author maurice
+	 *
+	 */
+	public class ChainDefinitionSectionMetaSource implements FactoryBean<Ini.Section>{
+
+		@Autowired
+		private ResourceDao resourceDao;
+		
+		//shiro默认的链接定义
+		private String filterChainDefinitions;
+		
+		/**
+		 * 通过filterChainDefinitions对默认的链接过滤定义
+		 * 
+		 * @param filterChainDefinitions 默认的接过滤定义
+		 */
+		public void setFilterChainDefinitions(String filterChainDefinitions) {
+			this.filterChainDefinitions = filterChainDefinitions;
+		}
+		
+		@Override
+		public Section getObject() throws BeansException {
+			Ini ini = new Ini();
+	        //加载默认的url
+	        ini.load(filterChainDefinitions);
+	        
+	        Ini.Section section = ini.getSection(IniFilterChainResolverFactory.URLS);
+	        if (CollectionUtils.isEmpty(section)) {
+	            section = ini.getSection(Ini.DEFAULT_SECTION_NAME);
+	        }
+	        
+	        //循环数据库资源的url
+	        for (Resource resource : resourceDao.getAll()) {
+	        	if(StringUtils.isNotEmpty(resource.getValue()) && StringUtils.isNotEmpty(resource.getPermission())) {
+	        		section.put(resource.getValue(), resource.getPermission());
+	        	}
+	        }
+	        
+	        return section;
+		}
+		
+		@Override
+		public Class<?> getObjectType() {
+			return Section.class;
+		}
+		
+		@Override
+		public boolean isSingleton() {
+			return true;
+		}
+	
+	}
+
+ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了一个 shiro 的 **Ini.Section** 首先**Ini**类加载了filterChainDefinitions的配置信息（由于有些链接不一定要放到数据库里，也可以通过直接写在配置文件中）。通过ini.load(filterChainDefinitions);一话构造成了/login key = authc value等信息。那么shiro就知道了login这个url需要使用authc这个filter去拦截。完成之后，通过resourceDao的getAll()方法将所有数据库的信息再次叠加到Ini.Section中（在tb_resource表中的数据为:/index = perms[security:index]），形成了最后的配置。
+
+完成该以上工作后，修改 spring 的 applicationContext.xml 当项目启动时，你会发现在容器加载spring内容时，会进入到ChainDefinitionSectionMetaSource，如果使用maven的朋友，进入到shiro的源码放一个断点，你会看到tb_resource表的/index = perms[security:index]已经构造到了filterChainDefinitionMap里。
+
+**applicationContext.xml修改为：**
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = authc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+通过修改和添加以上三个文件，完成了动态 filterChainDefinitions 具体的过程在[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目下有例子，如果看不到。可以根据例子去理解。
 
 #### 扩展 filter 实现验证码登录 ####
 
+#### 定义 AuthorizationRealm 抽象类,让多 realms 授权得到统一 ####
 
 #### 更好性能的 shiro + cache ####
-
-
-#### 定义 AuthorizationRealm 抽象类,让多 realms 授权得到统一 ####
