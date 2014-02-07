@@ -1663,7 +1663,7 @@ SessionManagerment 启用EHCache 支持。EHCache SessionDAO 将会在内存中�
 
 在jdbcAuthenticationRealm这个bean里启用了认证缓存，而这个缓存的名称是shiroAuthenticationCache。
 
-	提示:shiro默认不启动认证缓存，如果需要启用，必须在realm里将authenticationCachingEnabled设置成true
+*提示:shiro默认不启动认证缓存，如果需要启用，必须在realm里将authenticationCachingEnabled设置成true*
 
 **ehcache.xml:**
 
@@ -1828,7 +1828,7 @@ applicationContext.xml:
 在applicationContext.xml里的jdbcAuthenticationRealm bean 添加了authorizationCacheName，值为:shiroAuthorizationCache
 
 
-	提示:shiro默认启动授权缓存，如果不想使用授权缓存，将会每次访问到有perms的url都会授权一次。
+*提示:shiro默认启动授权缓存，如果不想使用授权缓存，将会每次访问到有perms的url都会授权一次。*
 
 **ehcache.xml:**
 
