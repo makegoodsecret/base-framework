@@ -76,12 +76,12 @@
      
     <!-- shiro授权的缓存名称 -->
     <cache name="shiroAuthorizationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200">
-    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/> -->
+    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory properties="replicateAsynchronously=false""/> -->
     </cache>
     
     <!-- shiro认证的缓存名称 -->
     <cache name="shiroAuthenticationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200" memoryStoreEvictionPolicy="LRU">
-    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/> -->
+    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory properties="replicateAsynchronously=false""/> -->
     </cache>
     
     <!-- shiro的活动session缓存名称 -->

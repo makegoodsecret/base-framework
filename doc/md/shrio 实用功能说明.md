@@ -1,8 +1,8 @@
-### shrio 实用功能说明 ###
+### 1 shrio 实用功能说明 ###
 
 apache shiro 是功能强大并且容易集成的开源权限框架，它能够完成认证、授权、加密、会话管理等功能。认证和授权为权限控制的核心，简单来说，“认证”就是证明“你是谁？” Web 应用程序一般做法是通过表单提交的用户名及密码达到认证目的。“授权”即是"你能做什么?"，很多系统通过资源表的形式来完成用户能做什么。关于 shiro 的一系列特征及优点，很多文章已有列举，这里不再逐一赘述，本文首先会简单的讲述 shiro 和spring该如何集成，重点介绍 shiro 的几个实用功能和一些 shiro 的扩张知识。
 
-#### shiro 集成 spring ####
+#### 1.1 shiro 集成 spring ####
 
 由于 spring 在 java web 应用里广泛使用，在项目中使用 spring 给项目开发带来的好处有很多，spring 框架本身就是一个非常灵活的东西，而 shrio 的设计模式，让 shiro 集成 spring 并非难事。
 
@@ -70,7 +70,7 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 
 到这里，shiro 和 spring 集成的关键点只有这么点东西。最重要的接口在 **securityManager** 中。securityManager 管理了**认证、授权，session** 等 web 安全的重要类，首先来完成认证、授权方面的功能。
 
-#### shiro 认证、授权 ####
+#### 1.2 shiro 认证、授权 ####
 
 在 shiro 里，**认证**，主要是知道**“你是谁”**，**授权**，是给于你权限去**“做什么”**。所以，在完成认证和授权之前，我们要构造最经典的权限3张表去完成这些事，但在这里画表要图片，整体感也很丑。所以，以 hibernate 实体的方式去说明表的结构：
 
@@ -515,13 +515,98 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 			
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			
-			info.addStringPermissions(permissions);
+			addPermissions(info, permissions);
 			
 			return info;
 		}
+
+		/**
+		 * 通过资源集合，将集合中的permission字段内容解析后添加到SimpleAuthorizationInfo授权信息中
+		 * 
+		 * @param info SimpleAuthorizationInfo
+		 * @param authorizationInfo 资源集合
+		 */
+		private void addPermissions(SimpleAuthorizationInfo info,List<Resource> authorizationInfo) {
+			//解析当前用户资源中的permissions
+	        List<String> temp = CollectionUtils.extractToList(authorizationInfo, "permission", true);
+	        List<String> permissions = getValue(temp,"perms\\[(.*?)\\]");
+	       
+	        //添加默认的permissions到permissions
+	        if (CollectionUtils.isNotEmpty(defaultPermission)) {
+	        	CollectionUtils.addAll(permissions, defaultPermission.iterator());
+	        }
+	        
+	        //将当前用户拥有的permissions设置到SimpleAuthorizationInfo中
+	        info.addStringPermissions(permissions);
+			
+		}
 		
+		/**
+		 * 通过正则表达式获取字符串集合的值
+		 * 
+		 * @param obj 字符串集合
+		 * @param regex 表达式
+		 * 
+		 * @return List
+		 */
+		private List<String> getValue(List<String> obj,String regex){
+	
+	        List<String> result = new ArrayList<String>();
+	        
+			if (CollectionUtils.isEmpty(obj)) {
+				return result;
+			}
+			
+			Pattern pattern = Pattern.compile(regex);
+	        Matcher matcher = pattern.matcher(StringUtils.join(obj, ","));
+	        
+	        while(matcher.find()){
+	        	result.add(matcher.group(1));
+	        }
+	        
+			return result;
+		}
 	
 	}
+
+完成后修改applicationContext.xml文件：
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+	</bean>
+	
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接 -->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+				/changePassword = perms[security:change-password]
+			</value>
+		</property>
+	</bean>
 
 以上代码首先从**doGetAuthenticationInfo**读起，首先。假设我们有一个表单
 
@@ -602,7 +687,7 @@ doGetAuthorizationInfo 返回 SimpleAuthorizationInfo 对象的作用是让 shir
 
 完成认证和授权后现在的缺陷在于filterChainDefinitions都是要手动去一个个配置，一个系统那么多链接都要写上去非常不靠谱，下面将介绍如何使用资源表动态去构建filterChainDefinitions。
 
-#### 动态filterChainDefinitions ####
+#### 1.3 动态filterChainDefinitions ####
 
 动态 filterChainDefinitions 是为了能够通过数据库的数据，将 filterChainDefinitions 构造出来，而不在是一个个手动的写入到配置文件中，在shiro的 ShiroFilterFactoryBean 启动时，会通过 filterChainDefinitions 的配置信息构造成一个Map，在赋值到 **filterChainDefinitionMap** 中，shiro的源码如下:
 
@@ -717,6 +802,22 @@ ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了
 
 **applicationContext.xml修改为：**
 
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+	</bean>
+
 	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
 	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
 		<!-- 默认的连接配置 -->
@@ -743,10 +844,1061 @@ ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了
 	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
 	</bean>
 
-通过修改和添加以上三个文件，完成了动态 filterChainDefinitions 具体的过程在[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目下有例子，如果看不到。可以根据例子去理解。
+通过修改和添加以上三个文件，完成了动态 filterChainDefinitions 具体的过程在[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目下有例子，如果看不懂。可以根据例子去理解。
 
-#### 扩展 filter 实现验证码登录 ####
+#### 1.4 扩展 shiro 的 filter 实现验证码登录 ####
 
-#### 定义 AuthorizationRealm 抽象类,让多 realms 授权得到统一 ####
+验证码登录在web开发中最常见，shiro对于验证码登录的功能没有支持，但shiro的设计模式让开发人员自定义一个小小的验证码登录不会很难。[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目所扩张的验证码登录需求是：**当用户登录失败次数达到指标时，才出现验证码。**
 
-#### 更好性能的 shiro + cache ####
+通过该需求，我们回到上面提到的 FormAuthenticationFilter，该filter是专门做认证用的filter，所以本人第一时间想到扩张它，如果有更好的实现方式希望能够分享。
+
+实现验证码登录，我们首先创建一个CaptchaAuthenticationFilter类，并继承FormAuthenticationFilter。FormAuthenticationFilter最需要重写的方法有：
+
+	/**执行登录**/
+	protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception
+
+	/**等登录失败时所响应的方法**/
+	protected boolean onLoginFailure(AuthenticationToken token,
+									 AuthenticationException e, 
+									 ServletRequest request,
+									 ServletResponse response);
+
+	/**等登录成功时所响应的方法**/
+	protected boolean onLoginSuccess(AuthenticationToken token,
+									 Subject subject, 
+									 ServletRequest request, 
+									 ServletResponse response) throws Exception;
+
+所以CaptchaAuthenticationFilter类应该这样实现：
+
+	/**
+	 * 验证码登录认证Filter
+	 * 
+	 * @author maurice
+	 *
+	 */
+	@Component
+	public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
+		
+		/**
+		 * 默认验证码参数名称
+		 */
+		public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
+		
+		/**
+		 * 默认在session中存储的登录错误次数的名称
+		 */
+		private static final String DEFAULT_LOGIN_INCORRECT_NUMBER_KEY_ATTRIBUTE = "incorrectNumber";
+		
+		//验证码参数名称
+	    private String captchaParam = DEFAULT_CAPTCHA_PARAM;
+	    //在session中的存储验证码的key名称
+	    private String sessionCaptchaKeyAttribute = DEFAULT_CAPTCHA_PARAM;
+	    //在session中存储的登录错误次数名称
+	    private String loginIncorrectNumberKeyAttribute = DEFAULT_LOGIN_INCORRECT_NUMBER_KEY_ATTRIBUTE;
+	    //允许登录错误次数，当登录次数大于该数值时，会在页面中显示验证码
+	    private Integer allowIncorrectNumber = 1;
+	    
+	    /**
+	     * 重写父类方法，在shiro执行登录时先对比验证码，正确后在登录，否则直接登录失败
+	     */
+		@Override
+		protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
+			
+			Session session = SystemVariableUtils.createSessionIfNull();
+			//获取登录错误次数
+			Integer number = (Integer) session.getAttribute(getLoginIncorrectNumberKeyAttribute());
+			
+			//首次登录，将该数量记录在session中
+			if (number == null) {
+				number = new Integer(1);
+				session.setAttribute(getLoginIncorrectNumberKeyAttribute(), number);
+			}
+			
+			//如果登录次数大于allowIncorrectNumber，需要判断验证码是否一致
+			if (number > getAllowIncorrectNumber()) {
+				//获取当前验证码
+				String currentCaptcha = (String) session.getAttribute(getSessionCaptchaKeyAttribute());
+				//获取用户输入的验证码
+				String submitCaptcha = getCaptcha(request);
+				//如果验证码不匹配，登录失败
+				if (StringUtils.isEmpty(submitCaptcha) || !StringUtils.equals(currentCaptcha,submitCaptcha.toLowerCase())) {
+					return onLoginFailure(this.createToken(request, response), 
+										  new AccountException("验证码不正确"), 
+										  request, 
+										  response);
+				}
+			
+			}
+			
+			return super.executeLogin(request, response);
+		}
+	
+	
+		/**
+		 * 重写父类方法，当登录失败将异常信息设置到request的attribute中
+		 */
+		@Override
+		protected void setFailureAttribute(ServletRequest request,AuthenticationException ae) {
+			if (ae instanceof IncorrectCredentialsException) {
+				request.setAttribute(getFailureKeyAttribute(), "用户名密码不正确");
+			} else {
+				request.setAttribute(getFailureKeyAttribute(), ae.getMessage());
+			}
+		}
+		
+		/**
+		 * 重写父类方法，当登录失败次数大于allowIncorrectNumber（允许登录错误次数）时，将显示验证码
+		 */
+		@Override
+		protected boolean onLoginFailure(AuthenticationToken token,
+										 AuthenticationException e, 
+										 ServletRequest request,
+										 ServletResponse response) {
+			
+			Session session = SystemVariableUtils.getSession();
+			Integer number = (Integer) session.getAttribute(getLoginIncorrectNumberKeyAttribute());
+			session.setAttribute(getLoginIncorrectNumberKeyAttribute(),++number);
+			
+			return super.onLoginFailure(token, e, request, response);
+		}
+		
+		/**
+		 * 重写父类方法，当登录成功后，将allowIncorrectNumber（允许登错误录次）设置为0，重置下一次登录的状态
+		 */
+		@Override
+		protected boolean onLoginSuccess(AuthenticationToken token, 
+										 Subject subject, 
+										 ServletRequest request, 
+										 ServletResponse response) throws Exception {
+			
+			Session session = SystemVariableUtils.getSession();
+			session.removeAttribute(getLoginIncorrectNumberKeyAttribute());
+			session.setAttribute("sv", subject.getPrincipal());
+			
+			return super.onLoginSuccess(token, subject, request, response);
+		}
+	
+		//---------------------------------getter/setter方法----------------------------------//
+	｝
+
+CaptchaAuthenticationFilter类重点的代码在executeLogin方法和onLoginFailure方法中。当执行登录时，会在session中创建一个**"登录错误次数"**属性，当该属性大于指定的值时才去匹配验证码，否则继续调用FormAuthenticationFilter的executeLogin方法执行登录。
+
+当登录失败时（onLoginFailure方法）会获取"登录错误次数"，并且加1。知道登录成功后，将"登录错误次数"属性从session中移除。
+
+*提示setFailureAttribute方法的作用是当出现用户名密码错误时提示中文出去，这样会友好些。*
+
+所以，在登录界面的html中用freemarker的话就这样写:
+
+	<form action="${base}/login" method="post">
+		<input type="text" name="username" />
+		<input type="password" name="password" />
+		<input type="checkbox" name="remeberMe" />
+		<!--当登录错误次数大于1时，出现验证码 -->		
+		<#if Session.incorrectNumber?? && Session.incorrectNumber gte 1>
+		  <input type="text" name="captcha" id="captcha" >
+		  <img id="captchaImg" src="get-captcha" />
+		</#if>
+		<input type="submit" value="提交"/>
+	</form>
+
+完成后在修改applicationContext.xml即可:
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+*提示: applicationContext.xml修改了ShiroFilterFactoryBean的filters属性，在filters属性里添加了一个自定义的 captchaAuthenticationFilter , 名字叫 captchaAuthc 在 filterChainDefinitions 里将 /login = authc 该为 /login = captchaAuthc。*
+
+通过添加CaptchaAuthenticationFilter类和修改applicationContext.xml文件，完成了验证码，具体的过程在[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目下有例子，如果看不懂。可以根据例子去理解。
+
+#### 1.5 定义 AuthorizationRealm 抽象类,让多 realms 的授权得到统一 ####
+
+在**shiro 认证、授权**中提到，realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。必须要存在一个。当一个应用程序配置了两个或两个以上的 realm 时，**ModularRealmAuthenticator** 依靠内部的 **AuthenticationStrategy** 组件来确定这些认证尝试的成功或失败条件。如：如果只有一个 realm 验证成功，但所有其他的都失败，这被认为是成功还是失败？又或者必须所有的 realm 验证成功才被认为样子成功？又或者如果一个 realm 验证成功，是否有必要进一步调用其他 realm ? 等等。
+
+**AuthenticationStrategy**： 是一个无状态的组件，它在身份验证尝试中被询问4 次（这4 次交互所需的任何必要的
+状态将被作为方法参数）：
+
+1. 在任何Realm 被调用之前被询问。
+2. 在一个单独的Realm 的getAuthenticationInfo 方法被调用之前立即被询问。
+3. 在一个单独的Realm 的getAuthenticationInfo 方法被调用之后立即被询问。
+4. 在所有的Realm 被调用后询问。
+
+另外，AuthenticationStrategy 负责从每一个成功的 realm 汇总结果并将它们“捆绑”到一个单一的 AuthenticationInfo 再现。这最后汇总的 AuthenticationInfo 实例就是从 Authenticator 实例返回的值以及 shiro 所用来代表 Subject 的最终身份ID 的值（即Principals(身份)）。
+
+shiro 有 3 个具体的AuthenticationStrategy 实现：
+
+<table>
+	<tr>
+		<td>
+			AuthenticationStrategy 类
+		</td>
+		<td>
+			描述
+		</td>
+	<tr>
+	<tr>
+		<td>
+			AtLeastOneSuccessfulStrategy
+		</td>
+		<td>
+			如果一个（或更多）Realm 验证成功，则整体的尝试被认为是成功的。如果没有一个验证成功,则整体尝试失败。
+		</td>
+	<tr>
+	<tr>
+		<td>
+			FirstSuccessfulStrategy
+		</td>
+		<td>
+			只有第一个成功验证的Realm 返回的信息将被使用。所有进一步的Realm 将被忽略。如果没有一个验证成功，则整体尝试失败。
+		</td>
+	<tr>
+	<tr>
+		<td>
+			AllSucessfulStrategy
+		</td>
+		<td>
+			为了整体的尝试成功，所有配置的Realm 必须验证成功。如果没有一个验证成功，则整体尝试失败。
+		</td>
+	<tr>
+</table>
+
+ModularRealmAuthenticator 默认的是AtLeastOneSuccessfulStrategy 实现，因为这是最常所需的方案。如果你不喜欢，你可以配置一个不同的方案：
+
+	<!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="authenticator">
+			<bean class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+				<!-- 认证策略使用FirstSuccessfulStrategy策略 -->
+				<property name="authenticationStrategy">
+					<bean class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy" />
+				</property>
+				<!-- 多realms配置 -->
+				<property name="realms">
+					<list>
+						<value>
+							<ref bean="jdbcAuthenticationRealm" />
+							<ref bean="otherAuthenticationRealm" />
+						</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+那么现在存在这样的需求，让shiro 的多 realms 就有了发挥余地：
+
+1. 在用户登录时，先从本系统数据库获取用户信息。如果获取得到用户，就执行进行认证。
+2. 如果获取不到用户，去第三方应用接口或者其他数据库获取用户。
+3. 如果是从第三方应用接口或者其他数据库获取的用户，将用户插入到本系统的用户表中，并赋给它一些本系统的权限。
+
+但问题是：授权和认证的接口AuthorizingRealm需要实现两个方法，但这个需求提到的是认证而已，授权却要统一进行授权。所以，在多realms都继承AuthorizingRealm会出现很多复制粘贴的授权代码。所以，写一个公用的授权抽象类会比较好些。当然，这个看需求而定。
+
+那么定义 AuthorizationRealm 抽象类让多realms继承它，完成各各realms自己的授权：
+
+	/**
+	 * apache shiro 的公用授权类
+	 * 
+	 * @author maurice
+	 *
+	 */
+	public abstract class AuthorizationRealm extends AuthorizingRealm{
+	
+		@Autowired
+		private ResourceDao resourceDao;
+		
+		private List<String> defaultPermission = Lists.newArrayList();
+		
+		/**
+		 * 设置默认permission
+		 * 
+		 * @param defaultPermissionString permission 如果存在多个值，使用逗号","分割
+		 */
+		public void setDefaultPermissionString(String defaultPermissionString) {
+			String[] perms = StringUtils.split(defaultPermissionString,",");
+			CollectionUtils.addAll(defaultPermission, perms);
+		}
+		
+		/**
+		 * 设置默认permission
+		 * 
+		 * @param defaultPermission permission
+		 */
+		public void setDefaultPermission(List<String> defaultPermission) {
+			this.defaultPermission = defaultPermission;
+		}
+	
+		/**
+		 * 
+		 * 当用户进行访问链接时的授权方法
+		 * 
+		 */
+		protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+	        
+			if (principals == null) {
+				throw new AuthorizationException("Principal对象不能为空");
+			}
+			
+			User user = (User)principals.fromRealm(getName()).iterator().next();
+			List<Resource> resource = resourceDao.getUserResource(user.getId());
+			
+			//获取用户相应的permission
+			List<String> permissions = CollectionUtils.extractToList(resource, "permission",true);
+			
+			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+			
+			//添加用户拥有的permission
+	        addPermissions(info,authorizationInfo);
+	        
+	        return info;
+		}
+		
+		/**
+		 * 通过资源集合，将集合中的permission字段内容解析后添加到SimpleAuthorizationInfo授权信息中
+		 * 
+		 * @param info SimpleAuthorizationInfo
+		 * @param authorizationInfo 资源集合
+		 */
+		private void addPermissions(SimpleAuthorizationInfo info,List<Resource> authorizationInfo) {
+			//解析当前用户资源中的permissions
+	        List<String> temp = CollectionUtils.extractToList(authorizationInfo, "permission", true);
+	        List<String> permissions = getValue(temp,"perms\\[(.*?)\\]");
+	       
+	        //添加默认的permissions到permissions
+	        if (CollectionUtils.isNotEmpty(defaultPermission)) {
+	        	CollectionUtils.addAll(permissions, defaultPermission.iterator());
+	        }
+	        
+	        //将当前用户拥有的permissions设置到SimpleAuthorizationInfo中
+	        info.addStringPermissions(permissions);
+			
+		}
+		
+		/**
+		 * 通过正则表达式获取字符串集合的值
+		 * 
+		 * @param obj 字符串集合
+		 * @param regex 表达式
+		 * 
+		 * @return List
+		 */
+		private List<String> getValue(List<String> obj,String regex){
+	
+	        List<String> result = new ArrayList<String>();
+	        
+			if (CollectionUtils.isEmpty(obj)) {
+				return result;
+			}
+			
+			Pattern pattern = Pattern.compile(regex);
+	        Matcher matcher = pattern.matcher(StringUtils.join(obj, ","));
+	        
+	        while(matcher.find()){
+	        	result.add(matcher.group(1));
+	        }
+	        
+			return result;
+		}
+	}
+
+本系统的认证:
+
+	/**
+	 * 
+	 * apache shiro 的身份验证类
+	 * 
+	 * @author maurice
+	 *
+	 */
+	public class JdbcAuthenticationRealm extends AuthorizationRealm{
+		
+		@Autowired
+		private UserDao userDao;
+	
+		/**
+		 * 用户登录的身份验证方法
+		 * 
+		 */
+		protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+			UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
+	
+	        String username = usernamePasswordToken.getUsername();
+	        
+	        if (username == null) {
+	            throw new AccountException("用户名不能为空");
+	        }
+	        //通过登录帐号获取用户实体
+	        User user = userDao.getUserByUsername(username);
+	        
+	        if (user == null) {
+	            throw new UnknownAccountException("用户不存在");
+	        }
+	        
+	        return new SimpleAuthenticationInfo(user,user.getPassword(),getName());
+		}
+		
+	
+	}
+
+第三方应用和其他数据库的认证:
+	
+	
+	public class otherAuthenticationRealm extends AuthorizationRealm{
+	
+		/**
+		 * 用户登录的身份验证方法
+		 * 
+		 */
+		protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+			//获取用户
+			//插入到本系统
+			//返回SimpleAuthenticationInfo.
+		}
+		
+	
+	}
+完成后在修改applicationContext.xml即可:
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="otherAuthenticationRealm" class="domain.OtherAuthenticationRealm" />
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="authenticator">
+			<bean class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+				<!-- 多realms配置 -->
+				<property name="realms">
+					<list>
+						<value>
+							<ref bean="jdbcAuthenticationRealm" />
+							<ref bean="otherAuthenticationRealm" />
+						</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+在[base-framework](https://github.com/dactiv/base-framework "base-framework")中没有多realms例子，如果存在什么问题。可以到[这里](https://github.com/dactiv/base-framework/issues,"issues")提问。
+
+#### 1.6 更好的性能 shiro + cache ####
+
+在许多应用程序中性能是至关重要的。缓存是从第一天开始第一个建立在 shiro 中的一流功能，以确保安全操作保持尽可能的快。然而，缓存作为一个概念是 shiro 的基本组成部分，实现一个完整的缓存机制是安全框架核心能力之外的事情。为此，shiro 的缓存支持基本上是一个抽象的（包装）API，它将“坐”在一个基本的缓存机制产品（例如，Ehcache，OSCache，Terracotta，Coherence，GigaSpaces，JBossCache 等）之上。这允许 shiro 终端用户配置他们喜欢的任何缓存机制。
+
+shiro 有三个重要的缓存接口：
+
+1. CacheManager - 负责所有缓存的主要管理组件，它返回 Cache 实例。
+1. Cache - 维护key/value 对。
+1. CacheManagerAware - 通过想要接收和使用 CacheManager 实例的组件来实现。
+
+CacheManager 返回 Cache 实例，各种不同的 shiro 组件使用这些 Cache 实例来缓存必要的数据。任何实现了 CacheManagerAware 的 shiro 组件将会自动地接收一个配置好的 CacheManager，该 CacheManager 能够用来获取 Cache 实例。
+
+shiro 的 SecurityManager 实现及所有 AuthorizingRealm 实现都实现了 CacheManagerAware 。如果你在 SecurityManager 上设置了 CacheManger，它反过来也会将它设置到实现了 CacheManagerAware 的各种不同的Realm 上（OO delegation）。
+
+那么为了方便，本节就使用先在比较流行的 ehcache 来做讲解，将spring的cache和shiro的cache结合起来用，通过spring的缓存注解来“缓存数据”，“清除缓存”等操作。
+
+具体配置文件如下，applicationContext.xml:
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+		<!-- cacheManager,集合spring缓存工厂 -->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+	<!-- spring对ehcache的缓存工厂支持 -->
+	<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+	
+	<!-- spring对ehcache的缓存管理 -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory"></property>
+	</bean>
+	
+	<!-- 使用缓存annotation 配置 -->
+	<cache:annotation-driven cache-manager="ehCacheManager" proxy-target-class="true" />
+
+通过以上修改将spring cache和shiro cache整合了起来。完成这个之后先解决一个session集群同步的问题。
+
+在很多web应用中，session共享是非常必要的一件事。而shiro提供了**SessionManager**给开发人员去管理和维护当前的session。当然，shiro所写的sessionDao 本人认为已经够用了。如果想使用nosql来做存储的话。可以实现SessionManager接口去做你自己的业务逻辑。
+
+*提示:*
+
+*SessionManager(org.apache.shiro.session.SessionManager)知道如何去创建及管理用户 Session 生命周期来为所有环境下的用户提供一个强健的 Session 体验。这在安全框架界是一个独有的特色 shiro 拥有能够在任何环境下本地化管理用户 Session 的能力，即使没有可用的 Web/Servlet 或 EJB 容器，它将会使用它内置的企业级会话管理来提供同样的编程体验。SessionDAO 的存在允许任何数据源能够在持久会话中使用。*
+
+*SesssionDAO代表SessionManager 执行Session 持久化（CRUD）操作。这允许任何数据存储被插入到会话管理的基础之中。SessionDAO 的权力是你能够实现该接口来与你想要的任何数据存储进行通信。这意味着你的会话数据可以驻留在内存/缓存中，文件系统，关系数据库或NoSQL 的数据存储，或其他任何你需要的位置。你得控制持久性行为。*
+
+*EHCache SessionDAO 默认是没有启用的，但如果你不打算实现你自己的SessionDAO，那么强烈地建议你为 shiro 的
+SessionManagerment 启用EHCache 支持。EHCache SessionDAO 将会在内存中保存会话，并支持溢出到磁盘，若内存成为制约。这对生产程序确保你在运行时不会随机地“丢失”会话是非常好的。*
+
+那么修改applicationContext.xml相关的配置:
+
+
+	<!-- 使用EnterpriseCacheSessionDAO，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上，解决session同步问题。 -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+    	<!-- 活动session缓存名称 -->
+    	<property name="activeSessionsCacheName" value="shiroActiveSessionCache" />
+    </bean>
+    
+    <!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题 -->
+    	<property name="sessionDAO" ref="sessionDAO" />
+    </bean>
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+		<!-- cacheManager,集合spring缓存工厂 -->
+		<property name="cacheManager" ref="cacheManager" />
+		<!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+	<!-- spring对ehcache的缓存工厂支持 -->
+	<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+	
+	<!-- spring对ehcache的缓存管理 -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory"></property>
+	</bean>
+	
+	<!-- 使用缓存annotation 配置 -->
+	<cache:annotation-driven cache-manager="ehCacheManager" proxy-target-class="true" />
+
+注意sessionDAO这个bean 里面的属性activeSessionsCacheName就是ehcache的缓存名称。通过该名称可以配置ehcache的缓存性质。
+
+**ehcache.xml:**
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<ehcache>  
+	    
+	    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" 
+												properties="peerDiscovery=automatic,
+												multicastGroupAddress=230.0.0.1,
+												multicastGroupPort=4446,
+												timeToLive=32" />
+		
+		<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> 
+		
+	    <defaultCache maxElementsInMemory="10000" 
+					  eternal="false" 
+					  timeToIdleSeconds="300" 
+					  timeToLiveSeconds="600" 
+					  overflowToDisk="true"/>
+
+	    <!-- shiro的活动session缓存名称 -->
+	    <cache name="shiroActiveSessionCache" 
+					 maxElementsInMemory="10000" 
+					 timeToLiveSeconds="1200" 
+					 memoryStoreEvictionPolicy="LRU">
+
+	    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" 
+									   properties="replicateAsynchronously=false"/>
+	    </cache>
+	    
+	</ehcache>
+
+在shiroActiveSessionCache缓存里。集群的配置为同步缓存。作用是subject的getSession能够在所有集群的服务器上共享数据。完成后在发挥shiro的缓存功能，以**1.6 shiro 认证、授权**章节为例子，将**认证缓存** 和 **授权缓存** 一起解决。
+
+**认证缓存**的用作相当于**"热用户"**的概念，意思就是说：
+
+1. 当一个用户进行登录成功后，将该用户记录到缓存中，当下次登录时，不在去查数据库，而是直接在缓存中获取用户信息，
+2. 当缓存满了。而就将缓存里最少使用的用户踢出去。
+
+那么 shiro 的 realm就能实现这个需求，shiro的Realm本身就支出缓存。而缓存的踢出规则，ehcache就可以配置该规则。但是当用户修改信息时，需要将缓存清楚。不然下次登录时，登录密码用以前旧的密码一样能够登录，新的密码就不起作用。
+
+具体applicationContext.xml配置如下:
+
+	<!-- 使用EnterpriseCacheSessionDAO，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上，解决session同步问题。 -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+    	<!-- 活动session缓存名称 -->
+    	<property name="activeSessionsCacheName" value="shiroActiveSessionCache" />
+    </bean>
+    
+    <!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题 -->
+    	<property name="sessionDAO" ref="sessionDAO" />
+    </bean>
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+		<!-- 启用认证缓存，当用户登录一次后将不在查询数据库来获取用户信息，直接在从缓存获取 -->
+    	<property name="authenticationCachingEnabled" value="true" />
+    	<!-- 认证缓存名称 -->
+    	<property name="authenticationCacheName" value="shiroAuthenticationCache" />
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+		<!-- cacheManager,集合spring缓存工厂 -->
+		<property name="cacheManager" ref="cacheManager" />
+		<!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+	<!-- spring对ehcache的缓存工厂支持 -->
+	<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+	
+	<!-- spring对ehcache的缓存管理 -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory"></property>
+	</bean>
+	
+	<!-- 使用缓存annotation 配置 -->
+	<cache:annotation-driven cache-manager="ehCacheManager" proxy-target-class="true" />
+
+在jdbcAuthenticationRealm这个bean里启用了认证缓存，而这个缓存的名称是shiroAuthenticationCache。
+
+	提示:shiro默认不启动认证缓存，如果需要启用，必须在realm里将authenticationCachingEnabled设置成true
+
+**ehcache.xml:**
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<ehcache>  
+	    
+	    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" 
+												properties="peerDiscovery=automatic,
+												multicastGroupAddress=230.0.0.1,
+												multicastGroupPort=4446,
+												timeToLive=32" />
+		
+		<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> 
+		
+	    <defaultCache maxElementsInMemory="10000" 
+					  eternal="false" 
+					  timeToIdleSeconds="300" 
+					  timeToLiveSeconds="600" 
+					  overflowToDisk="true"/>
+
+	    <!-- shiro的活动session缓存名称 -->
+	    <cache name="shiroActiveSessionCache" 
+					 maxElementsInMemory="10000" 
+					 timeToLiveSeconds="1200" 
+					 memoryStoreEvictionPolicy="LRU">
+
+	    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" 
+									   properties="replicateAsynchronously=false"/>
+	    </cache>
+
+	    <!-- shiro认证的缓存名称 -->
+    	<cache name="shiroAuthenticationCache" 
+					 maxElementsInMemory="10000" 
+					 timeToLiveSeconds="1200" 
+					 memoryStoreEvictionPolicy="LRU">
+
+    		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory 
+								   properties="replicateAsynchronously=false""/>
+    	</cache>
+
+	</ehcache>
+
+在ehcache.xml中添加了shiroAuthenticationCache缓存。并且memoryStoreEvictionPolicy属性为LRU,LRU就是当缓存满了将**“最近最少访问”**的缓存踢出。
+
+那么，通过以上配置完成了“热用户”，还有一部就是当修改用户时，将缓存清除，让下次这个用户登录时，重新去数据库加载新的数据进行认证。
+
+shiro在存储授权用户缓存时，会将用户登录账户做键，实体做值的方式进行存储。所以，当修改用户时，通过用户的登录帐号，和spring的缓存注解，将该缓存清空。具体代码如下:
+
+	@Repository
+	public class UserDao extends BasicHibernateDao<User, String> {
+	
+		/**通过登录帐号获取用户实体**/
+	    public User getUserByUsername(String username) {
+	        return findUniqueByProperty("username", username);
+	    }
+		
+		
+		/**通过用户实体信息修改用户**/
+		//当更新后将shiro的认证缓存也更新，保证shiro和当前的用户一致
+		@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
+		public void updateUser(User entity) {
+			update(entity);
+		}
+
+		/**通过用户实体删除用户**/
+		//当更新后将shiro的认证缓存也更新，保证shiro和当前的用户一致
+		@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
+		public void deleteUser(User entity) {
+			delete(entity);
+		}
+		
+	}
+
+通过以上代码，当调用updateUser或deletUser方法完成后，spring cache 会清除key为当前用户的登录帐号的shiroAuthenticationCache缓存。
+
+**授权缓存**的作用大部分是快速获取获取用户的认证信息，如果存在两个集群点，可以直接使用同步的功能将缓存同步到其他服务器里，当下次访问服务器时，不在进行授权的工作。具体配置如下：
+
+applicationContext.xml:
+
+	<!-- 使用EnterpriseCacheSessionDAO，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上，解决session同步问题。 -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+    	<!-- 活动session缓存名称 -->
+    	<property name="activeSessionsCacheName" value="shiroActiveSessionCache" />
+    </bean>
+    
+    <!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<!-- 使用EnterpriseCacheSessionDAO，解决session同步问题 -->
+    	<property name="sessionDAO" ref="sessionDAO" />
+    </bean>
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm" class="domain.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+			</bean>
+		</property>
+		<!-- 授权缓存名称 -->
+    	<property name="authorizationCacheName" value="shiroAuthorizationCache" />
+		<!-- 启用认证缓存，当用户登录一次后将不在查询数据库来获取用户信息，直接在从缓存获取 -->
+    	<property name="authenticationCachingEnabled" value="true" />
+    	<!-- 认证缓存名称 -->
+    	<property name="authenticationCacheName" value="shiroAuthenticationCache" />
+	</bean>
+    
+    <!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+		<!-- cacheManager,集合spring缓存工厂 -->
+		<property name="cacheManager" ref="cacheManager" />
+		<!-- 考虑到集群，使用DefaultWebSessionManager来做sessionManager -->
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource" class="domian.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = captchaAuthc
+				/logout = logout
+				/index = perms[security:index]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 将shiro与spring集合 -->
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+    	<property name="securityManager" ref="securityManager" />
+    	<!-- 要求登录时的链接 -->
+	    <property name="loginUrl" value="/login" />
+	    <!-- 登陆成功后要跳转的连接 -->
+	    <property name="successUrl" value="/index" />
+	    <!-- 没有权限要跳转的链接-->
+	    <property name="unauthorizedUrl" value="/unauthorized" />
+	    <!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+	<!-- spring对ehcache的缓存工厂支持 -->
+	<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+	
+	<!-- spring对ehcache的缓存管理 -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory"></property>
+	</bean>
+	
+	<!-- 使用缓存annotation 配置 -->
+	<cache:annotation-driven cache-manager="ehCacheManager" proxy-target-class="true" />
+
+在applicationContext.xml里的jdbcAuthenticationRealm bean 添加了authorizationCacheName，值为:shiroAuthorizationCache
+
+
+	提示:shiro默认启动授权缓存，如果不想使用授权缓存，将会每次访问到有perms的url都会授权一次。
+
+**ehcache.xml:**
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<ehcache>  
+	    
+	    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" 
+												properties="peerDiscovery=automatic,
+												multicastGroupAddress=230.0.0.1,
+												multicastGroupPort=4446,
+												timeToLive=32" />
+		
+		<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> 
+		
+	    <defaultCache maxElementsInMemory="10000" 
+					  eternal="false" 
+					  timeToIdleSeconds="300" 
+					  timeToLiveSeconds="600" 
+					  overflowToDisk="true"/>
+
+	    <!-- shiro的活动session缓存名称 -->
+	    <cache name="shiroActiveSessionCache" 
+					 maxElementsInMemory="10000" 
+					 timeToLiveSeconds="1200" 
+					 memoryStoreEvictionPolicy="LRU">
+
+	    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" 
+									   properties="replicateAsynchronously=false"/>
+	    </cache>
+
+	    <!-- shiro认证的缓存名称 -->
+    	<cache name="shiroAuthenticationCache" 
+					 maxElementsInMemory="10000" 
+					 timeToLiveSeconds="1200" 
+					 memoryStoreEvictionPolicy="LRU">
+
+    		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory 
+								   properties="replicateAsynchronously=false""/>
+    	</cache>
+
+		<!-- shiro授权的缓存名称 -->
+	    <cache name="shiroAuthorizationCache" 
+			   maxElementsInMemory="10000" 
+			   timeToLiveSeconds="1200">
+
+	    	<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory 
+									   properties="replicateAsynchronously=false""/>
+
+	    </cache>
+
+	</ehcache>
+
+
+在ehcache中添加shiroAuthorizationCache缓存。将完成授权缓存同步。当修改或删除某些角色时，记得要清楚所有缓存，让用户下次访问时授权一次，不然修改了角色需要重启服务器后才能生效。
+
+	@Repository
+	public class GroupDao extends BasicHibernateDao<Group, String> {
+	
+		/**通过用户实体信息修改用户**/
+		@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
+		public void updateGroup(Group entity) {
+			update(entity);
+		}
+
+		/**通过用户实体删除用户**/
+		@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
+		public void deleteGroup(Group entity) {
+			delete(entity);
+		}
+		
+	}
+
+具体的过程在[base-framework](https://github.com/dactiv/base-framework "base-framework")的showcase的base-curd项目下有例子，如果看不懂。可以根据例子去理解。

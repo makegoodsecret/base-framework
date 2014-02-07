@@ -147,7 +147,20 @@ public class AccountManager {
 	 * @param ids 用户id集合
 	 */
 	public void deleteUsers(List<String> ids) {
-		userDao.deleteAll(ids);
+		for (String id : ids) {
+			deleteUser(userDao.get(id));
+		}
+	}
+	
+	/**
+	 * 通过用户实体删除用户
+	 * 
+	 * @param entity 用户实体
+	 */
+	//当删除后将shiro的认证缓存也更新，保证shiro和当前的用户一致
+	@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
+	public void deleteUser(User entity) {
+		userDao.delete(entity);
 	}
 
 	/**

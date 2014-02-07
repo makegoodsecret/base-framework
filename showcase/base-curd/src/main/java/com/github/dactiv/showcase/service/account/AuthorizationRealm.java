@@ -32,8 +32,6 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
 	
 	private List<String> defaultPermission = Lists.newArrayList();
 	
-	private List<String> defaultRole = Lists.newArrayList();
-	
 	/**
 	 * 设置默认permission
 	 * 
@@ -45,16 +43,6 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
 	}
 	
 	/**
-	 * 设置默认role
-	 * 
-	 * @param defaultRoleString role 如果存在多个值，使用逗号","分割
-	 */
-	public void setDefaultRoleString(String defaultRoleString) {
-		String[] roles = StringUtils.split(defaultRoleString,",");
-		CollectionUtils.addAll(defaultRole, roles);
-	}
-	
-	/**
 	 * 设置默认permission
 	 * 
 	 * @param defaultPermission permission
@@ -63,15 +51,6 @@ public abstract class AuthorizationRealm extends AuthorizingRealm{
 		this.defaultPermission = defaultPermission;
 	}
 	
-	/**
-	 * 设置默认role
-	 * 
-	 * @param defaultRole role
-	 */
-	public void setDefaultRole(List<String> defaultRole) {
-		this.defaultRole = defaultRole;
-	}
-
 	/**
 	 * 
 	 * 当用户进行访问链接时的授权方法
