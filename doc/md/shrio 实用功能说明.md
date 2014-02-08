@@ -329,13 +329,13 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 			17909124407b8d7901407be4996c0003
 		</td>
 		<td>
-			进入首页
+			添加用户
 		</td>
 		<td>
-			perms[security:index]
+			perms[user:add]
 		</td>
 		<td>
-			/index
+			/user/add/**
 		</td>
 	</tr>
 </table>
@@ -392,7 +392,7 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 	</tr>
 </table>
 
-首先要认识的第一个对象是securityManager所管理的 **org.apache.shiro.realm.Realm** 接口,realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。但它实际上与安全相关的数据（如用来执行认证及授权）的用户帐户交互时，shiro 从一个或多个为应用程序配置的 realm 中寻找许多这样的东西。
+首先要认识的第一个对象是securityManager所管理的 **org.apache.shiro.realm.Realm** 接口，realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。但它实际上与安全相关的数据（如用来执行认证及授权）的用户帐户交互时，shiro 从一个或多个为应用程序配置的 realm 中寻找许多这样的东西。
 
 在这个意义上说，realm 本质上是一个特定安全的 dao：它封装了数据源的连接详细信息，使 shiro 所需的相关数据可用。当配置 shiro 时，你必须指定至少一个 realm 用来进行身份验证和授权。securityManager 可能配置多个 realms，**但至少必须有一个**。
 
@@ -435,8 +435,6 @@ shiro 提供了立即可用的 realms 来连接一些安全数据源（即目录
 	</bean>
 
 当用户登录成功后会跳转到 **successUrl** 这个链接，即：**http://localhost:port/index**。那么这个index又要当前用户存在 **permission** 为 **security:index** 才能进入，所以，当登录完成跳转 **successUrl** 时，会进入到 **doGetAuthorizationInfo** 方法里进行一次**授权**，让 shiro 了解该链接在当前认证的用户里是否可以访问，如果可以访问，那就执行接入到index，否则就会跳转到unauthorizedUrl。
-
-*提示： shiro 支持了权限（permissions）概念。权限是功能的原始表述，如‘开门’，‘创建一个博文’，‘删除‘jsmith’用户’等。通过让权限反映应用的原始功能，在改变应用功能时，你只需要改变权限检查。进而，你可以在运行时按需将权限分配给角色或用户。*
 
 了解以上情况，首先我们创建UserDao和ResourceDao类来做数据访问工作:
 
@@ -720,7 +718,7 @@ ShiroFilterFactoryBean 也提供了设置 filterChainDefinitionMap 的方法，�
 
 在实现动态 filterChainDefinitions 时，需要借助 spring 的 **FactoryBean** 接口去做这件事。spring 的 FactoryBean 接口是专门暴露bean对象的接口，通过接口的 **getObject()** 方法获取bean实例，也可以通过 **getObjectType()** 方法去指定bean的类型，让注解Autowired能够注入或在 spring 上下文中 getBean()方法直接通过class去获取该bean。
 
-那么，继续用上面的经典三张表的资源数据访问去动态构造 filterChainDefinitions。 首先创建一个 ChainDefinitionSectionMetaSource 类并实现 FactoryBean 的方法,实现FactoryBean接口的所有方法，并且在resourceDao中添加一个获取所有资源的方法，如下:
+那么，继续用上面的经典三张表的资源数据访问去动态构造 filterChainDefinitions。 首先创建一个 ChainDefinitionSectionMetaSource 类并实现 FactoryBean 的方法和在resourceDao中添加一个获取所有资源的方法，如下:
 
 	@Repository
 	public class ResourceDao extends BasicHibernateDao<Resource, String> {
@@ -796,9 +794,9 @@ ShiroFilterFactoryBean 也提供了设置 filterChainDefinitionMap 的方法，�
 	
 	}
 
-ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了一个 shiro 的 **Ini.Section** 首先**Ini**类加载了filterChainDefinitions的配置信息（由于有些链接不一定要放到数据库里，也可以通过直接写在配置文件中）。通过ini.load(filterChainDefinitions);一话构造成了/login key = authc value等信息。那么shiro就知道了login这个url需要使用authc这个filter去拦截。完成之后，通过resourceDao的getAll()方法将所有数据库的信息再次叠加到Ini.Section中（在tb_resource表中的数据为:/index = perms[security:index]），形成了最后的配置。
+ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了一个 shiro 的 **Ini.Section** 首先**Ini**类加载了filterChainDefinitions的配置信息（由于有些链接不一定要放到数据库里，也可以通过直接写在配置文件中）。通过ini.load(filterChainDefinitions);一话构造成了/login key = authc value等信息。那么shiro就知道了login这个url需要使用authc这个filter去拦截。完成之后，通过resourceDao的getAll()方法将所有数据库的信息再次叠加到Ini.Section中（在tb_resource表中的数据为:/user/add/** = perms[user:add]），形成了最后的配置。
 
-完成该以上工作后，修改 spring 的 applicationContext.xml 当项目启动时，你会发现在容器加载spring内容时，会进入到ChainDefinitionSectionMetaSource，如果使用maven的朋友，进入到shiro的源码放一个断点，你会看到tb_resource表的/index = perms[security:index]已经构造到了filterChainDefinitionMap里。
+完成该以上工作后，修改 spring 的 applicationContext.xml，当项目启动时，你会发现在容器加载spring内容时，会进入到ChainDefinitionSectionMetaSource，如果使用maven的朋友，进入到shiro的源码放一个断点，你会看到tb_resource表的/user/add/** = perms[user:add]已经构造到了filterChainDefinitionMap里。
 
 **applicationContext.xml修改为：**
 
@@ -857,13 +855,13 @@ ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了
 	/**执行登录**/
 	protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception
 
-	/**等登录失败时所响应的方法**/
+	/**当登录失败时所响应的方法**/
 	protected boolean onLoginFailure(AuthenticationToken token,
 									 AuthenticationException e, 
 									 ServletRequest request,
 									 ServletResponse response);
 
-	/**等登录成功时所响应的方法**/
+	/**当登录成功时所响应的方法**/
 	protected boolean onLoginSuccess(AuthenticationToken token,
 									 Subject subject, 
 									 ServletRequest request, 
@@ -984,7 +982,7 @@ ChainDefinitionSectionMetaSource 类，重点在 **getObject()** 中，返回了
 
 CaptchaAuthenticationFilter类重点的代码在executeLogin方法和onLoginFailure方法中。当执行登录时，会在session中创建一个**"登录错误次数"**属性，当该属性大于指定的值时才去匹配验证码，否则继续调用FormAuthenticationFilter的executeLogin方法执行登录。
 
-当登录失败时（onLoginFailure方法）会获取"登录错误次数"，并且加1。知道登录成功后，将"登录错误次数"属性从session中移除。
+当登录失败时（onLoginFailure方法）会获取"登录错误次数"，并且加1。直到登录成功后，将"登录错误次数"属性从session中移除。
 
 *提示setFailureAttribute方法的作用是当出现用户名密码错误时提示中文出去，这样会友好些。*
 
@@ -1057,10 +1055,9 @@ CaptchaAuthenticationFilter类重点的代码在executeLogin方法和onLoginFail
 
 #### 1.5 定义 AuthorizationRealm 抽象类,让多 realms 的授权得到统一 ####
 
-在**shiro 认证、授权**中提到，realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。必须要存在一个。当一个应用程序配置了两个或两个以上的 realm 时，**ModularRealmAuthenticator** 依靠内部的 **AuthenticationStrategy** 组件来确定这些认证尝试的成功或失败条件。如：如果只有一个 realm 验证成功，但所有其他的都失败，这被认为是成功还是失败？又或者必须所有的 realm 验证成功才被认为样子成功？又或者如果一个 realm 验证成功，是否有必要进一步调用其他 realm ? 等等。
+在**1.2 shiro 认证、授权**中提到，realm 担当 shiro 和你的应用程序的安全数据之间的“桥梁”或“连接器”。必须要存在一个。当一个应用程序配置了两个或两个以上的 realm 时，**ModularRealmAuthenticator** 依靠内部的 **AuthenticationStrategy** 组件来确定这些认证尝试的成功或失败条件。如：如果只有一个 realm 验证成功，但所有其他的都失败，这被认为是成功还是失败？又或者必须所有的 realm 验证成功才被认为样子成功？又或者如果一个 realm 验证成功，是否有必要进一步调用其他 realm ? 等等。
 
-**AuthenticationStrategy**： 是一个无状态的组件，它在身份验证尝试中被询问4 次（这4 次交互所需的任何必要的
-状态将被作为方法参数）：
+**AuthenticationStrategy**： 是一个无状态的组件，它在身份验证尝试中被询问4 次（这4 次交互所需的任何必要的状态将被作为方法参数）：
 
 1. 在任何Realm 被调用之前被询问。
 2. 在一个单独的Realm 的getAuthenticationInfo 方法被调用之前立即被询问。
@@ -1363,7 +1360,7 @@ ModularRealmAuthenticator 默认的是AtLeastOneSuccessfulStrategy 实现，因�
 	    <property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
 	</bean>
 
-在[base-framework](https://github.com/dactiv/base-framework "base-framework")中没有多realms例子，如果存在什么问题。可以到[这里](https://github.com/dactiv/base-framework/issues,"issues")提问。
+在[base-framework](https://github.com/dactiv/base-framework "base-framework")中没有多realms例子，如果存在什么问题。可以到[这里](https://github.com/dactiv/base-framework/issues "issues")提问。
 
 #### 1.6 更好的性能 shiro + cache ####
 
@@ -1570,14 +1567,16 @@ SessionManagerment 启用EHCache 支持。EHCache SessionDAO 将会在内存中�
 	    
 	</ehcache>
 
-在shiroActiveSessionCache缓存里。集群的配置为同步缓存。作用是subject的getSession能够在所有集群的服务器上共享数据。完成后在发挥shiro的缓存功能，以**1.6 shiro 认证、授权**章节为例子，将**认证缓存** 和 **授权缓存** 一起解决。
+在shiroActiveSessionCache缓存里。集群的配置为同步缓存。作用是subject的getSession能够在所有集群的服务器上共享数据。
+
+完成session共享后在发挥shiro的缓存功能，以**1.6 shiro 认证、授权**章节为例子，将**认证缓存** 和 **授权缓存** 一起解决。
 
 **认证缓存**的用作相当于**"热用户"**的概念，意思就是说：
 
 1. 当一个用户进行登录成功后，将该用户记录到缓存中，当下次登录时，不在去查数据库，而是直接在缓存中获取用户信息，
 2. 当缓存满了。而就将缓存里最少使用的用户踢出去。
-
-那么 shiro 的 realm就能实现这个需求，shiro的Realm本身就支出缓存。而缓存的踢出规则，ehcache就可以配置该规则。但是当用户修改信息时，需要将缓存清楚。不然下次登录时，登录密码用以前旧的密码一样能够登录，新的密码就不起作用。
+ 
+shiro 的 realm就能实现这个需求，shiro 的 realm 本身就支持缓存。而缓存的踢出规则，ehcache 就可以配置该规则。但是当用户修改信息时，需要将缓存清除。不然下次登录时，登录密码用以前旧的密码一样能够登录，新的密码就不起作用。
 
 具体applicationContext.xml配置如下:
 
@@ -1706,11 +1705,11 @@ SessionManagerment 启用EHCache 支持。EHCache SessionDAO 将会在内存中�
 
 	</ehcache>
 
-在ehcache.xml中添加了shiroAuthenticationCache缓存。并且memoryStoreEvictionPolicy属性为LRU,LRU就是当缓存满了将**“最近最少访问”**的缓存踢出。
+在ehcache.xml中添加了shiroAuthenticationCache缓存。并且memoryStoreEvictionPolicy属性为LRU，LRU就是当缓存满了将**“最近最少访问”**的缓存踢出。
 
-那么，通过以上配置完成了“热用户”，还有一部就是当修改用户时，将缓存清除，让下次这个用户登录时，重新去数据库加载新的数据进行认证。
+那么，通过以上配置完成了“热用户”，还有一步就是当修改用户时，将缓存清除，让下次这个用户登录时，重新去数据库加载新的数据进行认证。
 
-shiro在存储授权用户缓存时，会将用户登录账户做键，实体做值的方式进行存储。所以，当修改用户时，通过用户的登录帐号，和spring的缓存注解，将该缓存清空。具体代码如下:
+shiro在存储授权用户缓存时，会将用户登录账户做键，实体做值的方式进行存储到缓存中。所以，当修改用户时，通过用户的登录帐号，和spring的缓存注解，将该缓存清空。具体代码如下:
 
 	@Repository
 	public class UserDao extends BasicHibernateDao<User, String> {
@@ -1737,11 +1736,11 @@ shiro在存储授权用户缓存时，会将用户登录账户做键，实体做
 		
 	}
 
-通过以上代码，当调用updateUser或deletUser方法完成后，spring cache 会清除key为当前用户的登录帐号的shiroAuthenticationCache缓存。
+通过以上代码，当调用updateUser或deletUser方法完成后，spring cache 会将 shiroAuthenticationCache缓存块里key为当前用户的登录帐号的缓存进行清除。
 
-**授权缓存**的作用大部分是快速获取获取用户的认证信息，如果存在两个集群点，可以直接使用同步的功能将缓存同步到其他服务器里，当下次访问服务器时，不在进行授权的工作。具体配置如下：
+**授权缓存**的作用大部分是快速获取用户的认证信息，如果存在两个集群点，可以直接使用同步的功能将缓存同步到其他服务器里，当下次访问服务器时，当出现某台服务器没有进行授权工作时，不在进行授权的工作。具体配置如下：
 
-applicationContext.xml:
+**applicationContext.xml:**
 
 	<!-- 使用EnterpriseCacheSessionDAO，将session放入到缓存，通过同步配置，将缓存同步到其他集群点上，解决session同步问题。 -->
     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
