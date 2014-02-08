@@ -87,7 +87,7 @@ public class DictionaryCategoryController {
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
 		
 		if (StringUtils.isNotEmpty(id)) {
-			filters.add(PropertyFilters.build("NES_id", id));
+			filters.add(PropertyFilters.get("NES_id", id));
 		}
 		//展示父类下来框时，不要连自己也在下拉框里
 		model.addAttribute("categoriesList", systemDictionaryManager.getDictionaryCategories(filters));

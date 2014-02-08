@@ -205,7 +205,7 @@ public class AccountManager {
 	 */
 	public List<Resource> getParentResources() {
 		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.build("EQS_parent.id","null")
+			PropertyFilters.get("EQS_parent.id","null")
 		);
 		return resourceDao.findByPropertyFilter(filters, Order.asc("sort"));
 	}
@@ -252,7 +252,7 @@ public class AccountManager {
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
 		
 		if (ArrayUtils.isNotEmpty(ignoreIdValue)) {
-			filters.add(PropertyFilters.build("NES_id", StringUtils.join(ignoreIdValue,",")));
+			filters.add(PropertyFilters.get("NES_id", StringUtils.join(ignoreIdValue,",")));
 		}
 		
 		return resourceDao.findByPropertyFilter(filters, Order.asc("sort"));
@@ -345,10 +345,10 @@ public class AccountManager {
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
 		
 		if (ArrayUtils.isNotEmpty(ignoreIdValue)) {
-			filters.add(PropertyFilters.build("NES_id", StringUtils.join(ignoreIdValue,",")));
+			filters.add(PropertyFilters.get("NES_id", StringUtils.join(ignoreIdValue,",")));
 		}
 		
-		filters.add(PropertyFilters.build("EQS_type", groupType.getValue()));
+		filters.add(PropertyFilters.get("EQS_type", groupType.getValue()));
 		
 		return groupDao.findByPropertyFilter(filters);
 	}
@@ -362,8 +362,8 @@ public class AccountManager {
 	 */
 	public List<Group> getParentGroups(GroupType type) {
 		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.build("EQS_parent.id","null"),
-			PropertyFilters.build("EQS_type", type.getValue())
+			PropertyFilters.get("EQS_parent.id","null"),
+			PropertyFilters.get("EQS_type", type.getValue())
 		);
 		return groupDao.findByPropertyFilter(filters, Order.asc("id"));
 	}

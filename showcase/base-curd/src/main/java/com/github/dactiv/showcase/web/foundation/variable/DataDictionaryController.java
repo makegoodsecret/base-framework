@@ -49,7 +49,7 @@ public class DataDictionaryController {
 	@RequestMapping("view")
 	public Page<DataDictionary> view(PageRequest pageRequest,HttpServletRequest request) {
 		
-		List<PropertyFilter> filters = PropertyFilters.build(request,true);
+		List<PropertyFilter> filters = PropertyFilters.get(request,true);
 		
 		if (!pageRequest.isOrderBySetted()) {
 			pageRequest.setOrderBy("id");

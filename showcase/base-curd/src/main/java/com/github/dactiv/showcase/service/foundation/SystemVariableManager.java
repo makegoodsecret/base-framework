@@ -150,7 +150,7 @@ public class SystemVariableManager {
 	 */
 	public List<DictionaryCategory> getParentDictionaryCategories() {
 		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.build("EQS_parent.id","null")
+			PropertyFilters.get("EQS_parent.id","null")
 		);
 		return dictionaryCategoryDao.findByPropertyFilter(filters, Order.desc("id"));
 	}

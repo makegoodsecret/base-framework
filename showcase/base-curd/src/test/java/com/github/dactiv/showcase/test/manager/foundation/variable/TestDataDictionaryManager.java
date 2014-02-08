@@ -62,7 +62,7 @@ public class TestDataDictionaryManager extends ManagerTestCaseSupport{
 		PageRequest request = new PageRequest();
 		
 		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_type", "S")
+				PropertyFilters.get("LIKES_type", "S")
 		);
 		
 		Page<DataDictionary> page = systemVariableManager.searchDataDictionaryPage(request, filters);

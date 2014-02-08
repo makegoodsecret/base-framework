@@ -52,7 +52,7 @@ public class UserController {
 	@RequestMapping("view")
 	public Page<User> view(PageRequest pageRequest,HttpServletRequest request) {
 		
-		List<PropertyFilter> filters = PropertyFilters.build(request, true);
+		List<PropertyFilter> filters = PropertyFilters.get(request, true);
 
 		request.setAttribute("states", SystemVariableUtils.getVariables(State.class,3));
 		

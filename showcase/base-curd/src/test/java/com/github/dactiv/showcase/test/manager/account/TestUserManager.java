@@ -41,8 +41,8 @@ public class TestUserManager extends ManagerTestCaseSupport{
 		PageRequest request = new PageRequest();
 		
 		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_username", "es"),
-				PropertyFilters.build("EQI_state", "1")
+				PropertyFilters.get("LIKES_username", "es"),
+				PropertyFilters.get("EQI_state", "1")
 		);
 		
 		Page<User> page = accountManager.searchUserPage(request, filters);

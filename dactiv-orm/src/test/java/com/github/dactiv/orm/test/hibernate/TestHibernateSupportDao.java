@@ -84,8 +84,8 @@ public class TestHibernateSupportDao {
 	@Test
 	public void testFind() {
 		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_loginName", "m"),
-				PropertyFilters.build("EQI_state", "1")
+				PropertyFilters.get("LIKES_loginName", "m"),
+				PropertyFilters.get("EQI_state", "1")
 		);
 		
 		List<User> user = Lists.newArrayList();
@@ -140,8 +140,8 @@ public class TestHibernateSupportDao {
 		assertEquals(page.getTotalPages(), 1);
 		
 		List<PropertyFilter> filters = Lists.newArrayList(
-				PropertyFilters.build("LIKES_loginName", "m"),
-				PropertyFilters.build("EQI_state", "1")
+				PropertyFilters.get("LIKES_loginName", "m"),
+				PropertyFilters.get("EQI_state", "1")
 		);
 		
 		page = userDao.findPage(request, filters);
