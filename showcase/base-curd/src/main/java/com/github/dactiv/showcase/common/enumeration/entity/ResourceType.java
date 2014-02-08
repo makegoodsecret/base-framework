@@ -30,6 +30,7 @@ public enum ResourceType implements ValueEnum<String>{
 	
 	/**
 	 * 获取资源类型名称
+	 * 
 	 * @return String
 	 */
 	public String getName() {
@@ -38,7 +39,8 @@ public enum ResourceType implements ValueEnum<String>{
 
 	/**
 	 * 获取资源类型值
-	 * @return
+	 * 
+	 * @return String
 	 */
 	public String getValue() {
 		return value;

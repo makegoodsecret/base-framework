@@ -141,7 +141,7 @@ public class SystemVariableUtils {
 	}
 	
 	/**
-	 * 获取当前安全模型
+	 * 获取当前系统常用Session变量实体
 	 * 
 	 * @return {@link SessionVariable}
 	 */
@@ -171,6 +171,11 @@ public class SystemVariableUtils {
 		return session;
 	}
 	
+	/**
+	 * 获取shiro的session
+	 * 
+	 * @return {@link Session}
+	 */
 	public static Session getSession() {
 		return getSession(false);
 	}

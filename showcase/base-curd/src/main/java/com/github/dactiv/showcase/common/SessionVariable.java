@@ -9,7 +9,7 @@ import com.github.dactiv.showcase.entity.account.User;
 
 /**
  * 
- * 系统常用变量模型实体
+ * 系统常用Session变量实体
  * 
  * @author maurice
  * 
@@ -18,16 +18,12 @@ public class SessionVariable implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-
 	// 当前用户
 	private User user;
-
 	// 当前用户所在的组集合
 	private List<Group> groupsList;
-
 	// 当前用户的授权资源集合
 	private List<Resource> authorizationInfo;
-
 	// 当前用户的菜单集合
 	private List<Resource> menusList;
 
@@ -39,9 +35,9 @@ public class SessionVariable implements Serializable {
 		this.user = user;
 	}
 
-	public SessionVariable(User user, List<Group> groupsList,List<Resource> authorizationInfo, List<Resource> menusList) {
+	public SessionVariable(User user,List<Resource> authorizationInfo, List<Resource> menusList) {
 		this.user = user;
-		this.groupsList = groupsList;
+		this.groupsList = user.getGroupsList();
 		this.authorizationInfo = authorizationInfo;
 		this.menusList = menusList;
 	}

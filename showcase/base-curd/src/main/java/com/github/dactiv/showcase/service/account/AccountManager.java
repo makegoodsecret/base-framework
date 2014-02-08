@@ -12,7 +12,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.dactiv.common.utils.CollectionUtils;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
@@ -110,7 +109,7 @@ public class AccountManager {
 	 */
 	public void insertUser(User entity) {
 		if (!isUsernameUnique(entity.getUsername())) {
-			throw new ServiceException("用户名已存在");
+			throw new ServiceException("登录帐号已存在");
 		}
 		
 		String password = new SimpleHash("MD5", entity.getPassword()).toHex();
@@ -131,9 +130,9 @@ public class AccountManager {
 	}
 	
 	/**
-	 * 是否唯一的用户名 如果是返回true,否则返回false
+	 * 是否唯一的登录帐号,如果是返回true,否则返回false.
 	 * 
-	 * @param username 用户名
+	 * @param username 登录帐号
 	 * 
 	 * @return boolean
 	 */
@@ -164,9 +163,9 @@ public class AccountManager {
 	}
 
 	/**
-	 * 通过用户名获取用户实体
+	 * 通过登录帐号获取用户实体
 	 * 
-	 * @param username 用户实体
+	 * @param username 登录帐号
 	 * 
 	 * @return {@link User}
 	 */
@@ -228,17 +227,11 @@ public class AccountManager {
 	/**
 	 * 通过资源实体集合删除资源
 	 * 
-	 * @param resources 资源实体集合 
+	 * @param ids 资源id集合 
 	 */
-	public void deleteResources(List<Resource> resources) {
+	public void deleteResources(List<String> ids) {
 		
-		if (CollectionUtils.isEmpty(resources)) {
-			return ;
-		}
-		
-		for (Resource entity : resources) {
-			resourceDao.delete(entity);
-		}
+		resourceDao.deleteAll(ids);
 	}
 	
 	/**
@@ -325,7 +318,7 @@ public class AccountManager {
 	/**
 	 * 删除组实体
 	 * 
-	 * @param ids 组id
+	 * @param ids 组id集合
 	 */
 	@CacheEvict(value="shiroAuthorizationCache",allEntries=true)
 	public void deleteGroups(List<String> ids) {

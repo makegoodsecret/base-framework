@@ -29,7 +29,7 @@ import com.github.dactiv.showcase.entity.IdEntity;
 
 
 /**
- * 资源安全实体
+ * 安全资源(包括菜单)实体
  * 
  * @author maurice
  *

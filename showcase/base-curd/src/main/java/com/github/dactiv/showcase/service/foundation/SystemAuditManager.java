@@ -37,7 +37,7 @@ public class SystemAuditManager {
 	}
 	
 	/**
-	 * 保存操作记录
+	 * 插入操作记录
 	 * 
 	 * @param entity 操作记录实体
 	 */

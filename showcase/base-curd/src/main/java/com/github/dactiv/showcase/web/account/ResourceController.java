@@ -106,8 +106,7 @@ public class ResourceController {
 	@OperatingAudit(function="删除资源")
 	public String delete(@RequestParam("ids")List<String> ids,RedirectAttributes redirectAttributes) {
 		
-		List<Resource> resources = accountManager.getResources(ids);
-		accountManager.deleteResources(resources);
+		accountManager.deleteResources(ids);
 		redirectAttributes.addFlashAttribute("success", "删除" + ids.size() + "条信息成功");
 		
 		return "redirect:/account/resource/view";

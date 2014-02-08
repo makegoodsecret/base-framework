@@ -68,6 +68,18 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 
 如果不配置任何东西在里面的话，shiro会起不到安全框架的作用。但如果将整个系统的所有链接配置到 filterChainDefinitions 里面会有很多，这样作的做法会不靠谱。所以，应该通过动态的、可配置的形式来做 filterChainDefinitions，该功能会在**动态filterChainDefinitions**里说明如何通过数据库来创建动态的filterChainDefinitions。
 
+##### 1.1.1 启用Shiro注解 #####
+
+在独立应用程序和 web 应用程序中，你可能想为安全检查使用 shiro 的注释（例如，@RequiresRoles，@RequiresPermissions 等等）。这需要 shiro 的 spring AOP 集成来扫描合适的注解类以及执行必要的安全逻辑。以下是如何使用这些注解的。只需添加这两个 bean：
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+	    <property name="securityManager" ref="securityManager"/>
+	</bean>
+
+对于这两个bean,在[base-framework](https://github.com/dactiv/base-framework "base-framework")里添加在applicationContext-mvc.xml中，这样做是为了启用 shiro 注解时仅在 spring mvc 的 controller 层就可以了，不必在 service 和 dao 中也使用该注解。
+
 到这里，shiro 和 spring 集成的关键点只有这么点东西。最重要的接口在 **securityManager** 中。securityManager 管理了**认证、授权，session** 等 web 安全的重要类，首先来完成认证、授权方面的功能。
 
 #### 1.2 shiro 认证、授权 ####

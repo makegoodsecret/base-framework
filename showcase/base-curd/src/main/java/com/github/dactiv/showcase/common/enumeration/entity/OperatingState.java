@@ -30,6 +30,7 @@ public enum OperatingState implements ValueEnum<Integer>{
 
 	/**
 	 * 获取值
+	 * 
 	 * @return Integer
 	 */
 	public Integer getValue() {
@@ -38,6 +39,7 @@ public enum OperatingState implements ValueEnum<Integer>{
 
 	/**
 	 * 获取名称
+	 * 
 	 * @return String
 	 */
 	public String getName() {

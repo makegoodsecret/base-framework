@@ -6,7 +6,7 @@ import com.github.dactiv.orm.core.hibernate.support.HibernateSupportDao;
 import com.github.dactiv.showcase.entity.account.Group;
 
 /**
- * 部门数据访问
+ * 组数据访问
  * 
  * @author maurice
  *

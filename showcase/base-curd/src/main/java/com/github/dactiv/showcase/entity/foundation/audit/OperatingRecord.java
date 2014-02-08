@@ -32,9 +32,9 @@ public class OperatingRecord extends IdEntity{
 	
 	//操作人名称
 	private String username;
-	//操作人
+	//操作人主键id
 	private String fkUserId;
-	//操作开始时间
+	//开始操作时间
 	private Date startDate;
 	//操作结束时间
 	private Date endDate;
@@ -101,7 +101,7 @@ public class OperatingRecord extends IdEntity{
 	}
 
 	/**
-	 * 获取操作开始时间
+	 * 获取开始操作时间
 	 * 
 	 * @return Date
 	 */
@@ -112,9 +112,9 @@ public class OperatingRecord extends IdEntity{
 	}
 
 	/**
-	 * 设置操作开始时间
+	 * 设置开始操作时间
 	 * 
-	 * @param startDate 操作开始时间
+	 * @param startDate 开始操作时间
 	 */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;

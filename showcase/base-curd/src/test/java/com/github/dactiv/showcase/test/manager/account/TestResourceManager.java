@@ -81,7 +81,7 @@ public class TestResourceManager extends ManagerTestCaseSupport{
 		
 		int before = countRowsInTable("tb_resource");
 		List<String> ids = Lists.newArrayList("SJDK3849CKMS3849DJCK2039ZMSK0022","SJDK3849CKMS3849DJCK2039ZMSK0023","SJDK3849CKMS3849DJCK2039ZMSK0024");
-		accountManager.deleteResources(accountManager.getResources(ids));
+		accountManager.deleteResources(ids);
 		int after = countRowsInTable("tb_resource");
 		
 		assertEquals(before - 3, after);

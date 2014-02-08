@@ -83,14 +83,14 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter{
 	@Override
 	protected void setFailureAttribute(ServletRequest request,AuthenticationException ae) {
 		if (ae instanceof IncorrectCredentialsException) {
-			request.setAttribute(getFailureKeyAttribute(), "用户名密码不正确");
+			request.setAttribute(getFailureKeyAttribute(), "登录帐号密码不正确");
 		} else {
 			request.setAttribute(getFailureKeyAttribute(), ae.getMessage());
 		}
 	}
 	
 	/**
-	 * 重写父类方法，当登录失败次数大于allowIncorrectNumber（允许登录错误次数）时，将显示验证码
+	 * 重写父类方法，当登录失败后，将allowIncorrectNumber（允许登错误录次） + 1
 	 */
 	@Override
 	protected boolean onLoginFailure(AuthenticationToken token,AuthenticationException e, ServletRequest request,ServletResponse response) {

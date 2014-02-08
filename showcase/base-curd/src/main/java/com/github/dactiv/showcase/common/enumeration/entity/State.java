@@ -35,6 +35,7 @@ public enum State implements ValueEnum<Integer>{
 
 	/**
 	 * 获取值
+	 * 
 	 * @return Integer
 	 */
 	public Integer getValue() {
@@ -43,6 +44,7 @@ public enum State implements ValueEnum<Integer>{
 
 	/**
 	 * 获取名称
+	 * 
 	 * @return String
 	 */
 	public String getName() {
