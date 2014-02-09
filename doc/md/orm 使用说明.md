@@ -1103,4 +1103,4 @@ TreeEntity注解里面有一个属性为refreshHql，该属性是一个hql语句
 
 如果 orm 框架为 spring data jpa 并且要用到这个功能,记得把.BasicRepositoryFactoryBean类配置到jpa:repositories标签的factory-class属性中。
 
-以上所讲的一切在[base-framework](https://github.com/dactiv/base-framework "base-framework")的dactiv-orm项目中都有例子，如果不懂。可以看例子去理解。
+对于 dactiv orm 使用所讲的一切在[base-framework](https://github.com/dactiv/base-framework "base-framework")的dactiv-orm项目中都有例子，如果不懂。可以看例子去理解。
