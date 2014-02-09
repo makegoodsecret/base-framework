@@ -78,7 +78,7 @@ ShiroFilterFactoryBean 的 filterChainDefinitions 是对系统要拦截的链接
 	    <property name="securityManager" ref="securityManager"/>
 	</bean>
 
-对于这两个bean,在[base-framework](https://github.com/dactiv/base-framework "base-framework")里添加在applicationContext-mvc.xml中，这样做是为了启用 shiro 注解时仅在 spring mvc 的 controller 层就可以了，不必在 service 和 dao 中也使用该注解。
+对于这两个bean，在[base-framework](https://github.com/dactiv/base-framework "base-framework")里添加在applicationContext-mvc.xml中，这样做是为了启用 shiro 注解时仅在 spring mvc 的 controller 层就可以了，不必在 service 和 dao 中也使用该注解。
 
 到这里，shiro 和 spring 集成的关键点只有这么点东西。最重要的接口在 **securityManager** 中。securityManager 管理了**认证、授权，session** 等 web 安全的重要类，首先来完成认证、授权方面的功能。
 
