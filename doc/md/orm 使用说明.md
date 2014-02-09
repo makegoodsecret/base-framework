@@ -1,10 +1,10 @@
-#### 2 dactiv orm 使用说明 ####
+### 2 dactiv orm 使用说明 ###
 
 dactiv orm 是对持久化层所使用到的框架进行封装，让使用起来不在写如此多的繁琐代码，目前dactiv orm 只支持了 hibernate 4 和 spring data jpa。
 
 dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方法和往常一样使用，除了 hibernate 的 save 方法改名为insert(其实save也是起到了insert的作用，从字面上，insert更加形容了hibernate save方法的作用)其他都和往常一样使用。主要是添加了一些注解和一些简单的执行某些方法前后做了一个拦截处理，以及添加一个灵活的属性查询功能。
 
-##### 2.1 使用 hibernate #####
+#### 2.1 使用 hibernate ####
 
 在使用 hibernate 时，主要关注几个类：
 
@@ -44,7 +44,7 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 	
 	}
 
-##### 2.2 使用 spring data jpa #####
+#### 2.2 使用 spring data jpa ####
 
 在使用 spring data jpa 时，主要关注BasicJpaRepository这个接口，该接口添加了支持PropertyFilter的方法，可以直接使用，但需要添加配置，要使用到BasicJpaRepository需要在spring data jpa配置文件中对jpa:repositories的factory-class属性添加一个类:org.exitsoft.orm.core.spring.data.jpa.factory.BasicRepositoryFactoryBean:
 
@@ -67,7 +67,7 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 		PropertyFilters.get("EQI_state", "1")
 	)));
 
-##### 2.3 PropertyFilter 查询表达式说明#####
+#### 2.3 PropertyFilter 查询表达式说明 ####
 
 在 dactiv orm 里，对 hibernate 和 spring data jpa 都扩展了一套**查询表达式**，是专门用来应付一些比较简单的查询而不用写语句的功能。通过该表达式，dactiv orm 能够解析出最终的查询语句去让 hibernate 或 spring data jpa 去执行，需要使用该表达式，如果是用 hibernate 需要集成 **HibernateSupportDao** 类，如果使用 spring data jpa 的话需要使用到 **Specifications.get()** 方法去构造 spring data jpa 的 **Specification** 后才能执行查询，或者根据 **2.2 使用 spring data jpa** 配置完成后，集成BasicJpaRepository 接口，里面就提供了支持 PropertyFilter 的查询方法。
 
@@ -386,7 +386,7 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 
 	PropertyFilters.get("EQS_username_OR_email", "xxx@xxx.xx");
 
-##### 2.4 页面多条件查询 #####
+#### 2.4 页面多条件查询 ####
 
 多条件以及分页查询，可能每个项目中都会使用，但是查询条件千变万化，当某时客户要求添加多一个查询条件时，繁琐的工作会很多，但使用 PropertyFilter 会为你减少一些复制粘贴的动作。
 
@@ -463,11 +463,11 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 	</form>
 
 
-##### 2.5 扩展表达式的约束名称 #####
+#### 2.5 扩展表达式的约束名称 ####
 
 如果你在项目开发时觉得表达式里面的约束名称不够用，可以对表达式做扩展处理。扩展约束名称时 spring data jpa 和 hibernate 所关注的类不同。
 
-###### 2.5.1 hiberante扩展表达式的约束名称 ######
+##### 2.5.1 hiberante扩展表达式的约束名称 #####
 
 要扩展 hibernate 查询表达式的约束名主要关注的类有 **HibernateRestrictionBuilder**, **CriterionBuilder**, **CriterionSingleValueSupport** 以及 **CriterionMultipleValueSupport**。
 
@@ -677,7 +677,7 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 	CriterionBuilder nlikeRestriction= new NlikeRestriction();
 	HibernateRestrictionBuilder.getCriterionMap().put(nlikeRestriction.getRestrictionName(), nlikeRestriction);
 
-###### 2.5.2 spring data jpa扩展表达式的约束名称 ######
+##### 2.5.2 spring data jpa扩展表达式的约束名称 #####
 
 如果使用 spring data jpa 做 orm 支持时，要扩展查询表达式的约束名主要关注的类有 **JpaRestrictionBuilder**, **PredicateBuilder**, **PredicateSingleValueSupport** 以及 **PredicateMultipleValueSupport**。
 
@@ -910,7 +910,7 @@ dactiv orm 对 hibernate 和 spring data jpa 的修改并不多，常用的方�
 
 对于 hibernate 和 spring data jpa 的约束名在[base-framework](https://github.com/dactiv/base-framework "base-framework")的 dactiv orm 都会有例子。如果不明白。可以看例子理解。
 
-##### 2.6 注解 #####
+#### 2.6 注解 ####
 
 在 dactiv orm 中，扩展一些比较常用的注解，如：状态删除、防伪安全码等。当需要执行某些特定的需求时，无需在写繁琐的代码。而是直接加上注解即可。
 
