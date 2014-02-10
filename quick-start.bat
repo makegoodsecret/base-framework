@@ -16,6 +16,7 @@ echo [INFO] install base curd archetype to local m2 repository
 cd %base_path%\showcase\base-curd\target\generated-sources\archetype
 call mvn clean install -Dmaven.test.skip=true
 
+echo [INFO] delete base curd project generated-sources target
 cd %base_path%\showcase\base-curd
 rd /S /Q target
 
