@@ -27,7 +27,7 @@ base-framework是对常用的java web开发封装实用功能来提高开发效�
 
 通过base-curd项目文件夹中的bin/jetty.bat文件运行项目，也可以用eclipse.bat生成项目导入到开发工具中在运行。该工程下有一个基于jeety运行的java文件org.dactiv.showcase.test.LaunchJetty，。你也可以通过该文件运行整个项目。
 
-** 安装说明 **
+#### 安装说明 ####
 
 1. 配置好maven。
 2. 点击项目跟目录的quick-start。
