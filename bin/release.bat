@@ -12,13 +12,6 @@ call mvn release:clean
 call mvn release:prepare
 call mvn release:perform
 
-cd %base_path%
-echo [INFO] push to github
-call git push origin master
-
-echo [INFO] push tag to github
-call git push --tags
-
 echo [INFO] create base curd project archetype
 cd %base_path%\showcase\base-curd
 call mvn archetype:create-from-project
