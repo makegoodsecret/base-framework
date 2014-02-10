@@ -19,6 +19,10 @@ call git push origin master
 echo [INFO] push tag to github
 call git push --tags
 
+echo [INFO] create base curd project archetype
+cd %base_path%\showcase\base-curd
+call mvn archetype:create-from-project
+
 echo [INFO] release base curd project archetype
 cd %base_path%\showcase\base-curd\target\generated-sources\archetype
 call mvn clean install -Dmaven.test.skip=true
