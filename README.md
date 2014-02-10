@@ -23,10 +23,13 @@ base-framework是对常用的java web开发封装实用功能来提高开发效�
 	    <version>1.1.0.RELEASE</version>
 	</dependency>
 
-**项目功能演示例子**：在文件夹的shorcase里有一个base-curd项目。该项目是对以上两个框架(dactiv-common和dactiv-orm)和其他技术的整合做的例子，通过该例子使用maven做了一个archetype基础模板。可以通过该archetype来生成一个新的项目。该文件在base-curd\bin下面（archetype-generate.bat）。也可以通过:
-
-	mvn archetype:generate -DarchetypeGroupId=com.github.dactiv.showcase -DarchetypeArtifactId=base-curd-archetype -DarchetypeVersion=1.1.0.RELEASE
+**项目功能演示例子**：在文件夹的shorcase里有一个base-curd项目。该项目是对以上两个框架(dactiv-common和dactiv-orm)和其他技术的整合做的例子，通过该例子使用maven做了一个archetype基础模板。可以通过该archetype来生成一个新的项目。该文件在base-curd\bin下面（archetype-generate.bat）。
 
 通过base-curd项目文件夹中的bin/jetty.bat文件运行项目，也可以用eclipse.bat生成项目导入到开发工具中在运行。该工程下有一个基于jeety运行的java文件org.dactiv.showcase.test.LaunchJetty，。你也可以通过该文件运行整个项目。
+
+** 安装说明 **
+
+1. 配置好maven。
+2. 点击项目跟目录的quick-start。
 
 [相关帮助文档](https://github.com/dactiv/base-framework/blob/master/doc/reference.md)
