@@ -5,7 +5,7 @@ if not exist generated-sources (md generated-sources)
 
 cd generated-sources
 
-call mvn archetype:generate -DarchetypeCatalog=local -DarchetypeGroupId=com.github.dactiv.showcase -DarchetypeArtifactId=base-curd-archetype -DarchetypeVersion=1.0.0-SNAPSHOT
+call mvn archetype:generate -DarchetypeCatalog=local -DarchetypeGroupId=com.github.dactiv.showcase -DarchetypeArtifactId=base-curd-archetype -DarchetypeVersion=1.1.0.RELEASE
 
 cd ..
 
