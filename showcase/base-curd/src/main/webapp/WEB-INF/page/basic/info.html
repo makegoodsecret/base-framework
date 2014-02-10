@@ -1,21 +1,22 @@
 
 <div class="profile">
-	<div class="thumbnail">
+	<a href="javascript:;" class="thumbnail dropdown dropdown-toggle" data-toggle="dropdown">
 		<img id="info-portrait" src="${base}/get-current-user-portrait" />
-	</div>
+	</a>
+	<ul class="dropdown-menu" role="menu">
+	    <li>
+	      	<a data-toggle="modal" data-target="#profile-seeting" href="javascript:;">
+	      		<span class="glyphicon glyphicon-cog"></span> 修改个人信息
+	      	</a>
+	    </li>
+	    <li role="presentation" class="divider"></li>
+	    <li>
+	      	<a href="${base}/logout">
+	      		<span class="glyphicon glyphicon-off"></span> 退出
+	      	</a>
+	    </li>
+    </ul>
 </div>
 <div class="user-info">
 	${Session["sv"].user.username} <span class="name" id="info-realname">${Session["sv"].user.realname}</span>
-</div>
-<div class="pull-right">
-	<div class="ribbon">
-		<a data-toggle="modal" data-target="#profile-seeting" href="javascript:;">
-			<span class="glyphicon glyphicon-cog"></span>
-		</a>
-	</div>
-	<div class="ribbon">
-		<a href="${base}/logout">
-			<span class="glyphicon glyphicon-off"></span>
-		</a>
-	</div>
 </div>

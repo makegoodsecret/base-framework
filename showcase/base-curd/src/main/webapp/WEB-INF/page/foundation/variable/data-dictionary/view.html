@@ -106,11 +106,11 @@
 	</div>
 	</#if>
 	
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title"><span class="glyphicon glyphicon-list-alt"></span> 数据字典管理</h3>
-		</div>
-		<form id="data-dictionary-view-form" action="${base}/foundation/variable/data-dictionary/delete" valid="false" method="post">
+	<form id="data-dictionary-view-form" action="${base}/foundation/variable/data-dictionary/delete" valid="false" method="post">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><span class="glyphicon glyphicon-list-alt"></span> 数据字典管理</h3>
+			</div>
 			<div class="table-container">
 				<table class="table table-hover table-striped">
 					<thead>
@@ -166,11 +166,10 @@
 					<span class="glyphicon glyphicon-remove"></span> 删除
 				</button>
 				</@shiro.hasPermission>
-				
-				<@pagination 'data-dictionary-search-form' page />
 			</div>
-		</form>
-	</div>
+		</div>
+		<@pagination 'data-dictionary-search-form' page />
+	</form>
 </#macro>
 
 

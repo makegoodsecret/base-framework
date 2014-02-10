@@ -98,11 +98,11 @@
 	</div>
 	</#if>
 	
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> 用户管理</h3>
-		</div>
-		<form id="user-view-form" action="${base}/account/user/delete" valid="false" method="post">
+	<form id="user-view-form" action="${base}/account/user/delete" valid="false" method="post">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> 用户管理</h3>
+			</div>
 			<div class="table-container">
 				<table class="table table-hover table-striped">
 					<thead>
@@ -157,11 +157,10 @@
 					<span class="glyphicon glyphicon-remove"></span> 删除
 				</button>
 				</@shiro.hasPermission>
-				
-				<@pagination 'user-search-form' page />
 			</div>
-		</form>
-	</div>
+		</div>
+		<@pagination 'user-search-form' page />
+	</form>
 </#macro>
 
 

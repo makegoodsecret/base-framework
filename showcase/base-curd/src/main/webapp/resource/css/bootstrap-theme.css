@@ -253,6 +253,65 @@ div, a:focus, .btn:focus {
 .tree > ul li ul{
 	padding-left: 25px;
 }
+
 .panel-body > .tree {
 	margin : -15px;
+}
+
+.paging-bar {
+	margin: 0px 3px 20px 3px;
+	padding: 0px 15px;
+	overflow: hidden;
+}
+
+.paging-bar > .pagination > li > a, 
+.paging-bar > .pagination > li > span {
+	border: 1px solid #bbb;
+	background-color: #f5f5f5;
+	border-top:none;
+	color: #000;
+}
+
+.paging-bar > .pagination > li:first-child > a, 
+.paging-bar > .pagination > li:first-child > span, 
+.paging-bar > .pagination > li:last-child > a, 
+.paging-bar > .pagination > li:last-child > span {
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+.pagination > li > a:hover, 
+.pagination > li > span:hover, 
+.pagination > li > a:focus, 
+.pagination > li > span:focus {
+	color: #333;
+	background-color: #e8e8e8;
+}
+
+.paging-bar > .pagination>.active>a, 
+.paging-bar > .pagination>.active>span, 
+.paging-bar > .pagination>.active>a:hover, 
+.paging-bar > .pagination>.active>span:hover, 
+.paging-bar > .pagination>.active>a:focus, 
+.paging-bar > .pagination>.active>span:focus {
+	background-color: #eee;
+	color: #000;
+	border-color: #bbb;
+	background-color: #f5f5f5;
+	box-shadow: 0px 0px 10px #bbb inset;
+}
+
+
+.paging-bar > .pagination > .disabled > span, 
+.paging-bar > .pagination > .disabled > span:hover, 
+.paging-bar > .pagination > .disabled > span:focus, 
+.paging-bar > .pagination > .disabled > a, 
+.paging-bar > .pagination > .disabled > a:hover, 
+.paging-bar > .pagination > .disabled > a:focus  {
+	color: #999;
+	background-color: #fff;
+	border-color: #ddd;
+}
+
+.panel + .paging-bar {
+	margin-top : -20px;
 }
