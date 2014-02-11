@@ -40,8 +40,8 @@
 		<url>https://github.com/dactiv/base-framework.git</url>
 		<connection>scm:git:ssh://git@github.com:dactiv/base-framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:dactiv/base-framework.git</developerConnection>
-  	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<dependencies>
 

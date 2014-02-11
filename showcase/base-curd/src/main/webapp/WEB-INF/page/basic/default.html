@@ -83,13 +83,8 @@
 <#-- 分页宏pagination 将formId和page传入后自动生成分页条 -->
 <#macro pagination formId page>
 	<div class="paging-bar">
-		<ul class="pagination pull-right">
-						
-			<#if !page.hasPrePage()>
-				<li class="disabled">
-					<a>&laquo;</a>
-				</li>
-			<#else>
+		<ul class="pagination pull-right">	
+			<#if page.hasPrePage()>
 				<li>
 					<a href="javascript:;" onclick="jumpToSpecificPage(${page.prePage},'${formId!''}');">&laquo;</a>
 				</li>
@@ -101,16 +96,16 @@
 				</li>
 			</#list>
 			
-			<#if !page.hasNextPage()>
-				<li class="disabled">
-					<a>&raquo;</a>
-				</li>
-			<#else>
+			<#if page.hasNextPage()>
 				<li>
 					<a href="javascript:;" onclick="jumpToSpecificPage(${page.nextPage},'${formId!''}');">&raquo;</a>
 				</li>
 			</#if>
-		        
+			<li>
+				<span>
+					共 ${page.totalItems} 条记录 ${page.pageNo} / ${page.totalPages} 页
+				</span>
+			</li>
 		</ul>
 	</div>
 </#macro>

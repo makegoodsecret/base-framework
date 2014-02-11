@@ -280,19 +280,17 @@ div, a:focus, .btn:focus {
 	border-top-right-radius: 0px;
 }
 .pagination > li > a:hover, 
-.pagination > li > span:hover, 
-.pagination > li > a:focus, 
-.pagination > li > span:focus {
+.pagination > li > a:focus{
 	color: #333;
 	background-color: #e8e8e8;
 }
 
-.paging-bar > .pagination>.active>a, 
-.paging-bar > .pagination>.active>span, 
-.paging-bar > .pagination>.active>a:hover, 
-.paging-bar > .pagination>.active>span:hover, 
-.paging-bar > .pagination>.active>a:focus, 
-.paging-bar > .pagination>.active>span:focus {
+.paging-bar > .pagination > .active > a, 
+.paging-bar > .pagination > .active > span, 
+.paging-bar > .pagination > .active > a:hover, 
+.paging-bar > .pagination > .active > span:hover, 
+.paging-bar > .pagination > .active > a:focus, 
+.paging-bar > .pagination > .active > span:focus {
 	background-color: #eee;
 	color: #000;
 	border-color: #bbb;

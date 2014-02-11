@@ -121,7 +121,7 @@ public class Page<T> extends PageRequest implements Serializable {
 	 * 
 	 * @param count 需要计算的列表大小
 	 * 
-	 * @return pageNo列表
+	 * @return List
 	 **/
 	public List<Integer> getSlider(int count) {
 		int halfSize = count / 2;
