@@ -20,6 +20,7 @@
 				<property name="hashAlgorithmName" value="MD5" />
 			</bean>
 		</property>
+		<!-- 当授权执行时，默认添加给用户的Permission。如果存在多个,用逗号","分割 -->
 		<property name="defaultPermissionString" value="security:change-password,security:index" />
 		<!-- 授权缓存名称 -->
     	<property name="authorizationCacheName" value="shiroAuthorizationCache" />

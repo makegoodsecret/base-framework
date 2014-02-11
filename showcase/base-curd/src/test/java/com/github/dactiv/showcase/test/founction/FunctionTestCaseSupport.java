@@ -107,6 +107,7 @@ public class FunctionTestCaseSupport {
 	
 	@AfterClass
 	public static void uninstall() {
+		s.check(By.xpath("//a[@class='thumbnail dropdown dropdown-toggle']"));
 		s.click(By.xpath("//a[@href='/dactiv-base-curd/logout']"));
 	}
 	

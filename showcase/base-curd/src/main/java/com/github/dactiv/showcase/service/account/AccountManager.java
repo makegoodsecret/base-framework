@@ -9,6 +9,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,6 @@ import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
-import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.dao.account.GroupDao;
@@ -59,24 +59,13 @@ public class AccountManager {
 	 * @param newPassword 新密码
 	 * 
 	 */
-	//当修改成功后将shiro的认证缓存也更新，包正下次登录也不需要在次查询数据库
-	@CacheEvict(value="shiroAuthenticationCache",
-			  	key="T(com.github.dactiv.showcase.common.SystemVariableUtils)." +
-					"getSessionVariable()." +
-					"getUser()." +
-					"getUsername()")
-	public void updateUserPassword(String oldPassword, String newPassword) {
-		User user = SystemVariableUtils.getSessionVariable().getUser();
-		
-		oldPassword = new SimpleHash("MD5", oldPassword.toCharArray()).toString();
-		
-		if (!user.getPassword().equals(oldPassword)) {
-			throw new ServiceException("旧密码不正确.");
-		}
+	//当修改成功后将shiro的认证缓存也更新，保证下次登录也不需要在次查询数据库
+	@CachePut(value="shiroAuthenticationCache",key="entity.getUsername()")
+	public void updateUserPassword(User entity, String newPassword) {
 		
 		String temp = new SimpleHash("MD5",newPassword).toHex();
-		userDao.updatePassword(user.getId(),temp);
-		user.setPassword(temp); 
+		userDao.updatePassword(entity.getId(),temp);
+		entity.setPassword(temp); 
 	}
 	
 	
@@ -124,7 +113,7 @@ public class AccountManager {
 	 * @param entity 用户实体
 	 */
 	//当更新后将shiro的认证缓存也更新，保证shiro和当前的用户一致
-	@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
+	@CachePut(value="shiroAuthenticationCache",key="#entity.getUsername()")
 	public void updateUser(User entity) {
 		userDao.update(entity);
 	}
@@ -156,7 +145,7 @@ public class AccountManager {
 	 * 
 	 * @param entity 用户实体
 	 */
-	//当删除后将shiro的认证缓存也更新，保证shiro和当前的用户一致
+	//当删除后将shiro的认证缓存也删除
 	@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
 	public void deleteUser(User entity) {
 		userDao.delete(entity);

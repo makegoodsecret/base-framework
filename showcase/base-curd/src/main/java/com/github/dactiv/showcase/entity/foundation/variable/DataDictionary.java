@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -24,9 +25,12 @@ import com.github.dactiv.showcase.entity.IdEntity;
  */
 @Entity
 @Table(name="TB_DATA_DICTIONARY")
+@NamedQuery(name=DataDictionary.FindByCategoryCode, query="from DataDictionary dd where dd.category.code = ?")
 public class DataDictionary extends IdEntity{
 	
 	private static final long serialVersionUID = 1L;
+	
+	public static final String FindByCategoryCode = "findByCategoryCode";
 	
 	//名称
 	private String name;

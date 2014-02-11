@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,12 +87,9 @@ public class SystemVariableManager {
 	 * 
 	 * @return List
 	 */
-	@Cacheable(value="findByCateGoryCode",
-               key="#code.getCode() + '-' + " +
-                   "T(org.apache.commons.lang3.StringUtils)." +
-                   "join(#ignoreValue, '-')")
-	public List<DataDictionary> getDataDictionariesByCategoryCode(SystemDictionaryCode code,String... ignoreValue) {
-		return dataDictionaryDao.getByCategoryCode(code, ignoreValue);
+	@Cacheable(value=DataDictionary.FindByCategoryCode,key="#code.getCode()")
+	public List<DataDictionary> getDataDictionariesByCategoryCode(SystemDictionaryCode code) {
+		return dataDictionaryDao.getByCategoryCode(code);
 	}
 	
 	//---------------------------------------字典类别管理---------------------------------------//
@@ -110,6 +108,7 @@ public class SystemVariableManager {
 	 * 
 	 * @param entity 字典类别实体
 	 */
+	@CacheEvict(value=DataDictionary.FindByCategoryCode,key="#entity.getCode()")
 	public void saveDictionaryCategory(DictionaryCategory entity) {
 		dictionaryCategoryDao.save(entity);
 	}
@@ -120,7 +119,21 @@ public class SystemVariableManager {
 	 * @param ids 字典类别id
 	 */
 	public void deleteDictionaryCategory(List<String> ids) {
-		dictionaryCategoryDao.deleteAll(ids);
+		List<DictionaryCategory> list = dictionaryCategoryDao.get(ids);
+		for (DictionaryCategory entity : list) {
+			deleteDictionaryCategory(entity);
+		}
+	}
+	
+	/**
+	 * 通过实体删除字典类别
+	 * 
+	 * @param entity 字典类别实体
+	 */
+	//清楚cache key为当前实体的code值的缓存数据
+	@CacheEvict(value=DataDictionary.FindByCategoryCode,key="#entity.getCode()")
+	public void deleteDictionaryCategory(DictionaryCategory entity) {
+		
 	}
 	
 	/**

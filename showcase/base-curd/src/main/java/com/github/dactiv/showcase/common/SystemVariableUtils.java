@@ -105,8 +105,8 @@ public class SystemVariableUtils {
 	 * 
 	 * @return List
 	 */
-	public static List<DataDictionary> getVariables(SystemDictionaryCode code, String... ignoreValue) {
-		return systemVariableManager.getDataDictionariesByCategoryCode(code, ignoreValue);
+	public static List<DataDictionary> getVariables(SystemDictionaryCode code) {
+		return systemVariableManager.getDataDictionariesByCategoryCode(code);
 	}
 	
 	/**

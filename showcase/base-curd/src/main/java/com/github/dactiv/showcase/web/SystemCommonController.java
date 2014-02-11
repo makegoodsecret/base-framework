@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import com.github.dactiv.common.utils.CaptchaUtils;
 import com.github.dactiv.showcase.common.SystemVariableUtils;
 import com.github.dactiv.showcase.common.annotation.OperatingAudit;
 import com.github.dactiv.showcase.entity.account.User;
+import com.github.dactiv.showcase.service.ServiceException;
 import com.github.dactiv.showcase.service.account.AccountManager;
 import com.github.dactiv.showcase.service.account.CaptchaAuthenticationFilter;
 import com.google.common.collect.Maps;
@@ -88,8 +90,16 @@ public class SystemCommonController {
     @OperatingAudit(function="修改密码")
 	@RequestMapping("/change-password")
 	public String changePassword(String oldPassword,String newPassword) {
+
+		User user = SystemVariableUtils.getSessionVariable().getUser();
 		
-		accountManager.updateUserPassword(oldPassword,newPassword);
+		oldPassword = new SimpleHash("MD5", oldPassword.toCharArray()).toString();
+		
+		if (!user.getPassword().equals(oldPassword)) {
+			throw new ServiceException("旧密码不正确.");
+		}
+		
+		accountManager.updateUserPassword(user,newPassword);
 			
 		return "redirect:/logout";
 		

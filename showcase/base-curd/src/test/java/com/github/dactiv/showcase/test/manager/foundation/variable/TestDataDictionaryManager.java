@@ -37,10 +37,8 @@ public class TestDataDictionaryManager extends ManagerTestCaseSupport{
 		List<DataDictionary> list = Lists.newArrayList();
 		list = systemVariableManager.getDataDictionariesByCategoryCode(SystemDictionaryCode.State);
 		assertEquals(list.size(),3);
-		list = systemVariableManager.getDataDictionariesByCategoryCode(SystemDictionaryCode.State, "1");
-		assertEquals(list.size(),2);
-		list = systemVariableManager.getDataDictionariesByCategoryCode(SystemDictionaryCode.State, "1","2","3");
-		assertEquals(list.size(),0);
+		list = systemVariableManager.getDataDictionariesByCategoryCode(SystemDictionaryCode.State);
+		assertEquals(list.size(),3);
 		
 	}
 	
