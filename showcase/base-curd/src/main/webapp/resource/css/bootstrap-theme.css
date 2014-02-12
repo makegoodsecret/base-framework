@@ -94,12 +94,6 @@ div, a:focus, .btn:focus {
 	margin-left: 15px;
 }
 
-.dropdown-menu > li > a:hover, 
-.dropdown-menu > li > a:focus {
-	background-color: #f3f3f3;
-	color: #444444;
-}
-
 .breadcrumb {
 	border: 1px solid #e5e5e5;
 	background: #FFFFFF;

@@ -9,7 +9,6 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +58,8 @@ public class AccountManager {
 	 * @param newPassword 新密码
 	 * 
 	 */
-	//当修改成功后将shiro的认证缓存也更新，保证下次登录也不需要在次查询数据库
-	@CachePut(value="shiroAuthenticationCache",key="entity.getUsername()")
+	//当修改成功后将shiro的认证缓存也更新清除
+	@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
 	public void updateUserPassword(User entity, String newPassword) {
 		
 		String temp = new SimpleHash("MD5",newPassword).toHex();
@@ -112,8 +111,8 @@ public class AccountManager {
 	 * 
 	 * @param entity 用户实体
 	 */
-	//当更新后将shiro的认证缓存也更新，保证shiro和当前的用户一致
-	@CachePut(value="shiroAuthenticationCache",key="#entity.getUsername()")
+	//当修改成功后将shiro的认证缓存也更新清除
+	@CacheEvict(value="shiroAuthenticationCache",key="#entity.getUsername()")
 	public void updateUser(User entity) {
 		userDao.update(entity);
 	}

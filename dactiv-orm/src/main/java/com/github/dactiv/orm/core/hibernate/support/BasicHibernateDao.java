@@ -800,7 +800,7 @@ public class BasicHibernateDao<T,ID extends Serializable> {
 			return Lists.newArrayList();
 		} 
 		
-		return query.list();
+		return result;
 	}
 	
 	/**
