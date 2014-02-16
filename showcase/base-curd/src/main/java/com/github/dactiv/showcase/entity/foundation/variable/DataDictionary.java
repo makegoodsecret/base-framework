@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.github.dactiv.common.type.FieldType;
+import com.github.dactiv.common.FieldType;
 import com.github.dactiv.common.utils.ConvertUtils;
 import com.github.dactiv.showcase.entity.IdEntity;
 

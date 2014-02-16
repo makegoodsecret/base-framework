@@ -22,7 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import com.github.dactiv.common.type.FieldType;
+
+import com.github.dactiv.common.FieldType;
 import com.github.dactiv.common.utils.ServletUtils;
 import org.springframework.util.Assert;
 

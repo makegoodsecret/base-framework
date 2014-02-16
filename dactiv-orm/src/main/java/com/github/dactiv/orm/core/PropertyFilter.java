@@ -17,7 +17,7 @@ package com.github.dactiv.orm.core;
 
 import java.io.Serializable;
 
-import com.github.dactiv.common.type.FieldType;
+import com.github.dactiv.common.FieldType;
 
 /**
  * orm属性过滤器，可以通过{@link PropertyFilters#build(String, String)}创建，使用他创建可以直接

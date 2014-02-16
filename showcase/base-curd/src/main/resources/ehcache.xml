@@ -65,7 +65,8 @@
     <!-- <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" 
 									 properties="peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=32" />
 	
-	<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> -->
+	<!-- 如果是linux服务器，记得加properties="hostName=linux 本机的 ip 地址"-->
+	<!-- <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> -->
 	
     <defaultCache maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="true"/>
     

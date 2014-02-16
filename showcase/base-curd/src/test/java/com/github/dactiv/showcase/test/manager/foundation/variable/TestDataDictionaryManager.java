@@ -9,7 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.dactiv.common.type.FieldType;
+import com.github.dactiv.common.FieldType;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
