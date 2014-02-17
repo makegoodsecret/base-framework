@@ -12,13 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
-import com.github.dactiv.orm.core.PropertyFilters;
 import com.github.dactiv.showcase.common.enumeration.SystemDictionaryCode;
 import com.github.dactiv.showcase.dao.foundation.variable.DataDictionaryDao;
 import com.github.dactiv.showcase.dao.foundation.variable.DictionaryCategoryDao;
 import com.github.dactiv.showcase.entity.foundation.variable.DataDictionary;
 import com.github.dactiv.showcase.entity.foundation.variable.DictionaryCategory;
-import com.google.common.collect.Lists;
 
 /**
  * 系统字典管理业务逻辑
@@ -133,7 +131,7 @@ public class SystemVariableManager {
 	//清楚cache key为当前实体的code值的缓存数据
 	@CacheEvict(value=DataDictionary.FindByCategoryCode,key="#entity.getCode()")
 	public void deleteDictionaryCategory(DictionaryCategory entity) {
-		
+		dictionaryCategoryDao.delete(entity);
 	}
 	
 	/**
@@ -157,15 +155,13 @@ public class SystemVariableManager {
 	}
 
 	/**
-	 * 获取最顶级(父类)的字典类别集合
+	 * 根据字典类别获取所有字典类型集合，但该集合已经将数据并合成树形
 	 * 
 	 * @return List
 	 */
-	public List<DictionaryCategory> getParentDictionaryCategories() {
-		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.get("EQS_parent.id","null")
-		);
-		return dictionaryCategoryDao.findByPropertyFilter(filters, Order.desc("id"));
+	public List<DictionaryCategory> getMergeDictionaryCategories() {
+		List<DictionaryCategory> result = dictionaryCategoryDao.getAll(Order.desc("id"));
+		return dictionaryCategoryDao.mergeToParent(result);
 	}
 
 }

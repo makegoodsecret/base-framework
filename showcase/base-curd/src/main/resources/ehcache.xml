@@ -60,10 +60,10 @@
 		删除加对象时是否同步，默认为true
 	-->
     
-    <diskStore path="java.io.tmpdir/ehcache/spring"/>
+    <!-- <diskStore path="java.io.tmpdir/ehcache/spring"/> -->
     
     <!-- <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" 
-									 properties="peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=32" />
+									 properties="peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=32" /> -->
 	
 	<!-- 如果是linux服务器，记得加properties="hostName=linux 本机的 ip 地址"-->
 	<!-- <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" /> -->
@@ -77,12 +77,12 @@
      
     <!-- shiro授权的缓存名称 -->
     <cache name="shiroAuthorizationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200">
-    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory properties="replicateAsynchronously=false""/> -->
+    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=false"/> -->
     </cache>
     
     <!-- shiro认证的缓存名称 -->
     <cache name="shiroAuthenticationCache" maxElementsInMemory="10000" timeToLiveSeconds="1200" memoryStoreEvictionPolicy="LRU">
-    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory properties="replicateAsynchronously=false""/> -->
+    	<!-- <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" properties="replicateAsynchronously=false"/> -->
     </cache>
     
     <!-- shiro的活动session缓存名称 -->

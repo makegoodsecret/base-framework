@@ -814,8 +814,13 @@ public class BasicHibernateDao<T,ID extends Serializable> {
 	public <X> List<X> distinct(String queryOrNamedQuery,Map<String, Object> values) {
 		Query query = createQuery(queryOrNamedQuery, values);
 		query.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+		List<X> result = query.list();
 		
-		return query.list();
+		if (CollectionUtils.isEmpty(result) || result.get(0) == null) {
+			return Lists.newArrayList();
+		}
+		
+		return result;
 	}
 
 	/**

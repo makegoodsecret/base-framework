@@ -152,7 +152,7 @@ public class UserController {
 	public String read(String id,Model model) {
 		
 		model.addAttribute("states", SystemVariableUtils.getVariables(State.class,3));
-		model.addAttribute("groupsList", accountManager.getParentGroups(GroupType.RoleGorup));
+		model.addAttribute("groupsList", accountManager.getMergeGroups(GroupType.RoleGorup));
 		
 		if (StringUtils.isEmpty(id)) {
 			return "account/user/create";

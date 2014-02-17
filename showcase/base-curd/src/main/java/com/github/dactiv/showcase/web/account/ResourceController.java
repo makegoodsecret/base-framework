@@ -44,7 +44,7 @@ public class ResourceController {
 	 */
 	@RequestMapping("view")
 	public List<Resource> view() {
-		return accountManager.getParentResources();
+		return accountManager.getMergeResources();
 	}
 	
 	/**

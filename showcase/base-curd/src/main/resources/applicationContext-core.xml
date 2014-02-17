@@ -57,6 +57,7 @@
 	<!-- spring对ehcache的缓存工厂支持 -->
 	<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="classpath:ehcache.xml" />
+		<property name="acceptExisting" value="true" />
 	</bean>
 	
 	<!-- spring对ehcache的缓存管理 -->

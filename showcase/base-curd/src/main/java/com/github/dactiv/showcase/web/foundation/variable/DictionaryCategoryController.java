@@ -42,7 +42,7 @@ public class DictionaryCategoryController {
 	@RequestMapping("view")
 	public List<DictionaryCategory> view() {
 		//查询所有父类的字典类别
-		return systemDictionaryManager.getParentDictionaryCategories();
+		return systemDictionaryManager.getMergeDictionaryCategories();
 	}
 	
 	/**

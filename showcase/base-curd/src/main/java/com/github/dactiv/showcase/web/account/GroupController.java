@@ -44,7 +44,7 @@ public class GroupController {
 	 */
 	@RequestMapping("view")
 	public List<Group> view() {
-		return accountManager.getParentGroups(GroupType.RoleGorup);
+		return accountManager.getMergeGroups(GroupType.RoleGorup);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class GroupController {
 	@RequestMapping(value="read")
 	public void read(String id, Model model) {
 		
-		model.addAttribute("resourcesList", accountManager.getParentResources());
+		model.addAttribute("resourcesList", accountManager.getMergeResources());
 		model.addAttribute("states", SystemVariableUtils.getVariables(State.class,3));
 		model.addAttribute("groupsList", accountManager.getGroups(GroupType.RoleGorup, id));
 	}

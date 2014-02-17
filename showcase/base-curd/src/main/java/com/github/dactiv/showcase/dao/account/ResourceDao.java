@@ -8,6 +8,7 @@ import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.entity.account.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class ResourceDao extends HibernateSupportDao<Resource, String>{
-
+	
 	/**
 	 * 通过用户id获取用户所有资源
 	 * 
@@ -37,15 +38,15 @@ public class ResourceDao extends HibernateSupportDao<Resource, String>{
 	 * @param resourceType 不需要并合的资源类型
 	 */
 	public List<Resource> mergeToParent(List<Resource> list,ResourceType ignoreType) {
-		//将当前session直接clear，避免自动更新问题。
-		getSessionFactory().getCurrentSession().clear();
 		
 		List<Resource> result = new ArrayList<Resource>();
 		
 		for (Resource r : list) {
-			if (r.getParent() == null && !StringUtils.equals(ignoreType.getValue(),r.getType())) {
-				mergeToParent(list,r,ignoreType);
-				result.add(r);
+			if (r.getParent() == null && (ignoreType == null || !StringUtils.equals(ignoreType.getValue(),r.getType()))) {
+				Resource temp = new Resource();
+				BeanUtils.copyProperties(r, temp);
+				mergeToParent(list,temp,ignoreType);
+				result.add(temp);
 			}
 		}
 		
@@ -69,10 +70,12 @@ public class ResourceDao extends HibernateSupportDao<Resource, String>{
 		
 		for (Resource r: list) {
 			//这是一个递归过程，如果当前遍历的r资源的parentId等于parent父类对象的id，将会在次递归r对象。通过遍历list是否也存在r对象的子级。
-			if (!StringUtils.equals(r.getType(), ignoreType.getValue()) && StringUtils.equals(r.getParentId(),parent.getId()) ) {
-				r.setChildren(null);
-				mergeToParent(list,r,ignoreType);
-				parent.getChildren().add(r);
+			if ((ignoreType == null || !StringUtils.equals(r.getType(), ignoreType.getValue())) && StringUtils.equals(r.getParentId(),parent.getId()) ) {
+				Resource temp = new Resource();
+				BeanUtils.copyProperties(r, temp);
+				temp.setChildren(null);
+				mergeToParent(list,temp,ignoreType);
+				parent.getChildren().add(temp);
 				parent.setLeaf(true);
 			}
 			

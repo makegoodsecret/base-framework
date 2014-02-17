@@ -16,6 +16,7 @@ import com.github.dactiv.orm.core.Page;
 import com.github.dactiv.orm.core.PageRequest;
 import com.github.dactiv.orm.core.PropertyFilter;
 import com.github.dactiv.orm.core.PropertyFilters;
+import com.github.dactiv.orm.core.RestrictionNames;
 import com.github.dactiv.showcase.common.enumeration.entity.GroupType;
 import com.github.dactiv.showcase.common.enumeration.entity.ResourceType;
 import com.github.dactiv.showcase.dao.account.GroupDao;
@@ -25,7 +26,6 @@ import com.github.dactiv.showcase.entity.account.Group;
 import com.github.dactiv.showcase.entity.account.Resource;
 import com.github.dactiv.showcase.entity.account.User;
 import com.github.dactiv.showcase.service.ServiceException;
-import com.google.common.collect.Lists;
 
 /**
  * 账户管理业务逻辑
@@ -186,15 +186,14 @@ public class AccountManager {
 	}
 	
 	/**
-	 * 获取最顶级(父类)的资源集合
+	 * 获取所有资源集合，但该集合已经将数据并合成树形
 	 * 
 	 * @return List
 	 */
-	public List<Resource> getParentResources() {
-		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.get("EQS_parent.id","null")
-		);
-		return resourceDao.findByPropertyFilter(filters, Order.asc("sort"));
+	@Transactional(readOnly=true)
+	public List<Resource> getMergeResources() {
+		List<Resource> result = resourceDao.getAll(Order.asc("sort"));
+		return mergeResourcesToParent(result, null);
 	}
 	
 	/**
@@ -265,6 +264,7 @@ public class AccountManager {
 	 * @param list 资源集合
 	 * @param resourceType 不需要并合的资源类型
 	 */
+	@Transactional(readOnly=true)
 	public List<Resource> mergeResourcesToParent(List<Resource> list,ResourceType ignoreType) {
 		return resourceDao.mergeToParent(list,ignoreType);
 	}
@@ -335,18 +335,15 @@ public class AccountManager {
 	}
 
 	/**
-	 * 获取最顶级(父类)的组集合
+	 * 根据组类型获取所有组集合，但该集合已经将数据并合成树形
 	 * 
 	 * @param type 组类型
 	 * 
 	 * @return List
 	 */
-	public List<Group> getParentGroups(GroupType type) {
-		List<PropertyFilter> filters = Lists.newArrayList(
-			PropertyFilters.get("EQS_parent.id","null"),
-			PropertyFilters.get("EQS_type", type.getValue())
-		);
-		return groupDao.findByPropertyFilter(filters, Order.asc("id"));
+	public List<Group> getMergeGroups(GroupType type) {
+		List<Group> result = groupDao.findByProperty("type", type.getValue(),RestrictionNames.EQ,Order.asc("id"));
+		return groupDao.mergeToParent(result);
 	}
 
 }

@@ -67,7 +67,7 @@ public class TestDictionaryCategoryManager extends ManagerTestCaseSupport {
 	
 	@Test
 	public void testGetParentDictionaryCategories() {
-		List<DictionaryCategory> list = systemVariableManager.getParentDictionaryCategories();
+		List<DictionaryCategory> list = systemVariableManager.getMergeDictionaryCategories();
 		assertEquals(list.size(), 5);
 	}
 }
