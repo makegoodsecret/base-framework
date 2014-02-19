@@ -84,7 +84,7 @@ public class TestUserManager extends ManagerTestCaseSupport{
 		entity = accountManager.getUser("SJDK3849CKMS3849DJCK2039ZMSK0001");
 		
 		assertEquals(entity.getUsername(), "maurice");
-		assertEquals(entity.getPassword(), "21232f297a57a5a743894a0e4a801fc3");
+		assertEquals(entity.getPassword(), "e10adc3949ba59abbe56e057f20f883e");
 		assertEquals(entity.getRealname(), "maurice");
 	}
 
