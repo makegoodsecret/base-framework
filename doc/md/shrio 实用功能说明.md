@@ -1893,7 +1893,7 @@ shiro在存储授权用户缓存时，会将用户登录账户做键，实体做
 	</ehcache>
 
 
-在ehcache中添加shiroAuthorizationCache缓存。将完成授权缓存同步。当修改或删除某些角色时，记得要清楚所有缓存，让用户下次访问时授权一次，不然修改了角色需要重启服务器后才能生效。
+在ehcache中添加shiroAuthorizationCache缓存。将完成授权缓存同步。当修改或删除某些角色时，记得要清除所有缓存，让用户下次访问时授权一次，不然修改了角色需要重启服务器后才能生效。
 
 	@Repository
 	public class GroupDao extends BasicHibernateDao<Group, String> {
