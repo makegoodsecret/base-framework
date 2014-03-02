@@ -30,7 +30,7 @@
 <#macro recursionTree parent>
 	<li>
 	
-		<@shiro.hasPermission name="dictionary-category:read">
+		<@shiro.hasPermission name="resource:read">
 		<a class="btn btn-default btn-sm" href="${base}/account/resource/read?id=${parent.id}">
 			<span class="glyphicon glyphicon-edit"></span>
 		</a>

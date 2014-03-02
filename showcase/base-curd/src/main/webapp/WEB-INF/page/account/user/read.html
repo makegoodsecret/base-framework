@@ -22,7 +22,7 @@
 <#macro recursionTree parent groupList>
 	<li>
 	
-		<@shiro.hasPermission name="dictionary-category:read">
+		<@shiro.hasPermission name="group:read">
 		<a class="btn btn-default btn-sm" href="${base}/account/group/read?id=${parent.id}">
 			<span class="glyphicon glyphicon-edit"></span>
 		</a>
